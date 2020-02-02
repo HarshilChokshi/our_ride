@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:our_ride/src/screens/sign_up_screen.dart';
 import '../contants.dart';
 import '../widgets/our_ride_title.dart';
 
@@ -19,7 +20,14 @@ class LoginState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return new Container(
+    return Container(
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage('assets/images/background.png'), fit: BoxFit.cover)),
+        child: new Scaffold(
+            backgroundColor: Colors.transparent,
+            resizeToAvoidBottomPadding: false,
+            body: new Container(
       margin: new EdgeInsets.only(left: 50, right: 50, top: 100),
       child: new Form(
         key: formKey,
@@ -37,6 +45,8 @@ class LoginState extends State<LoginScreen> {
             createSignUpButton(),
           ],
         ),
+       ),
+            )
       ),
     );
   }
@@ -53,10 +63,6 @@ class LoginState extends State<LoginScreen> {
       ),
       keyboardType: TextInputType.emailAddress,
       validator: (String value) {
-        if(!value.endsWith('uwaterloo.ca')) {
-          return 'Must be a valid unviersity of waterloo email';
-        }
-
         return null;
       },
       onSaved: (String value) {
@@ -77,10 +83,6 @@ class LoginState extends State<LoginScreen> {
       ),
       obscureText: true,
       validator: (String value) {
-        if(value.length < 8) {
-          return 'Password must contain at least 8 characters';
-        }
-
         return null;
       },
       onSaved: (String value) {
@@ -149,7 +151,7 @@ class LoginState extends State<LoginScreen> {
               style: new TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
             ),
             onPressed: () {
-            
+               Navigator.pushNamed(context, '/signup');
             },
             color: Colors.transparent,
           ),
