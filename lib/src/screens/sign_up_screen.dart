@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../contants.dart';
 import '../widgets/our_ride_title.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override
@@ -15,6 +16,7 @@ class SignUpState extends State<SignUpScreen> {
   final formKey = new GlobalKey<FormState>();
   String dropDownValue = 'Male';
   bool riderSelected = true;
+  bool facebookAccountLinked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -45,9 +47,11 @@ class SignUpState extends State<SignUpScreen> {
               new Container(margin: EdgeInsets.only(bottom: 10)),
               createGenderDropDown(),
               new Container(margin: EdgeInsets.only(bottom: 10)),
-              createRiderDriverOption(),
+              createLinkFacebookAccount(),
               new Container(margin: EdgeInsets.only(bottom: 10)),
               createDriversLicenseTextField(),
+              new Container(margin: EdgeInsets.only(bottom: 10)),
+              createRiderDriverOption(),
               createSubmitButton(),
             ],
           ),
@@ -229,7 +233,10 @@ class SignUpState extends State<SignUpScreen> {
           style: new TextStyle(color: Colors.white),
         ),
         onPressed: () {
-          
+          if(!facebookAccountLinked) {
+            showFacebookAlert(false);
+            return;
+          }
         },
         color: appThemeColor,
       )
@@ -240,6 +247,64 @@ class SignUpState extends State<SignUpScreen> {
   bool licenseIsValid(String licenseNumber) {
     // Check if license is valid from API
     return true;
+  }
+
+  Widget createLinkFacebookAccount() {
+    return new SizedBox(
+     width: double.infinity, 
+     child: new RaisedButton(
+      child: new Text(
+        'Link Facebook',
+        style: new TextStyle(color: Colors.white),
+      ),
+      onPressed: () {  
+        didUserLogIntoFacebook();
+      },
+      color: new Color.fromARGB(255, 56, 103, 178),
+    )
+   );
+  }
+
+
+  void didUserLogIntoFacebook() async {
+    final FacebookLogin facebookLogin = FacebookLogin();
+    final FacebookLoginResult result = await facebookLogin.logIn(<String>['email']);
+
+    switch (result.status) {
+      case FacebookLoginStatus.loggedIn:
+        print('user logged in');
+        facebookAccountLinked = true;
+        break;
+      case FacebookLoginStatus.cancelledByUser:
+        print('user cancelled');
+        break;
+      case FacebookLoginStatus.error:
+        print('error in logging in');
+        break;
+    }
+    
+    showFacebookAlert(facebookAccountLinked);
+  }
+
+  void showFacebookAlert(bool didUserLogin) {
+    String message = facebookAccountLinked ? 'Successfully linked Facebook Account' : 'You must link your Facebook account in order to use the application';
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text('Facebook Account Linking'),
+          content: new Text(message),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text('Close', style: new TextStyle(color: Colors.red)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      }
+    );
   }
 
 }
