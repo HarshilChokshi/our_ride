@@ -233,6 +233,7 @@ class SignUpState extends State<SignUpScreen> {
           style: new TextStyle(color: Colors.white),
         ),
         onPressed: () {
+          Navigator.pushNamed(context, '/signup/user_profile');
           if(!facebookAccountLinked) {
             showFacebookAlert(false);
             return;
