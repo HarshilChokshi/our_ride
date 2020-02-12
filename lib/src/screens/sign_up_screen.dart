@@ -122,6 +122,12 @@ class SignUpState extends State<SignUpScreen> {
       onSaved: (String value) {
 
       },
+      validator: (String value) {
+        if(value.isEmpty) {
+          return 'You have to enter a value for this';
+        }
+        return null;
+      },
     );
   }
 
@@ -212,6 +218,9 @@ class SignUpState extends State<SignUpScreen> {
         fillColor: new Color.fromARGB(20, 211, 211, 211),
       ),
       validator: (String value) {
+        if(value.isEmpty) {
+          return 'You have to enter a valid driver\'s license';
+        }
         if(!licenseIsValid(value)) {
           return 'Driver\'s license not valid';
         }
@@ -233,11 +242,17 @@ class SignUpState extends State<SignUpScreen> {
           style: new TextStyle(color: Colors.white),
         ),
         onPressed: () {
-          Navigator.pushNamed(context, '/signup/user_profile');
+          if(!formKey.currentState.validate()) {
+            return;
+          }
+
           if(!facebookAccountLinked) {
             showFacebookAlert(false);
             return;
           }
+          
+          formKey.currentState.save();
+          Navigator.pushNamed(context, '/signup/user_profile');
         },
         color: appThemeColor,
       )
