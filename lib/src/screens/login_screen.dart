@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:our_ride/src/screens/rideshare_list_screen.dart';
 import 'package:our_ride/src/screens/sign_up_screen.dart';
 import '../contants.dart';
 import '../widgets/our_ride_title.dart';
@@ -103,6 +105,11 @@ class LoginState extends State<LoginScreen> {
          if(formKey.currentState.validate() && verifyUser()) {
            formKey.currentState.save();
          }
+         Navigator.push(
+             context, 
+             CupertinoPageRoute(
+               builder: (context) => RideshareListScreen()
+            ));
       },
       color: appThemeColor,
     )
