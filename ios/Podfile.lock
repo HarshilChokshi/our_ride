@@ -9,23 +9,13 @@ PODS:
     - FBSDKLoginKit/Login (= 5.15.1)
   - FBSDKLoginKit/Login (5.15.1):
     - FBSDKCoreKit (~> 5.0)
-  - Firebase/Auth (6.17.0):
-    - Firebase/CoreOnly
-    - FirebaseAuth (~> 6.4.3)
+  - Firebase/Analytics (6.17.0):
+    - Firebase/Core
   - Firebase/Core (6.17.0):
     - Firebase/CoreOnly
     - FirebaseAnalytics (= 6.2.2)
   - Firebase/CoreOnly (6.17.0):
     - FirebaseCore (= 6.6.2)
-  - firebase_auth (0.0.1):
-    - Firebase/Auth (~> 6.0)
-    - Firebase/Core
-    - Flutter
-  - firebase_core (0.0.1):
-    - Firebase/Core
-    - Flutter
-  - firebase_core_web (0.1.0):
-    - Flutter
   - FirebaseAnalytics (6.2.2):
     - FirebaseCore (~> 6.6)
     - FirebaseInstanceID (~> 4.3)
@@ -35,13 +25,6 @@ PODS:
     - GoogleUtilities/Network (~> 6.0)
     - "GoogleUtilities/NSData+zlib (~> 6.0)"
     - nanopb (= 0.3.9011)
-  - FirebaseAuth (6.4.3):
-    - FirebaseAuthInterop (~> 1.0)
-    - FirebaseCore (~> 6.6)
-    - GoogleUtilities/AppDelegateSwizzler (~> 6.5)
-    - GoogleUtilities/Environment (~> 6.5)
-    - GTMSessionFetcher/Core (~> 1.1)
-  - FirebaseAuthInterop (1.0.0)
   - FirebaseCore (6.6.2):
     - FirebaseCoreDiagnostics (~> 1.2)
     - FirebaseCoreDiagnosticsInterop (~> 1.2)
@@ -96,7 +79,6 @@ PODS:
     - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (6.5.1):
     - GoogleUtilities/Logger
-  - GTMSessionFetcher/Core (1.3.1)
   - nanopb (0.3.9011):
     - nanopb/decode (= 0.3.9011)
     - nanopb/encode (= 0.3.9011)
@@ -105,10 +87,7 @@ PODS:
   - PromisesObjC (1.2.8)
 
 DEPENDENCIES:
-  - Firebase/Auth
-  - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
-  - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
-  - firebase_core_web (from `.symlinks/plugins/firebase_core_web/ios`)
+  - Firebase/Analytics
   - Flutter (from `Flutter`)
   - flutter_facebook_login (from `.symlinks/plugins/flutter_facebook_login/ios`)
 
@@ -118,8 +97,6 @@ SPEC REPOS:
     - FBSDKLoginKit
     - Firebase
     - FirebaseAnalytics
-    - FirebaseAuth
-    - FirebaseAuthInterop
     - FirebaseCore
     - FirebaseCoreDiagnostics
     - FirebaseCoreDiagnosticsInterop
@@ -129,7 +106,6 @@ SPEC REPOS:
     - GoogleDataTransport
     - GoogleDataTransportCCTSupport
     - GoogleUtilities
-    - GTMSessionFetcher
     - nanopb
     - PromisesObjC
 
@@ -149,12 +125,7 @@ SPEC CHECKSUMS:
   FBSDKCoreKit: 1d5acf7c9d7a2f92bb1a242dc60cae5b7adb91df
   FBSDKLoginKit: f1ea8026a58b52d30c9f2e6a58ca7d813619fb83
   Firebase: 2672e5636b42f977177716317e68346ae5e9de25
-  firebase_auth: d99b993c1405096e66c58211b1cd956c23eed1c5
-  firebase_core: 0c84455537bed6d6b5b8c2dd611ff1fbb1ea5cbd
-  firebase_core_web: d501d8b946b60c8af265428ce483b0fff5ad52d1
   FirebaseAnalytics: cf95d3aab897612783020fbd98401d5366f135ee
-  FirebaseAuth: 5ce2b03a3d7fe56b7a6e4c5ec7ff1522890b1d6f
-  FirebaseAuthInterop: 0ffa57668be100582bb7643d4fcb7615496c41fc
   FirebaseCore: a1dd9dd6355a8356dd30a8f076839e242285a81c
   FirebaseCoreDiagnostics: 5e78803ab276bc5b50340e3c539c06c3de35c649
   FirebaseCoreDiagnosticsInterop: 296e2c5f5314500a850ad0b83e9e7c10b011a850
@@ -166,10 +137,9 @@ SPEC CHECKSUMS:
   GoogleDataTransport: 47fe3b8e1673e5187dfd615656a3c5034f150d69
   GoogleDataTransportCCTSupport: 36f69887fd212db6d7ef4dd45ba44523717a434e
   GoogleUtilities: 06eb53bb579efe7099152735900dd04bf09e7275
-  GTMSessionFetcher: cea130bbfe5a7edc8d06d3f0d17288c32ffe9925
   nanopb: 18003b5e52dab79db540fe93fe9579f399bd1ccd
   PromisesObjC: c119f3cd559f50b7ae681fa59dc1acd19173b7e6
 
-PODFILE CHECKSUM: 82eb55468765f5b836cd615236977253b6ad30e2
+PODFILE CHECKSUM: be96b76d89261ba65fe1d8b446e02f21b6ef5609
 
 COCOAPODS: 1.8.4
