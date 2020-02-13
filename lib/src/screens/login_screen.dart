@@ -4,6 +4,8 @@ import 'package:our_ride/src/screens/rideshare_list_screen.dart';
 import 'package:our_ride/src/screens/sign_up_screen.dart';
 import '../contants.dart';
 import '../widgets/our_ride_title.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class LoginScreen extends StatefulWidget {
   @override

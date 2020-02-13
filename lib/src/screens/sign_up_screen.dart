@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:our_ride/src/models/user_profile.dart';
 import '../contants.dart';
 import '../widgets/our_ride_title.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override
@@ -17,6 +20,9 @@ class SignUpState extends State<SignUpScreen> {
   String dropDownValue = 'Male';
   bool riderSelected = true;
   bool facebookAccountLinked = false;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  UserProfile userProfile;
+  final databaseReference = FirebaseDatabase.instance.reference();
 
   @override
   Widget build(BuildContext context) {
@@ -80,6 +86,7 @@ class SignUpState extends State<SignUpScreen> {
         return null;
       },
       onSaved: (String value) {
+        userProfile.email = value;
       },
     );
   }
@@ -103,7 +110,7 @@ class SignUpState extends State<SignUpScreen> {
         return null;
       },
       onSaved: (String value) {
-       
+        userProfile.password = value;
       },
     );
   }
@@ -120,7 +127,11 @@ class SignUpState extends State<SignUpScreen> {
         fillColor: new Color.fromARGB(20, 211, 211, 211),
       ),
       onSaved: (String value) {
-
+        if(isFirstName) {
+          userProfile.firstName = value;
+        } else {
+          userProfile.lastName = value;
+        }
       },
       validator: (String value) {
         if(value.isEmpty) {
@@ -227,6 +238,7 @@ class SignUpState extends State<SignUpScreen> {
         return null;
       },
       onSaved: (String value) {
+        userProfile.driverLicenseNumber = value;
       },
     ) : new Container();
   }
@@ -250,8 +262,11 @@ class SignUpState extends State<SignUpScreen> {
             showFacebookAlert(false);
             return;
           }
-          
+
+          userProfile = new UserProfile();
           formKey.currentState.save();
+          userProfile.isMale = dropDownValue == 'Male' ? true : false;
+          registerUser(userProfile);
           Navigator.pushNamed(context, '/signup/user_profile');
         },
         color: appThemeColor,
@@ -259,6 +274,8 @@ class SignUpState extends State<SignUpScreen> {
     )
     );
   }
+
+
 
   bool licenseIsValid(String licenseNumber) {
     // Check if license is valid from API
@@ -281,6 +298,27 @@ class SignUpState extends State<SignUpScreen> {
    );
   }
 
+
+  void registerUser(UserProfile userProfile) async {
+    final FirebaseUser user = (await _auth.createUserWithEmailAndPassword(
+      email: userProfile.email,
+      password: userProfile.password,
+    )).user;
+    databaseReference.child(user.uid).set(
+      {
+        "email": userProfile.email,
+        "password": userProfile.password,
+        "first_name": userProfile.firstName,
+        "last_name": userProfile.lastName,
+        "gender": userProfile.isMale,
+        "rides_taken": 0,
+        "rides_given": 0,
+        "about_me": "",
+        "program": "",
+        "profile_pic_ref": "",
+      }
+    );
+  }
 
   void didUserLogIntoFacebook() async {
     final FacebookLogin facebookLogin = FacebookLogin();
