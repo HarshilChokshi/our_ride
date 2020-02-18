@@ -18,6 +18,7 @@ class LoginState extends State<LoginScreen> {
 
   final formKey = new GlobalKey<FormState>();
   bool keepUserSignedIn = false;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   String emailAddress;
   String password;
@@ -104,19 +105,50 @@ class LoginState extends State<LoginScreen> {
         style: new TextStyle(color: Colors.white),
       ),
       onPressed: () {
-         if(formKey.currentState.validate() && verifyUser()) {
-           formKey.currentState.save();
-         }
-         Navigator.push(
-             context, 
-             CupertinoPageRoute(
-               builder: (context) => RideshareListScreen()
-            ));
+        formKey.currentState.save();
+         _handleSignIn()
+          .then((FirebaseUser user){
+            print(user.uid);
+            Navigator.push(
+                context, 
+                CupertinoPageRoute(
+                  builder: (context) => RideshareListScreen()
+            ));           
+          })
+          .catchError((e) => showLoginErrorMessage());
+
+
       },
       color: appThemeColor,
     )
    );
   }
+
+  void showLoginErrorMessage() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text('ERROR'),
+          content: new Text('Email and/or password entered is incorrect.'),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text('Close', style: new TextStyle(color: Colors.red)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      }
+    );
+  }
+
+  Future<FirebaseUser> _handleSignIn() async {
+    final FirebaseUser user = (await _auth.signInWithEmailAndPassword(email: emailAddress, password: password)).user;
+    return user;
+  }
+
 
   Widget createKeepMeSignedInButton() {
     return new Row(
@@ -141,6 +173,7 @@ class LoginState extends State<LoginScreen> {
       ],
     );  
   }
+
 
   Widget createSignUpButton() {
     return new Row(
