@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:our_ride/src/screens/create_ride_screen.dart';
 import 'package:our_ride/src/screens/rideshare_list_screen.dart';
 import 'package:our_ride/src/screens/sign_up_screen.dart';
 import '../contants.dart';
@@ -108,11 +109,10 @@ class LoginState extends State<LoginScreen> {
         formKey.currentState.save();
          _handleSignIn()
           .then((FirebaseUser user){
-            print(user.uid);
             Navigator.push(
                 context, 
                 CupertinoPageRoute(
-                  builder: (context) => RideshareListScreen()
+                  builder: (context) => CreateRideScreen(user.uid)
             ));           
           })
           .catchError((e) => showLoginErrorMessage());
@@ -200,11 +200,6 @@ class LoginState extends State<LoginScreen> {
        ),
       ],
     );  
-  }
-
-  bool verifyUser() {
-    //need to implement
-    return true;
   }
 }
 

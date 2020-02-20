@@ -1,21 +1,20 @@
-class RideshareModel {
-  String uid;
-  String driver; // 
+import 'package:flutter/material.dart';
+import 'package:our_ride/src/models/car.dart';
+
+class Rideshare {
+  String driverId;
+  String pickUpLocation;
+  String dropOffLocation;
+  DateTime rideDate;
+  TimeOfDay rideTime;
+  int capacity;
+  int numberOfCurrentRiders;
+  double price;
+  Car car;
   List<String> riders;
-  String pickup;
-  String dropoff;
-  String time;
-  String date;
-  int price;
-  
-  RideshareModel({
-      this.uid, 
-      this.driver,
-      this.riders, 
-      this.pickup,
-      this.dropoff,
-      this.time,
-      this.date,
-      this.price,
-    });
+
+  Rideshare(String driverId, Car car) {
+    this.driverId = driverId;
+    this.car = car;
+  }
 }
