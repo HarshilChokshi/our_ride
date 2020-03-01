@@ -17,4 +17,28 @@ class Rideshare {
     this.driverId = driverId;
     this.car = car;
   }
+
+  Rideshare.fromDetails(
+    String driverId,
+    String pickUpLocation,
+    String dropOffLocation,
+    DateTime rideDate,
+    TimeOfDay rideTime,
+    int capacity,
+    int numberOfCurrentRiders,
+    double price,
+    Car car,
+    List<String> riders   
+  ) {
+    this.driverId = driverId;
+    this.pickUpLocation = pickUpLocation;
+    this.dropOffLocation = dropOffLocation;
+    this.rideDate = rideDate;
+    this.rideTime = rideTime;
+    this.capacity = capacity;
+    this.numberOfCurrentRiders = numberOfCurrentRiders;
+    this.price = price;
+    this.car = car;
+    this.riders = riders;
+  }
 }

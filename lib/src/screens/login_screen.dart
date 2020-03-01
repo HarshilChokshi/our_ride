@@ -7,6 +7,7 @@ import '../contants.dart';
 import '../widgets/our_ride_title.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:our_ride/src/screens/driver_my_rideshares_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -109,10 +110,10 @@ class LoginState extends State<LoginScreen> {
         formKey.currentState.save();
          _handleSignIn()
           .then((FirebaseUser user){
-            Navigator.push(
+            Navigator.pushReplacement(
                 context, 
                 CupertinoPageRoute(
-                  builder: (context) => CreateRideScreen(user.uid)
+                  builder: (context) => MyRideSharesDriversScreen(user.uid)
             ));           
           })
           .catchError((e) => showLoginErrorMessage());
