@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:our_ride/src/models/car.dart';
 import 'package:our_ride/src/models/rideshare_model.dart';
+import 'package:our_ride/src/screens/ride_share_created_screen.dart';
 import '../contants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -82,6 +84,12 @@ class CreateRideState extends State<CreateRideScreen> {
     rideshare.riders = [];
 
     addRideShareToDB(rideshare);
+
+    Navigator.push(
+      context, 
+      new CupertinoPageRoute(
+        builder: (context) => RideShareCreatedScreen(driverId)
+      ));
   }
 
   void addRideShareToDB(Rideshare r) async {
@@ -91,7 +99,7 @@ class CreateRideState extends State<CreateRideScreen> {
       'pickUpLocation': r.pickUpLocation,
       'dropOffLocation': r.dropOffLocation,
       'rideDate': r.rideDate.toString(),
-      'rideTime': r.rideTime.toString(),
+      'rideTime': r.rideTime.hour.toString() + ':' + r.rideTime.minute.toString(),
       'capacity': r.capacity,
       'numberOfCurrentRiders': r.numberOfCurrentRiders,
       'price': r.price,
