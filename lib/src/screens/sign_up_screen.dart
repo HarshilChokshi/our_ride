@@ -308,14 +308,17 @@ class SignUpState extends State<SignUpScreen> {
       {
         "email": userProfile.email,
         "password": userProfile.password,
-        "first_name": userProfile.firstName,
-        "last_name": userProfile.lastName,
-        "gender": userProfile.isMale,
-        "rides_taken": 0,
-        "rides_given": 0,
-        "about_me": "",
+        "firstName": userProfile.firstName,
+        "lastName": userProfile.lastName,
+        "isMale": userProfile.isMale,
+        "driverLicenseNumber": userProfile.driverLicenseNumber,
+        "city": userProfile.city,
+        "state": userProfile.state,
+        "ridesTaken": 0,
+        "ridesGiven": 0,
+        "aboutMe": "",
         "program": "",
-        "profile_pic_ref": "",
+        "profilePic": "",
       }
     );
   }
