@@ -8,7 +8,7 @@ class UserProfile {
   bool isMale;
   String driverLicenseNumber;
 
-  String city;
+  String city = 'Waterloo';
   final String state = 'Ontario';
   int points;
   int ridesGiven;
@@ -24,7 +24,6 @@ class UserProfile {
     this.lastName = '';
     this.isMale = true;
     this.driverLicenseNumber = '';
-    this.city = '';
     this.points = 0;
     this.ridesGiven = 0;
     this.ridesTaken = 0;
@@ -32,4 +31,19 @@ class UserProfile {
     this.program = '';
     this.profilePic = new Image.asset('assets/images/default-profile.png');
   }
+
+  UserProfile.fromDetails(
+    this.email,
+    this.password,
+    this.firstName,
+    this.lastName,
+    this.isMale,
+    this.driverLicenseNumber,
+    this.points,
+    this.ridesGiven,
+    this.ridesTaken,
+    this.aboutMe,
+    this.program,
+    this.profilePic,
+    );
 }

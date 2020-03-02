@@ -47,7 +47,7 @@ class AppBottomNavigationBar extends StatelessWidget {
                 Navigator.pushReplacement(
                   context, 
                   new CupertinoPageRoute(
-                    builder: (context) => UserProfileScreen()
+                    builder: (context) => UserProfileScreen(driver_id)
                 ));
               },
               iconSize: 30.0,
