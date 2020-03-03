@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +12,30 @@ class RideshareListScreen extends StatefulWidget {
 class RideshareListState extends State<RideshareListScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Title"),
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: Firestore.instance.collection('rideshares').snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasError) return new Text('Error: ${snapshot.error}');
+          switch (snapshot.connectionState) {
+            case ConnectionState.waiting:
+              return new Text('Loading...');
+            default:
+              return new ListView(
+                children:
+                    snapshot.data.documents.map((DocumentSnapshot document) {
+                  return new ListTile(
+                    title: new Text(document['pickup']),
+                    subtitle: new Text(document['dropoff']),
+                  );
+                }).toList(),
+              );
+          }
+        },
+      ),
+    );
   }
 }
