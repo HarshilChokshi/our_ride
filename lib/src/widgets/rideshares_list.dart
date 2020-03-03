@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:our_ride/src/contants.dart';
 import 'package:our_ride/src/models/rideshare_model.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:our_ride/src/screens/driver_my_rideshares_screen.dart';
 
 class RideSharesList extends StatelessWidget {
   
   final List<Rideshare> rideShareDataList;
+  BuildContext context;
+  final databaseReference = Firestore.instance;
+  MyRideSharesDriversState parent;
 
-  RideSharesList(this.rideShareDataList);
+  RideSharesList(this.rideShareDataList, this.context, this.parent);
    
   @override
   Widget build(BuildContext context) {
@@ -17,17 +24,79 @@ class RideSharesList extends StatelessWidget {
     );
   }
 
-  Container buildCell(BuildContext context, int index) {
-    return new Container(
-      margin: EdgeInsets.only(left: 10.0, right: 10.0, bottom: 30.0),
-      child: new Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-             new Container(margin: EdgeInsets.only(top: 10)),
-            createDateText(rideShareDataList[index].rideDate),
-            createRideInfo(index),
-          ],
+  Slidable buildCell(BuildContext context, int index) {
+    return new Slidable(
+      child: new Container(
+        margin: EdgeInsets.only(left: 10.0, right: 10.0, bottom: 30.0),
+        child: new Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              new Container(margin: EdgeInsets.only(top: 10)),
+              createDateText(rideShareDataList[index].rideDate),
+              createRideInfo(index),
+            ],
+        ),
       ),
+      actionPane: new SlidableDrawerActionPane(),
+      actionExtentRatio: 0.25,
+      secondaryActions: <Widget>[
+        new IconSlideAction(
+          caption: 'Cancel',
+          color: Colors.red,
+          icon: Icons.delete,
+          onTap: () {
+            showLoginErrorMessage(index);
+          },
+        ),
+      ],
+    );
+  }
+
+  void deleteRideShareRecord(int index)  async {
+   databaseReference
+      .collection('rideshares')
+      .getDocuments()
+      .then((QuerySnapshot snapShot) {
+        snapShot.documents.forEach((f) {
+          if(
+            f.data['driverId'].toString() == rideShareDataList[index].driverId &&
+            f.data['rideDate'].toString() == rideShareDataList[index].rideDate.toString() &&
+            f.data['rideTime'].toString() == rideShareDataList[index].rideTime.hour.toString() + ':' + rideShareDataList[index].rideTime.minute.toString()) {
+              databaseReference.collection('rideshares').document(f.documentID).delete();
+              this.parent.setState(() {
+                this.parent.rideShareDataList.removeAt(index);
+              });
+              return;
+          }
+        });
+      });
+      
+  }
+
+  void showLoginErrorMessage(int index) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text('Cancel Ride'),
+          content: new Text('Are you sure you want to cancel the ride? You will be charged'),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text('Close', style: new TextStyle(color: Colors.blue)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            new FlatButton(
+              child: new Text('Cancel rideshare', style: new TextStyle(color: Colors.red)),
+              onPressed: () {
+                deleteRideShareRecord(index);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      }
     );
   }
 
