@@ -42,7 +42,13 @@ class UserProfileState extends State<UserProfileScreen> {
         if(snapshot.connectionState == ConnectionState.waiting) {
           return new Scaffold(
             backgroundColor: Colors.white,
-            body: new Text('Loading User data...'),
+            body: new Center(
+              child: Container(
+                child: new Text('Loading user data...', style: (
+                  new TextStyle(color: Colors.grey, fontSize: 20.0)
+                ),),
+              ),
+            ) 
           );
         } else {
             userProfile = snapshot.data;

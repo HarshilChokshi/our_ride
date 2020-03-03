@@ -94,7 +94,8 @@ class CreateRideState extends State<CreateRideScreen> {
 
   void addRideShareToDB(Rideshare r) async {
     await databaseReference.collection('rideshares')
-    .add({
+    .document(r.driverId + '-' + r.rideDate.toString() + '-' + r.rideTime.hour.toString() + ':' + r.rideTime.minute.toString())
+    .setData({
       'driverId': r.driverId,
       'pickUpLocation': r.pickUpLocation,
       'dropOffLocation': r.dropOffLocation,
