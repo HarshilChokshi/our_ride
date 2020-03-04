@@ -15,6 +15,7 @@ class UserProfile {
   int ridesTaken;
   String aboutMe;
   String program;
+  String university;
   Image profilePic;
   String facebookUserId;
 
@@ -30,6 +31,7 @@ class UserProfile {
     this.ridesTaken = 0;
     this.aboutMe = '';
     this.program = '';
+    this.university = '';
     this.profilePic = new Image.asset('assets/images/default-profile.png');
     this.facebookUserId = '';
   }
@@ -46,6 +48,7 @@ class UserProfile {
     this.ridesTaken,
     this.aboutMe,
     this.program,
+    this.university,
     this.profilePic,
     this.facebookUserId,
     );

@@ -323,6 +323,7 @@ class SignUpState extends State<SignUpScreen> {
         "program": "",
         "profilePic": "",
         "facebookUserId": userProfile.facebookUserId,
+        "university": userProfile.university,
       }
     );
   }
