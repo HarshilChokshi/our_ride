@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:our_ride/src/contants.dart';
 import 'package:our_ride/src/models/user_profile.dart';
+import 'package:our_ride/src/screens/edit_profile_screen.dart';
 import 'package:our_ride/src/widgets/app_bottom_navigation_bar.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class UserProfileScreen extends StatefulWidget {
@@ -28,7 +30,6 @@ class UserProfileState extends State<UserProfileScreen> {
   @override
   void initState() {
     super.initState();
-    var data = fetchUserProfileData();
   }
   
   UserProfileState(String user_id) {
@@ -86,6 +87,7 @@ class UserProfileState extends State<UserProfileScreen> {
       int ridesTaken = data['ridesTaken'];
       String aboutMe = data['aboutMe'].toString();
       String program = data['program'].toString();
+      String university = data['university'].toString();
       String facebookUserId = data['facebookUserId'];
       return Future.value(new UserProfile.fromDetails(
         email,
@@ -99,6 +101,7 @@ class UserProfileState extends State<UserProfileScreen> {
         ridesTaken,
         aboutMe,
         program,
+        university,
         null,
         facebookUserId,
       ));      
@@ -143,6 +146,10 @@ class UserProfileState extends State<UserProfileScreen> {
           createDesciption('Program'),
           new Padding(padding: EdgeInsets.only(bottom: 3)),
           createText(userProfile.program),
+          new Padding(padding: EdgeInsets.only(bottom: 30)),
+          createDesciption('University'),
+          new Padding(padding: EdgeInsets.only(bottom: 3)),
+          createText(userProfile.university),
           new Padding(padding: EdgeInsets.only(bottom: 30)),
           createDesciption('Add reviews here...'),
         ],
@@ -284,6 +291,11 @@ class UserProfileState extends State<UserProfileScreen> {
           style: new TextStyle(color: Colors.white),
         ),
         onPressed: () {  
+          Navigator.pushReplacement(
+            context, 
+            new CupertinoPageRoute(
+              builder: (context) => EditProfileScreen(userProfile, user_id)
+          ));
         },
         color: appThemeColor,
         shape: RoundedRectangleBorder(

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:our_ride/src/contants.dart';
-import 'package:our_ride/src/screens/create_ride_screen.dart';
 import 'package:our_ride/src/screens/driver_my_rideshares_screen.dart';
 import 'package:our_ride/src/screens/user_profile_screen.dart';
 
