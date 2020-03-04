@@ -29,6 +29,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
   bool isMale;
   String program;
   String university;
+  String city;
 
   EditProfileScreenState(this.userProfile, this.userId);
   
@@ -222,7 +223,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
         "lastName": userProfile.lastName,
         "isMale": isMale,
         "driverLicenseNumber": userProfile.driverLicenseNumber,
-        "city": userProfile.city,
+        "city": city,
         "state": userProfile.state,
         "ridesTaken": 0,
         "ridesGiven": 0,
@@ -260,7 +261,9 @@ class EditProfileScreenState extends State<EditProfileScreen> {
             new Padding(padding: EdgeInsets.only(bottom: 3)),
             createTextFields(userProfile.university, 3),
             new Padding(padding: EdgeInsets.only(bottom: 30)),
-            createDesciption('Add reviews here...'),
+            createDesciption('City'),
+            new Padding(padding: EdgeInsets.only(bottom: 3)),
+            createTextFields(userProfile.city, 4),
           ],
         ),
       ),
@@ -307,6 +310,8 @@ class EditProfileScreenState extends State<EditProfileScreen> {
           program = value;
         } else if(textFieldNum == 3) {
           university = value;
+        } else if(textFieldNum == 4) {
+          city = value;
         }
       },
     );

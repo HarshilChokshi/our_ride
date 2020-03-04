@@ -1,13 +1,12 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:our_ride/src/models/user_profile.dart';
+import 'package:our_ride/src/screens/user_info_screen.dart';
 import '../contants.dart';
 import '../widgets/our_ride_title.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:http/http.dart' show get;
+import 'package:flutter/cupertino.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override
@@ -23,12 +22,11 @@ class SignUpState extends State<SignUpScreen> {
   String dropDownValue = 'Male';
   bool riderSelected = true;
   bool facebookAccountLinked = false;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   UserProfile userProfile;
-  final databaseReference = FirebaseDatabase.instance.reference();
 
   @override
   Widget build(BuildContext context) {
+   userProfile = new UserProfile();
    return new Container(
      decoration: new BoxDecoration(
        image: new DecorationImage(
@@ -61,7 +59,7 @@ class SignUpState extends State<SignUpScreen> {
               createDriversLicenseTextField(),
               new Container(margin: EdgeInsets.only(bottom: 10)),
               createRiderDriverOption(),
-              createSubmitButton(),
+              createNextButton(),
             ],
           ),
         ),
@@ -246,14 +244,14 @@ class SignUpState extends State<SignUpScreen> {
     ) : new Container();
   }
 
-  Widget createSubmitButton() {
+  Widget createNextButton() {
    return Align(
      alignment: Alignment.bottomCenter,
     child: new SizedBox(
       width: double.infinity, 
       child: new RaisedButton(
         child: new Text(
-          'Submit',
+          'Next',
           style: new TextStyle(color: Colors.white),
         ),
         onPressed: () {
@@ -266,11 +264,14 @@ class SignUpState extends State<SignUpScreen> {
             return;
           }
 
-          userProfile = new UserProfile();
           formKey.currentState.save();
           userProfile.isMale = dropDownValue == 'Male' ? true : false;
-          registerUser(userProfile);
-          Navigator.pushNamed(context, '/signup/user_profile');
+
+          Navigator.pushReplacement(
+              context, 
+              CupertinoPageRoute(
+                builder: (context) => UserInfoScreen(userProfile)
+          )); 
         },
         color: appThemeColor,
       )
@@ -301,32 +302,6 @@ class SignUpState extends State<SignUpScreen> {
    );
   }
 
-
-  void registerUser(UserProfile userProfile) async {
-    final FirebaseUser user = (await _auth.createUserWithEmailAndPassword(
-      email: userProfile.email,
-      password: userProfile.password,
-    )).user;
-    databaseReference.child(user.uid).set(
-      {
-        "email": userProfile.email,
-        "password": userProfile.password,
-        "firstName": userProfile.firstName,
-        "lastName": userProfile.lastName,
-        "isMale": userProfile.isMale,
-        "driverLicenseNumber": userProfile.driverLicenseNumber,
-        "city": userProfile.city,
-        "state": userProfile.state,
-        "ridesTaken": 0,
-        "ridesGiven": 0,
-        "aboutMe": "",
-        "program": "",
-        "profilePic": "",
-        "facebookUserId": userProfile.facebookUserId,
-        "university": userProfile.university,
-      }
-    );
-  }
 
   void didUserLogIntoFacebook() async {
     final FacebookLogin facebookLogin = FacebookLogin();
