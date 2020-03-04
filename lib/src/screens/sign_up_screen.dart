@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:our_ride/src/models/user_profile.dart';
 import '../contants.dart';
@@ -5,6 +7,7 @@ import '../widgets/our_ride_title.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:http/http.dart' show get;
 
 class SignUpScreen extends StatefulWidget {
   @override
@@ -319,6 +322,7 @@ class SignUpState extends State<SignUpScreen> {
         "aboutMe": "",
         "program": "",
         "profilePic": "",
+        "facebookUserId": userProfile.facebookUserId,
       }
     );
   }
@@ -329,14 +333,16 @@ class SignUpState extends State<SignUpScreen> {
 
     switch (result.status) {
       case FacebookLoginStatus.loggedIn:
-        print('user logged in');
         facebookAccountLinked = true;
+        final token = result.accessToken.token;
+        final graphResponse = await get(
+            'https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email&access_token=${token}');
+        final profile = jsonDecode(graphResponse.body);
+        userProfile.facebookUserId = profile['id'].toString();
         break;
       case FacebookLoginStatus.cancelledByUser:
-        print('user cancelled');
         break;
       case FacebookLoginStatus.error:
-        print('error in logging in');
         break;
     }
     

@@ -16,6 +16,7 @@ class UserProfile {
   String aboutMe;
   String program;
   Image profilePic;
+  String facebookUserId;
 
   UserProfile() {
     this.email = '';
@@ -30,6 +31,7 @@ class UserProfile {
     this.aboutMe = '';
     this.program = '';
     this.profilePic = new Image.asset('assets/images/default-profile.png');
+    this.facebookUserId = '';
   }
 
   UserProfile.fromDetails(
@@ -45,5 +47,6 @@ class UserProfile {
     this.aboutMe,
     this.program,
     this.profilePic,
+    this.facebookUserId,
     );
 }

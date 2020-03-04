@@ -3,6 +3,7 @@ import 'package:our_ride/src/contants.dart';
 import 'package:our_ride/src/models/user_profile.dart';
 import 'package:our_ride/src/widgets/app_bottom_navigation_bar.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class UserProfileScreen extends StatefulWidget {
   
@@ -85,6 +86,7 @@ class UserProfileState extends State<UserProfileScreen> {
       int ridesTaken = data['ridesTaken'];
       String aboutMe = data['aboutMe'].toString();
       String program = data['program'].toString();
+      String facebookUserId = data['facebookUserId'];
       return Future.value(new UserProfile.fromDetails(
         email,
         password,
@@ -98,6 +100,7 @@ class UserProfileState extends State<UserProfileScreen> {
         aboutMe,
         program,
         null,
+        facebookUserId,
       ));      
   }
 
@@ -204,7 +207,14 @@ class UserProfileState extends State<UserProfileScreen> {
         new Container(margin: EdgeInsets.only(top: 10)),
         createRidesTakenText(userProfile.ridesTaken),
         new Container(margin: EdgeInsets.only(bottom: 10)),
-        createEditProfileButton(),
+        new Row(
+          children: <Widget>[
+            createEditProfileButton(),
+            new Container(margin: EdgeInsets.only(left: 5)),
+            createViewFacebookProfileButton(),
+          ],
+        ),
+        
       ],
       crossAxisAlignment: CrossAxisAlignment.start,
     );
@@ -281,6 +291,37 @@ class UserProfileState extends State<UserProfileScreen> {
           side: BorderSide(color: Colors.white)
         ),
       );
+    }
+
+    Widget createViewFacebookProfileButton() {
+      return new FlatButton(
+        child: new Text(
+          'View FB Profile',
+          style: new TextStyle(color: Colors.white),
+        ),
+        onPressed: () { 
+           openFacebookProfile();
+        },
+        color: Colors.blue,
+        shape: RoundedRectangleBorder(
+          borderRadius: new BorderRadius.circular(18.0),
+          side: BorderSide(color: Colors.blue)
+        ),
+      );     
+    }
+
+    void openFacebookProfile() async {
+      String fbProtocolUrl = 'fb://profile/' + userProfile.facebookUserId;
+      String fallbackUrl = 'https://www.facebook.com/profile?id=' + userProfile.facebookUserId;
+      try {
+        bool launched = await launch(fbProtocolUrl, forceSafariVC: false);
+        
+        if (!launched) {
+          await launch(fallbackUrl, forceSafariVC: false);
+        }
+      } catch (e) {
+        await launch(fallbackUrl, forceSafariVC: false);
+      }
     }
 
     Widget createDesciption(String text) {
