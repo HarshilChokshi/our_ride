@@ -83,6 +83,7 @@ class UserProfileState extends State<UserProfileScreen> {
       String lastName = data['lastName'].toString();
       bool isMale = data['isMale'];
       String driverLicenseNumber = data['driverLicenseNumber'].toString();
+      String city = data['city'].toString();
       int ridesGiven = data['ridesGiven'];
       int ridesTaken = data['ridesTaken'];
       String aboutMe = data['aboutMe'].toString();
@@ -96,6 +97,7 @@ class UserProfileState extends State<UserProfileScreen> {
         lastName,
         isMale,
         driverLicenseNumber,
+        city,
         calculatePoints(driverLicenseNumber != null, ridesGiven, ridesTaken),
         ridesGiven,
         ridesTaken,
@@ -151,6 +153,10 @@ class UserProfileState extends State<UserProfileScreen> {
           new Padding(padding: EdgeInsets.only(bottom: 3)),
           createText(userProfile.university),
           new Padding(padding: EdgeInsets.only(bottom: 30)),
+          createDesciption('City'),
+          new Padding(padding: EdgeInsets.only(bottom: 3)),
+          createText(userProfile.city),
+          new Padding(padding: EdgeInsets.only(bottom: 30)),
           createDesciption('Add reviews here...'),
         ],
       ),
@@ -190,9 +196,10 @@ class UserProfileState extends State<UserProfileScreen> {
   }
 
   Widget createNameText(String firstName, String lastName) {
-    return new Text(
-      firstName + ' ' + lastName,
-      style: new TextStyle(color: Colors.white),
+      return new Text(
+        firstName + ' ' + lastName[0] + '.',
+        style: new TextStyle(color: Colors.white),
+        maxLines: 1,
     );
   }
 

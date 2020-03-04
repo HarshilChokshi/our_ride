@@ -8,7 +8,7 @@ class UserProfile {
   bool isMale;
   String driverLicenseNumber;
 
-  String city = 'Waterloo';
+  String city;
   final String state = 'Ontario';
   int points;
   int ridesGiven;
@@ -26,6 +26,7 @@ class UserProfile {
     this.lastName = '';
     this.isMale = true;
     this.driverLicenseNumber = '';
+    this.city = '';
     this.points = 0;
     this.ridesGiven = 0;
     this.ridesTaken = 0;
@@ -43,6 +44,7 @@ class UserProfile {
     this.lastName,
     this.isMale,
     this.driverLicenseNumber,
+    this.city,
     this.points,
     this.ridesGiven,
     this.ridesTaken,
