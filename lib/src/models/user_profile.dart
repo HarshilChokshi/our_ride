@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:our_ride/src/models/review.dart';
 
 class UserProfile {
   String email;
@@ -18,6 +19,7 @@ class UserProfile {
   String university;
   Image profilePic;
   String facebookUserId;
+  List<Review> reviews;
 
   UserProfile() {
     this.email = '';
@@ -35,6 +37,7 @@ class UserProfile {
     this.university = '';
     this.profilePic = new Image.asset('assets/images/default-profile.png');
     this.facebookUserId = '';
+    this.reviews = [];
   }
 
   UserProfile.fromDetails(
@@ -53,5 +56,6 @@ class UserProfile {
     this.university,
     this.profilePic,
     this.facebookUserId,
+    this.reviews,
     );
 }

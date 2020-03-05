@@ -1,11 +1,16 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:our_ride/src/contants.dart';
+import 'package:our_ride/src/models/review.dart';
 import 'package:our_ride/src/models/user_profile.dart';
+import 'package:our_ride/src/screens/driver_reviews_screen.dart';
 import 'package:our_ride/src/screens/edit_profile_screen.dart';
 import 'package:our_ride/src/widgets/app_bottom_navigation_bar.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'dart:convert';
 
 class UserProfileScreen extends StatefulWidget {
   
@@ -90,6 +95,18 @@ class UserProfileState extends State<UserProfileScreen> {
       String program = data['program'].toString();
       String university = data['university'].toString();
       String facebookUserId = data['facebookUserId'];
+      int numberOfReviews = (data['reviews'] as List).length;
+      List<Review> reviewList = [];
+      int index = 0;
+      while(index < numberOfReviews) {
+        reviewList.add(
+          new Review(
+            data['reviews'][index]['rating'],
+            data['reviews'][index]['reviewer'],
+            data['reviews'][index]['reviewContent'])
+        );
+        index++;
+      }
       return Future.value(new UserProfile.fromDetails(
         email,
         password,
@@ -106,6 +123,7 @@ class UserProfileState extends State<UserProfileScreen> {
         university,
         null,
         facebookUserId,
+        reviewList,
       ));      
   }
 
@@ -157,7 +175,7 @@ class UserProfileState extends State<UserProfileScreen> {
           new Padding(padding: EdgeInsets.only(bottom: 3)),
           createText(userProfile.city),
           new Padding(padding: EdgeInsets.only(bottom: 30)),
-          createDesciption('Add reviews here...'),
+          createReviewsButton(),
         ],
       ),
     );
@@ -359,6 +377,25 @@ class UserProfileState extends State<UserProfileScreen> {
         style: new TextStyle(
           fontSize: 14.0
         ),
+      );
+    }
+
+    Widget createReviewsButton() {
+      return new Center(
+        child: FlatButton(
+          child: new Text(
+            'See Reviews',
+            style: new TextStyle(color: Colors.blue),
+          ),
+          onPressed: () {
+            Navigator.push(
+              context, 
+              CupertinoPageRoute(
+                builder: (context) => DriverReviewsScreen(userProfile.reviews, userProfile.firstName)
+            ));
+          },
+          color: Colors.transparent,
+        )
       );
     }
 }

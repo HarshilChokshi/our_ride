@@ -150,6 +150,7 @@ class UserInfoState extends State<UserInfoScreen> {
         "profilePic": "",
         "facebookUserId": userProfile.facebookUserId,
         "university": userProfile.university,
+        "reviews": userProfile.reviews,
       }
     );
   }
