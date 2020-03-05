@@ -2,16 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:our_ride/src/contants.dart';
 import 'package:our_ride/src/screens/driver_my_rideshares_screen.dart';
+import 'package:our_ride/src/screens/rider_my_rideshares_screen.dart';
 import 'package:our_ride/src/screens/user_profile_screen.dart';
 
 class AppBottomNavigationBar extends StatelessWidget {
   int page;
-  String driver_id;
+  String user_id;
   bool isRider;
   
   AppBottomNavigationBar(String driver_id, int page, bool isRider) {
     this.page = page;
-    this.driver_id = driver_id;
+    this.user_id = driver_id;
     this.isRider = isRider;
   }
   
@@ -34,7 +35,7 @@ class AppBottomNavigationBar extends StatelessWidget {
                 Navigator.pushReplacement(
                   context, 
                   new CupertinoPageRoute(
-                    builder: (context) => MyRideSharesDriversScreen(driver_id)
+                    builder: (context) => isRider ? MyRideSharesRidersScreen(user_id) : MyRideSharesDriversScreen(user_id)
                 ));
               },
               iconSize: 30.0,
@@ -46,7 +47,7 @@ class AppBottomNavigationBar extends StatelessWidget {
                 Navigator.pushReplacement(
                   context, 
                   new CupertinoPageRoute(
-                    builder: (context) => UserProfileScreen(driver_id)
+                    builder: (context) => UserProfileScreen(user_id, isRider)
                 ));
               },
               iconSize: 30.0,

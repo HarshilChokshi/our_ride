@@ -37,7 +37,7 @@ class MyRideSharesDriversState extends State<MyRideSharesDriversScreen> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      body: new RideSharesList(rideShareDataList, context, this),
+      body: new RideSharesList(rideShareDataList, context, this, null),
       appBar: new AppBar(
         leading: new Container(),
         backgroundColor: appThemeColor,

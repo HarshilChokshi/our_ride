@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:our_ride/src/models/user_profile.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:our_ride/src/screens/driver_my_rideshares_screen.dart';
+import 'package:our_ride/src/screens/rider_my_rideshares_screen.dart';
 import '../widgets/our_ride_title.dart';
 import '../contants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -109,11 +110,20 @@ class UserInfoState extends State<UserInfoScreen> {
           formKey.currentState.save();
           registerUser(userProfile).then((FirebaseUser user) {
             addUserToDB(user.uid);
-            Navigator.pushReplacement(
-              context, 
-              CupertinoPageRoute(
-                builder: (context) => MyRideSharesDriversScreen(user.uid)
-            )); 
+            if(userProfile.driverLicenseNumber.isNotEmpty) {
+              Navigator.pushReplacement(
+                context, 
+                CupertinoPageRoute(
+                  builder: (context) => MyRideSharesDriversScreen(user.uid)
+              ));               
+            } else {
+                Navigator.pushReplacement(
+                  context, 
+                  CupertinoPageRoute(
+                    builder: (context) => MyRideSharesRidersScreen(user.uid)
+                ));               
+            }
+
           });
 
         },

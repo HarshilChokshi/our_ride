@@ -15,20 +15,23 @@ import 'dart:convert';
 class UserProfileScreen extends StatefulWidget {
   
   String user_id;
+  bool isRider;
   
-  UserProfileScreen(String user_id) {
+  UserProfileScreen(String user_id, bool isRider) {
     this.user_id = user_id;
+    this.isRider = isRider;
   }
 
   @override
   State<StatefulWidget> createState() {
-    return new UserProfileState(user_id);
+    return new UserProfileState(user_id, isRider);
   }
 }
 
 class UserProfileState extends State<UserProfileScreen> {
   
   String user_id;
+  bool isRider;
   final databaseReference = FirebaseDatabase.instance.reference();
   UserProfile userProfile;
   
@@ -37,8 +40,9 @@ class UserProfileState extends State<UserProfileScreen> {
     super.initState();
   }
   
-  UserProfileState(String user_id) {
+  UserProfileState(String user_id, isRider) {
     this.user_id = user_id;
+    this.isRider = isRider;
   }
   
   @override
@@ -70,7 +74,7 @@ class UserProfileState extends State<UserProfileScreen> {
                   bottomComponent(),
                 ],
               ),
-              bottomNavigationBar: new AppBottomNavigationBar(user_id, 2, false),
+              bottomNavigationBar: new AppBottomNavigationBar(user_id, 2, isRider),
             );
         }
       },
@@ -95,7 +99,7 @@ class UserProfileState extends State<UserProfileScreen> {
       String program = data['program'].toString();
       String university = data['university'].toString();
       String facebookUserId = data['facebookUserId'];
-      int numberOfReviews = (data['reviews'] as List).length;
+      int numberOfReviews = data['reviews'] != null ? (data['reviews'] as List).length : 0;
       List<Review> reviewList = [];
       int index = 0;
       while(index < numberOfReviews) {
@@ -150,6 +154,7 @@ class UserProfileState extends State<UserProfileScreen> {
   }
 
   Widget bottomComponent() {
+    bool notNull(Object o) => o != null;
     return new Container(
       padding: new EdgeInsets.only(left: 10.0),
       child: new Column(
@@ -176,7 +181,7 @@ class UserProfileState extends State<UserProfileScreen> {
           createText(userProfile.city),
           new Padding(padding: EdgeInsets.only(bottom: 30)),
           createReviewsButton(),
-        ],
+        ].where(notNull).toList(),
       ),
     );
   }
@@ -319,7 +324,7 @@ class UserProfileState extends State<UserProfileScreen> {
           Navigator.pushReplacement(
             context, 
             new CupertinoPageRoute(
-              builder: (context) => EditProfileScreen(userProfile, user_id)
+              builder: (context) => EditProfileScreen(userProfile, user_id, isRider)
           ));
         },
         color: appThemeColor,
@@ -381,6 +386,9 @@ class UserProfileState extends State<UserProfileScreen> {
     }
 
     Widget createReviewsButton() {
+      if(isRider) {
+        return null;
+      }
       return new Center(
         child: FlatButton(
           child: new Text(
