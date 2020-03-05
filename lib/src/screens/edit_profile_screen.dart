@@ -8,13 +8,14 @@ import 'package:firebase_database/firebase_database.dart';
 class EditProfileScreen extends StatefulWidget {
   UserProfile userProfile;
   String userId;
+  bool isRider;
 
-  EditProfileScreen(this.userProfile, this.userId);
+  EditProfileScreen(this.userProfile, this.userId, this.isRider);
   
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
-    return EditProfileScreenState(userProfile, userId);
+    return EditProfileScreenState(userProfile, userId, isRider);
   }
 }
 
@@ -22,6 +23,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
   
   UserProfile userProfile;
   String userId;
+  bool isRider;
   final formKey = new GlobalKey<FormState>();
   final databaseReference = FirebaseDatabase.instance.reference();
 
@@ -31,7 +33,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
   String university;
   String city;
 
-  EditProfileScreenState(this.userProfile, this.userId);
+  EditProfileScreenState(this.userProfile, this.userId, this.isRider);
   
   @override
   Widget build(BuildContext context) {
@@ -201,7 +203,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
         Navigator.pushReplacement(
           context, 
           new CupertinoPageRoute(
-            builder: (context) => UserProfileScreen(userId)
+            builder: (context) => UserProfileScreen(userId, isRider)
         ));
       },
       color: appThemeColor,

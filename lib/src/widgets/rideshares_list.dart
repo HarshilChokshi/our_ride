@@ -5,15 +5,17 @@ import 'package:our_ride/src/models/rideshare_model.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:our_ride/src/screens/driver_my_rideshares_screen.dart';
+import 'package:our_ride/src/screens/rider_my_rideshares_screen.dart';
 
 class RideSharesList extends StatelessWidget {
   
   final List<Rideshare> rideShareDataList;
   BuildContext context;
   final databaseReference = Firestore.instance;
-  MyRideSharesDriversState parent;
+  MyRideSharesDriversState driverStateParent;
+  MyRideSharesRidersState riderStateParent;
 
-  RideSharesList(this.rideShareDataList, this.context, this.parent);
+  RideSharesList(this.rideShareDataList, this.context, this.driverStateParent, this.riderStateParent);
    
   @override
   Widget build(BuildContext context) {
@@ -58,9 +60,15 @@ class RideSharesList extends StatelessWidget {
       .collection('rideshares')
       .document(r.driverId + '-' + r.rideDate.toString() + '-' + r.rideTime.hour.toString() + ':' + r.rideTime.minute.toString())
       .delete();
-    this.parent.setState(() {
-      rideShareDataList.removeAt(index);
-    });
+    if(driverStateParent != null) {
+      this.driverStateParent.setState(() {
+        rideShareDataList.removeAt(index);
+      });
+    } else {
+        this.riderStateParent.setState(() {
+          rideShareDataList.removeAt(index);
+        });      
+    }
   }
 
   void showLoginErrorMessage(int index) {

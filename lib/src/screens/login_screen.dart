@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:our_ride/src/screens/create_ride_screen.dart';
-import 'package:our_ride/src/screens/rideshare_list_screen.dart';
+import 'package:our_ride/src/screens/rider_my_rideshares_screen.dart';
 import 'package:our_ride/src/screens/sign_up_screen.dart';
 import '../contants.dart';
 import '../widgets/our_ride_title.dart';
@@ -21,6 +20,7 @@ class LoginState extends State<LoginScreen> {
   final formKey = new GlobalKey<FormState>();
   bool keepUserSignedIn = false;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final databaseReference = FirebaseDatabase.instance.reference();
 
   String emailAddress;
   String password;
@@ -110,11 +110,7 @@ class LoginState extends State<LoginScreen> {
         formKey.currentState.save();
          _handleSignIn()
           .then((FirebaseUser user){
-            Navigator.pushReplacement(
-                context, 
-                CupertinoPageRoute(
-                  builder: (context) => MyRideSharesDriversScreen(user.uid)
-            ));           
+            directUser(user.uid);           
           })
           .catchError((e) => showLoginErrorMessage());
 
@@ -148,6 +144,27 @@ class LoginState extends State<LoginScreen> {
   Future<FirebaseUser> _handleSignIn() async {
     final FirebaseUser user = (await _auth.signInWithEmailAndPassword(email: emailAddress, password: password)).user;
     return user;
+  }
+
+  void directUser(String userId) async {
+    var data;
+    await databaseReference.child(userId).once().then((DataSnapshot snapshot) {
+      data = snapshot.value;
+    });
+
+    if(data['driverLicenseNumber'].toString().isNotEmpty) {
+      Navigator.pushReplacement(
+        context, 
+        CupertinoPageRoute(
+          builder: (context) => MyRideSharesDriversScreen(userId)
+      ));
+    } else {
+        Navigator.pushReplacement(
+          context, 
+          CupertinoPageRoute(
+            builder: (context) => MyRideSharesRidersScreen(userId)
+        ));
+    }
   }
 
 
