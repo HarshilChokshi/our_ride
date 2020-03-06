@@ -34,8 +34,8 @@ class CreateRideState extends State<CreateRideScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Car car = new Car();
-    rideshare = new Rideshare(driverId, car);
+    Car rideShareVehicle = new Car();
+    rideshare = new Rideshare(driverId, rideShareVehicle);
     return new Scaffold(
       backgroundColor: lightGreyColor,
       resizeToAvoidBottomInset: false,
@@ -85,7 +85,7 @@ class CreateRideState extends State<CreateRideScreen> {
 
     addRideShareToDB(rideshare);
 
-    Navigator.push(
+    Navigator.pushReplacement(
       context, 
       new CupertinoPageRoute(
         builder: (context) => RideShareCreatedScreen(driverId)
@@ -417,10 +417,20 @@ class CreateRideState extends State<CreateRideScreen> {
         ),
       cursorColor: Colors.grey,
       validator: (String value) {
-        
+        if(value.isEmpty) {
+          return 'Value cannot be empty';
+        }
       },
       onSaved: (String value) {
-        
+        if(carInfo == 'Make') {
+          rideshare.car.make = value;
+        } else if(carInfo == 'Model') {
+          rideshare.car.model = value;
+        } else if(carInfo == 'Year') {
+          rideshare.car.year = value;
+        } else if(carInfo == 'License Plate') {
+          rideshare.car.licensePlate = value;
+        }
       },
     );
   }

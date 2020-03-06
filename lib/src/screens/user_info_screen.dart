@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:our_ride/src/app.dart';
 import 'package:our_ride/src/models/user_profile.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:our_ride/src/screens/driver_my_rideshares_screen.dart';
@@ -38,6 +39,9 @@ class UserInfoState extends State<UserInfoScreen> {
         ),
       ),
       child: new Scaffold(
+        appBar: new AppBar(
+          backgroundColor: Colors.transparent,
+        ),
         backgroundColor: Colors.transparent,
         resizeToAvoidBottomPadding: false,
         body: new Container(

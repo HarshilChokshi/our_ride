@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:our_ride/src/contants.dart';
 import 'package:our_ride/src/models/user_profile.dart';
+import 'package:our_ride/src/screens/view_rideshare_details_screen.dart';
 import '../DAOs/UserProfileData.dart';
+import '../screens/user_profile_screen.dart';
+import 'package:flutter/cupertino.dart';
 
 class RideShareUsersList extends StatelessWidget {
   List<UserProfile> users;
+  ViewRideShareDetailsState parent;
 
-  RideShareUsersList(this.users);
+  RideShareUsersList(this.users, this.parent);
   
   @override
   Widget build(BuildContext context) {
@@ -35,6 +40,8 @@ class RideShareUsersList extends StatelessWidget {
           new Container(margin: EdgeInsets.only(right: 30)),
           createNameText(index),
           new Spacer(),
+          createViewProfileButton(index),
+          new Container(margin: EdgeInsets.only(right: 10)),
           createFacebookImage(index),
         ],
       ),
@@ -64,8 +71,28 @@ class RideShareUsersList extends StatelessWidget {
     return new Text(
       name,
       style: new TextStyle(
-        fontSize: 18.0,
+        fontSize: 16.0,
         color: Colors.grey,
+      ),
+    );
+  }
+
+  Widget createViewProfileButton(int index) {
+    return new FlatButton(
+      color: appThemeColor,
+      onPressed: () {
+        Navigator.push(
+          parent.context, 
+          new CupertinoPageRoute(
+            builder: (context) => UserProfileScreen(null, false, users[index], false)
+        ));
+      },
+      child: new Text(
+        'View Profile',
+        style: new TextStyle(
+          fontSize: 14.0,
+          color: Colors.white,
+        ),
       ),
     );
   }
@@ -73,8 +100,8 @@ class RideShareUsersList extends StatelessWidget {
   Widget createFacebookImage(int index) {
     return new Container(
       margin: EdgeInsets.only(bottom: 10),
-      width: 50,
-      height: 50,
+      width: 55,
+      height: 55,
       decoration: new BoxDecoration(
         color: const Color(0xff7c94b6),
         image: new DecorationImage(
