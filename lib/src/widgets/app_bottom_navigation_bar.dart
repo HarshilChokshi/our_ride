@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:our_ride/src/contants.dart';
 import 'package:our_ride/src/screens/driver_my_rideshares_screen.dart';
 import 'package:our_ride/src/screens/rider_my_rideshares_screen.dart';
+import 'package:our_ride/src/screens/rideshare_list_screen.dart';
 import 'package:our_ride/src/screens/user_profile_screen.dart';
 
 class AppBottomNavigationBar extends StatelessWidget {
@@ -28,7 +29,7 @@ class AppBottomNavigationBar extends StatelessWidget {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[           
-            createListButton(),
+            createListButton(context),
             new IconButton(
               icon: Icon(Icons.directions_car),
               onPressed: () {
@@ -59,11 +60,17 @@ class AppBottomNavigationBar extends StatelessWidget {
     );
   }
 
-  Widget createListButton() {
+  Widget createListButton(BuildContext context) {
     if(isRider) {
       return new IconButton(
         icon: Icon(Icons.list),
-        onPressed: () {},
+        onPressed: () {
+                Navigator.pushReplacement(
+                  context, 
+                  new CupertinoPageRoute(
+                    builder: (context) => RideshareListScreen(user_id)
+                ));
+              },
         iconSize: 30.0,
         color: page == 0 ? Colors.blue : Colors.black,
       );
