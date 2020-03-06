@@ -48,7 +48,7 @@ class RideSharesList extends StatelessWidget {
           color: Colors.red,
           icon: Icons.delete,
           onTap: () {
-            showLoginErrorMessage(index);
+            showDeleteRideShareMessage(index);
           },
         ),
       ],
@@ -61,24 +61,37 @@ class RideSharesList extends StatelessWidget {
       .collection('rideshares')
       .document(r.driverId + '-' + r.rideDate.toString() + '-' + r.rideTime.hour.toString() + ':' + r.rideTime.minute.toString())
       .delete();
-    if(driverStateParent != null) {
-      this.driverStateParent.setState(() {
-        rideShareDataList.removeAt(index);
-      });
-    } else {
-        this.riderStateParent.setState(() {
-          rideShareDataList.removeAt(index);
-        });      
-    }
+   
+    this.driverStateParent.setState(() {
+      rideShareDataList.removeAt(index);
+    });
   }
 
-  void showLoginErrorMessage(int index) {
+  void deleteRiderFromRideShare(int index) async {
+    Rideshare r = rideShareDataList[index];
+    r.riders.remove(this.riderStateParent.rider_id);
+    databaseReference
+        .collection('rideshares')
+        .document(r.driverId + '-' + r.rideDate.toString() + '-' + r.rideTime.hour.toString() + ':' + r.rideTime.minute.toString())
+        .updateData({
+          'riders': r.riders,
+        });
+    this.riderStateParent.setState(() {
+      rideShareDataList.removeAt(index);
+    });  
+  }
+
+  void showDeleteRideShareMessage(int index) {
+    String message = isRideShareBeingCancelledWithinDay(rideShareDataList[index].rideDate) ? 
+      'Are you sure you want to cancel? You will be charged ' + rideShareDataList[index].price.toString() +
+      ' dollars for cancelling within 24 hours.' : 
+      'You cancel this rideshare without being charged.';
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: new Text('Cancel Ride'),
-          content: new Text('Are you sure you want to cancel the ride? You will be charged'),
+          content: new Text(message),
           actions: <Widget>[
             new FlatButton(
               child: new Text('Close', style: new TextStyle(color: Colors.blue)),
@@ -89,7 +102,11 @@ class RideSharesList extends StatelessWidget {
             new FlatButton(
               child: new Text('Cancel rideshare', style: new TextStyle(color: Colors.red)),
               onPressed: () {
-                deleteRideShareRecord(index);
+                if(this.driverStateParent != null) {
+                  deleteRideShareRecord(index);
+                } else {
+                  deleteRiderFromRideShare(index);
+                }
                 Navigator.of(context).pop();
               },
             ),
@@ -97,6 +114,12 @@ class RideSharesList extends StatelessWidget {
         );
       }
     );
+  }
+
+  bool isRideShareBeingCancelledWithinDay(DateTime rideShareDate) {
+    DateTime currentDate = DateTime.now();
+    DateTime previousDay = rideShareDate.subtract(new Duration(hours: 24));
+    return !currentDate.isBefore(previousDay);
   }
 
   Widget createDateText(DateTime date) {

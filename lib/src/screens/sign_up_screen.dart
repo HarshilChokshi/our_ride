@@ -34,6 +34,9 @@ class SignUpState extends State<SignUpScreen> {
        ),
      ),
      child: new Scaffold(
+      appBar: new AppBar(
+        backgroundColor: Colors.transparent,
+      ),
       backgroundColor: Colors.transparent,
       resizeToAvoidBottomPadding: false,
       body: new Container(
@@ -267,7 +270,7 @@ class SignUpState extends State<SignUpScreen> {
           formKey.currentState.save();
           userProfile.isMale = dropDownValue == 'Male' ? true : false;
 
-          Navigator.pushReplacement(
+          Navigator.push(
               context, 
               CupertinoPageRoute(
                 builder: (context) => UserInfoScreen(userProfile)

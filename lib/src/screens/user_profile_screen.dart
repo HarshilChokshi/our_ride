@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:our_ride/src/app.dart';
 import 'package:our_ride/src/contants.dart';
 import 'package:our_ride/src/models/user_profile.dart';
 import 'package:our_ride/src/screens/driver_reviews_screen.dart';
@@ -12,15 +13,19 @@ class UserProfileScreen extends StatefulWidget {
   
   String user_id;
   bool isRider;
+  UserProfile userProfile;
+  bool isUsersProfile;
   
-  UserProfileScreen(String user_id, bool isRider) {
+  UserProfileScreen(String user_id, bool isRider, UserProfile userProfile, bool isUsersProfile) {
     this.user_id = user_id;
     this.isRider = isRider;
+    this.userProfile = userProfile;
+    this.isUsersProfile = isUsersProfile;
   }
 
   @override
   State<StatefulWidget> createState() {
-    return new UserProfileState(user_id, isRider);
+    return new UserProfileState(user_id, isRider, userProfile, isUsersProfile);
   }
 }
 
@@ -28,21 +33,24 @@ class UserProfileState extends State<UserProfileScreen> {
   
   String user_id;
   bool isRider;
-  final databaseReference = FirebaseDatabase.instance.reference();
   UserProfile userProfile;
+  bool isUsersProfile;
+
+   final databaseReference = FirebaseDatabase.instance.reference();
+
   
-  @override
-  void initState() {
-    super.initState();
-  }
-  
-  UserProfileState(String user_id, isRider) {
+  UserProfileState(String user_id, isRider, UserProfile userProfile, bool isUsersProfile) {
     this.user_id = user_id;
     this.isRider = isRider;
+    this.userProfile = userProfile;
+    this.isUsersProfile = isUsersProfile;
   }
   
   @override
   Widget build(BuildContext context) {
+    if(userProfile != null) {
+      return buildUserProfileScreen(context);
+    }
     return FutureBuilder<UserProfile>(
       future: UserProfileData.fetchUserProfileData(user_id),
       builder: (BuildContext context, AsyncSnapshot<UserProfile> snapshot) {
@@ -59,21 +67,34 @@ class UserProfileState extends State<UserProfileScreen> {
           );
         } else {
             userProfile = snapshot.data;
-            return new Scaffold(
-              backgroundColor: Colors.white,
-              resizeToAvoidBottomPadding: false,
-              body: new Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  topComponent(),
-                  new Container(margin: EdgeInsets.only(bottom: 10)),
-                  bottomComponent(),
-                ],
-              ),
-              bottomNavigationBar: new AppBottomNavigationBar(user_id, 2, isRider),
-            );
+            return buildUserProfileScreen(context);
         }
       },
+    );
+  }
+
+  Widget buildUserProfileScreen(BuildContext context) {
+    Widget topBar = isUsersProfile ? null : new AppBar(
+      backgroundColor: appThemeColor,
+      title: new Text(
+        userProfile.firstName + '\'s Profile',
+        style: new TextStyle(color: Colors.white, fontSize: 24),
+        ),
+      );
+    Widget bottomBar = isUsersProfile ? new AppBottomNavigationBar(user_id, 2, isRider) : null;
+    return new Scaffold(
+      backgroundColor: Colors.white,
+      resizeToAvoidBottomPadding: false,
+      body: new Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          topComponent(),
+          new Container(margin: EdgeInsets.only(bottom: 10)),
+          bottomComponent(),
+        ],
+      ),
+      appBar: topBar,
+      bottomNavigationBar: bottomBar,
     );
   }
 
@@ -181,6 +202,7 @@ class UserProfileState extends State<UserProfileScreen> {
 
 
   Widget createUserRideData() {
+    bool notNull(Object o) => o != null;
     return new Column(
       children: <Widget>[
         new Container(margin: EdgeInsets.only(top: 40)),
@@ -195,7 +217,7 @@ class UserProfileState extends State<UserProfileScreen> {
             createEditProfileButton(),
             new Container(margin: EdgeInsets.only(left: 5)),
             createViewFacebookProfileButton(),
-          ],
+          ].where(notNull).toList(),
         ),
         
       ],
@@ -261,6 +283,10 @@ class UserProfileState extends State<UserProfileScreen> {
     }
 
     Widget createEditProfileButton() {
+      if(!isUsersProfile) {
+        return null;
+      }
+
       return new FlatButton(
         child: new Text(
           'Edit Profile',

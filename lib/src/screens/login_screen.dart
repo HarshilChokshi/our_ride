@@ -211,7 +211,7 @@ class LoginState extends State<LoginScreen> {
               style: new TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
             ),
             onPressed: () {
-              Navigator.pushReplacement(
+              Navigator.push(
                 context, 
                 CupertinoPageRoute(
                   builder: (context) => SignUpScreen()

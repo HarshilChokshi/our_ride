@@ -33,6 +33,7 @@ class RideShareCreatedState extends State<RideShareCreatedScreen> {
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false,
       appBar: new AppBar(
+        leading: new Container(),
         backgroundColor: appThemeColor,
         title: new Text(
           'Rideshare Created',

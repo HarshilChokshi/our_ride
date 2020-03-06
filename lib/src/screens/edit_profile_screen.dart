@@ -27,12 +27,6 @@ class EditProfileScreenState extends State<EditProfileScreen> {
   final formKey = new GlobalKey<FormState>();
   final databaseReference = FirebaseDatabase.instance.reference();
 
-  String aboutme;
-  bool isMale;
-  String program;
-  String university;
-  String city;
-
   EditProfileScreenState(this.userProfile, this.userId, this.isRider);
   
   @override
@@ -203,7 +197,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
         Navigator.pushReplacement(
           context, 
           new CupertinoPageRoute(
-            builder: (context) => UserProfileScreen(userId, isRider)
+            builder: (context) => UserProfileScreen(userId, isRider, userProfile, true)
         ));
       },
       color: appThemeColor,
@@ -223,15 +217,15 @@ class EditProfileScreenState extends State<EditProfileScreen> {
         "password": userProfile.password,
         "firstName": userProfile.firstName,
         "lastName": userProfile.lastName,
-        "isMale": isMale,
+        "isMale": userProfile.isMale,
         "driverLicenseNumber": userProfile.driverLicenseNumber,
-        "city": city,
+        "city": userProfile.city,
         "state": userProfile.state,
         "ridesTaken": 0,
         "ridesGiven": 0,
-        "aboutMe": aboutme,
-        "program": program,
-        "university": university,
+        "aboutMe": userProfile.aboutMe,
+        "program": userProfile.program,
+        "university": userProfile.university,
         "profilePic": "",
         "facebookUserId": userProfile.facebookUserId,
       }
@@ -305,15 +299,15 @@ class EditProfileScreenState extends State<EditProfileScreen> {
       },
       onSaved: (String value) {
         if(textFieldNum == 0) {
-          aboutme = value;
+          userProfile.aboutMe = value;
         } else if(textFieldNum == 1) {
-          isMale = value == 'Male' ? true : false;
+          userProfile.isMale = value == 'Male' ? true : false;
         } else if(textFieldNum == 2) {
-          program = value;
+          userProfile.program = value;
         } else if(textFieldNum == 3) {
-          university = value;
+          userProfile.university = value;
         } else if(textFieldNum == 4) {
-          city = value;
+          userProfile.city = value;
         }
       },
     );

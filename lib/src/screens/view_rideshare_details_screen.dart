@@ -64,7 +64,7 @@ class ViewRideShareDetailsState extends State<ViewRideshareDetailsScreen> {
                     new Container(margin: EdgeInsets.only(bottom: 20)),
                     createTitleText('Riders and Drivers'),
                     new Container(margin: EdgeInsets.only(bottom: 20)),
-                    new SizedBox(height: 200.0, child: new RideShareUsersList(rideShareUsers)),
+                    new SizedBox(height: 200.0, child: new RideShareUsersList(rideShareUsers, this)),
                     new Container(margin: EdgeInsets.only(bottom: 40)),
                     createTitleText('Vehicle Details'),
                     new Container(margin: EdgeInsets.only(bottom: 20)),

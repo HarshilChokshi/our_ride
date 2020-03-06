@@ -63,7 +63,7 @@ class MyRideSharesDriversState extends State<MyRideSharesDriversScreen> {
   }
 
   void addRideShare() {
-    Navigator.pushReplacement(
+    Navigator.push(
       context, 
       new CupertinoPageRoute(
         builder: (context) => CreateRideScreen(driver_id)
