@@ -78,10 +78,10 @@ class MyRideSharesDriversState extends State<MyRideSharesDriversScreen> {
         snapShot.documents.forEach((f) {
           if(f.data['driverId'] == driver_id) {
             Car car = Car.fromCarDetails(
-              f.data['model'],
-              f.data['make'],
-              f.data['year'],
-              f.data['licensePlate'],
+              f.data['car']['model'],
+              f.data['car']['make'],
+              f.data['car']['year'],
+              f.data['car']['licensePlate'],
             );
             List<String> rideShareTime = f.data['rideTime'].split(':');
             List<String> riders = [];
