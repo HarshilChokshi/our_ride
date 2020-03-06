@@ -6,6 +6,8 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:our_ride/src/screens/driver_my_rideshares_screen.dart';
 import 'package:our_ride/src/screens/rider_my_rideshares_screen.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:our_ride/src/screens/view_rideshare_details_screen.dart';
 
 class RideSharesList extends StatelessWidget {
   
@@ -20,7 +22,6 @@ class RideSharesList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
    return new ListView.builder(
-     
      itemBuilder: buildCell,
      itemCount: rideShareDataList.length,
     );
@@ -194,7 +195,7 @@ class RideSharesList extends StatelessWidget {
     return new Row(
       children: <Widget>[
         new Container(margin: EdgeInsets.only(left: 5)),
-        createViewPassengersButton(),
+        createViewPassengersButton(index),
         new Container(margin: EdgeInsets.only(left: 30)),
         createPassengersIcon(),
         new Container(margin: EdgeInsets.only(left: 3)),
@@ -247,18 +248,26 @@ class RideSharesList extends StatelessWidget {
     );
   }
 
-  Widget createViewPassengersButton() {
+  Widget createViewPassengersButton(int index) {
     return new FlatButton(
       color: appThemeColor,
       child: new Text(
-        'View Passengers',
+        'View Details',
         style: new TextStyle(
           color: Colors.white,
-          fontSize: 10,
+          fontSize: 14,
         ),
       ),
       onPressed: () {
-
+        Navigator.push(
+          context, 
+          CupertinoPageRoute(
+            builder: (context) => ViewRideshareDetailsScreen(
+              rideShareDataList[index].driverId,
+              rideShareDataList[index].riders,
+              rideShareDataList[index].car,
+              )
+        ));
       }
     );
   }

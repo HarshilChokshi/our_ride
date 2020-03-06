@@ -1,16 +1,12 @@
-import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:our_ride/src/contants.dart';
-import 'package:our_ride/src/models/review.dart';
 import 'package:our_ride/src/models/user_profile.dart';
 import 'package:our_ride/src/screens/driver_reviews_screen.dart';
 import 'package:our_ride/src/screens/edit_profile_screen.dart';
 import 'package:our_ride/src/widgets/app_bottom_navigation_bar.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'dart:convert';
+import '../DAOs/UserProfileData.dart';
 
 class UserProfileScreen extends StatefulWidget {
   
@@ -48,7 +44,7 @@ class UserProfileState extends State<UserProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<UserProfile>(
-      future: fetchUserProfileData(),
+      future: UserProfileData.fetchUserProfileData(user_id),
       builder: (BuildContext context, AsyncSnapshot<UserProfile> snapshot) {
         if(snapshot.connectionState == ConnectionState.waiting) {
           return new Scaffold(
@@ -79,56 +75,6 @@ class UserProfileState extends State<UserProfileScreen> {
         }
       },
     );
-  }
-
-  Future<UserProfile> fetchUserProfileData() async {
-      var data;
-      await databaseReference.child(user_id).once().then((DataSnapshot snapshot) {
-        data = snapshot.value;
-      });
-      String email = data['email'].toString();
-      String password = data['password'].toString();
-      String firstName = data['firstName'].toString();
-      String lastName = data['lastName'].toString();
-      bool isMale = data['isMale'];
-      String driverLicenseNumber = data['driverLicenseNumber'].toString();
-      String city = data['city'].toString();
-      int ridesGiven = data['ridesGiven'];
-      int ridesTaken = data['ridesTaken'];
-      String aboutMe = data['aboutMe'].toString();
-      String program = data['program'].toString();
-      String university = data['university'].toString();
-      String facebookUserId = data['facebookUserId'];
-      int numberOfReviews = data['reviews'] != null ? (data['reviews'] as List).length : 0;
-      List<Review> reviewList = [];
-      int index = 0;
-      while(index < numberOfReviews) {
-        reviewList.add(
-          new Review(
-            data['reviews'][index]['rating'],
-            data['reviews'][index]['reviewer'],
-            data['reviews'][index]['reviewContent'])
-        );
-        index++;
-      }
-      return Future.value(new UserProfile.fromDetails(
-        email,
-        password,
-        firstName,
-        lastName,
-        isMale,
-        driverLicenseNumber,
-        city,
-        calculatePoints(driverLicenseNumber != null, ridesGiven, ridesTaken),
-        ridesGiven,
-        ridesTaken,
-        aboutMe,
-        program,
-        university,
-        null,
-        facebookUserId,
-        reviewList,
-      ));      
   }
 
   int calculatePoints(bool isDriver, int ridesGiven, int ridesTaken) {
@@ -342,7 +288,7 @@ class UserProfileState extends State<UserProfileScreen> {
           style: new TextStyle(color: Colors.white),
         ),
         onPressed: () { 
-           openFacebookProfile();
+           UserProfileData.openFacebookProfile(userProfile.facebookUserId);
         },
         color: Colors.blue,
         shape: RoundedRectangleBorder(
@@ -350,20 +296,6 @@ class UserProfileState extends State<UserProfileScreen> {
           side: BorderSide(color: Colors.blue)
         ),
       );     
-    }
-
-    void openFacebookProfile() async {
-      String fbProtocolUrl = 'fb://profile/' + userProfile.facebookUserId;
-      String fallbackUrl = 'https://www.facebook.com/profile?id=' + userProfile.facebookUserId;
-      try {
-        bool launched = await launch(fbProtocolUrl, forceSafariVC: false);
-        
-        if (!launched) {
-          await launch(fallbackUrl, forceSafariVC: false);
-        }
-      } catch (e) {
-        await launch(fallbackUrl, forceSafariVC: false);
-      }
     }
 
     Widget createDesciption(String text) {
