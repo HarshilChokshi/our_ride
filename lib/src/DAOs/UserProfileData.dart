@@ -1,3 +1,6 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
 import '../models/user_profile.dart';
 import '../models/review.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -37,6 +40,7 @@ class UserProfileData{
     String aboutMe = data['aboutMe'].toString();
     String program = data['program'].toString();
     String university = data['university'].toString();
+    String profilePic = data['profilePic'].toString();
     String facebookUserId = data['facebookUserId'];
     int numberOfReviews = data['reviews'] != null ? (data['reviews'] as List).length : 0;
     List<Review> reviewList = [];
@@ -64,7 +68,7 @@ class UserProfileData{
       aboutMe,
       program,
       university,
-      null,
+      profilePic,
       facebookUserId,
       reviewList,
     ));      
@@ -89,5 +93,5 @@ class UserProfileData{
     } catch (e) {
       await launch(fallbackUrl, forceSafariVC: false);
     }
-  }
+  } 
 }

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:our_ride/src/models/user_profile.dart';
 import 'package:our_ride/src/contants.dart';
@@ -75,13 +76,21 @@ class EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Widget createUserProfileImage() {
+    String path = userProfile.profilePic.toString() == 'Exists' ? 'assets/images/' +
+      userProfile.firstName + 
+      '_' +
+      userProfile.lastName +
+      '.png'
+      :
+      'assets/images/default-profile.png';
+
     return new Container(
       width: 100.0,
       height: 100.0,
       decoration: new BoxDecoration(
         color: const Color(0xff7c94b6),
         image: new DecorationImage(
-          image: new AssetImage('assets/images/default-profile.png'),
+          image: new AssetImage(path),
           fit: BoxFit.cover,
         ),
         borderRadius: new BorderRadius.all(new Radius.circular(50.0)),
@@ -89,6 +98,20 @@ class EditProfileScreenState extends State<EditProfileScreen> {
           color: Colors.white,
           width: 2.0,
         ),
+      ),
+      child: new FlatButton(
+        color: Color.fromARGB(100, 211, 211, 211),
+        onPressed: () {
+          
+        },
+        child: new Text(
+          'Upload Photo',
+          style: new TextStyle(
+            color: Colors.black,
+            fontSize: 8,
+            fontWeight: FontWeight.bold,
+          ),
+        )
       ),
     );
   }
@@ -226,7 +249,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
         "aboutMe": userProfile.aboutMe,
         "program": userProfile.program,
         "university": userProfile.university,
-        "profilePic": "",
+        "profilePic": userProfile.profilePic,
         "facebookUserId": userProfile.facebookUserId,
       }
     );
