@@ -167,13 +167,21 @@ class UserProfileState extends State<UserProfileScreen> {
   }
 
   Widget createUserProfileImage() {
+    String path = userProfile.profilePic.toString() == 'Exists' ? 'assets/images/' +
+      userProfile.firstName + 
+      '_' +
+      userProfile.lastName +
+      '.png'
+      :
+      'assets/images/default-profile.png';
+
     return new Container(
       width: 100.0,
       height: 100.0,
       decoration: new BoxDecoration(
         color: const Color(0xff7c94b6),
         image: new DecorationImage(
-          image: new AssetImage('assets/images/default-profile.png'),
+          image: new AssetImage(path),
           fit: BoxFit.cover,
         ),
         borderRadius: new BorderRadius.all(new Radius.circular(50.0)),
