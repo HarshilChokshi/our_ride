@@ -37,7 +37,7 @@ class _RideshareSearchFilterState extends State<RideshareSearchFilter>{
 }
 
 //composable widgets
-Widget _createLocationTextfield(String hintText) {
+Widget _createTextSearchField(String hintText, {dynamic prefix = Icons.search}) {
   return Container(
     height: 40,
     margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
@@ -51,6 +51,13 @@ Widget _createLocationTextfield(String hintText) {
       cursorColor: Colors.white,
       decoration: InputDecoration(
         // contentPadding: EdgeInsets.all(10),
+        prefixIcon: Padding(
+          padding: EdgeInsets.all(0.0),
+          child: Icon(
+            prefix,
+            color: Colors.white,
+          ), // icon is 48px widget.
+        ),
         hintText: hintText,
         hintStyle: TextStyle(fontSize: 14, color: Colors.white),
         errorStyle: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
@@ -62,6 +69,7 @@ Widget _createLocationTextfield(String hintText) {
   );
 }
 
+//custom collapsable sliver
 class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   _SliverAppBarDelegate({
     @required this.minHeight,
@@ -95,36 +103,38 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   }
 }
 
-
 class CollapsingFilter extends StatelessWidget {
   //generic makeHeader function
   SliverPersistentHeader makeHeader(String headerText) {
     return SliverPersistentHeader(
       pinned: true,
       delegate: new _SliverAppBarDelegate(
-        minHeight: 60.0,
+        minHeight: 100.0,
         maxHeight: 200.0,
         child: Container(
-            color: Colors.lightBlue, child: Center(child:
-                Text(headerText))),
+            color: Colors.lightBlue,
+            child: Center(child:
+                Text(headerText)
+          )),
       ),
     );
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return SliverPersistentHeader(
       pinned: true,
       delegate: _SliverAppBarDelegate(
-        minHeight: 60.0,
+        minHeight: 120.0,
         maxHeight: 200.0,
         child: Container(
             color: appThemeColor,
             child: Center(
               child: Column(
                 children: <Widget>[
-                    _createLocationTextfield('From'),
-                  _createLocationTextfield('To'),
+                  _createTextSearchField('From', prefix:Icons.edit_location),
+                  _createTextSearchField('To', prefix:Icons.edit_location),
+                  _createTextSearchField('Time', prefix:Icons.access_time),
                 ]
               )
             ),
