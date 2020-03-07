@@ -1,9 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'package:our_ride/src/contants.dart';
 import 'package:our_ride/src/widgets/app_bottom_navigation_bar.dart';
-import 'package:our_ride/src/widgets/listview_filter.dart';
+import 'package:our_ride/src/widgets/rideshare_search_filter.dart';
 
 class RideshareListScreen extends StatefulWidget {
   String rider_id;
@@ -29,7 +28,6 @@ class RideshareListState extends State<RideshareListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: appThemeColor,
         elevation: 0,
@@ -41,17 +39,25 @@ class RideshareListState extends State<RideshareListScreen> {
             ),
           ),
         ),
-      body: Container(
-          width: double.infinity,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              ListViewFilter()
-            ],
-          ),
+      body: CustomScrollView(
+          slivers: <Widget>[
+            RideshareSearchFilter(),
+            SliverFixedExtentList(
+              itemExtent: 150.0,
+              delegate: SliverChildListDelegate(
+                [
+                  Container(color: Colors.red),
+                  Container(color: Colors.purple),
+                  Container(color: Colors.green),
+                  Container(color: Colors.orange),
+                  Container(color: Colors.yellow),
+                ],
+              ),
+            ),
+          ],
         ),
       bottomNavigationBar: AppBottomNavigationBar(rider_id, 0, true),
     );
   }
 }
+
