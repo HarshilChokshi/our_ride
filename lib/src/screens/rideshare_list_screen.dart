@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:our_ride/src/contants.dart';
 import 'package:our_ride/src/widgets/app_bottom_navigation_bar.dart';
-
+import 'package:our_ride/src/widgets/listview_filter.dart';
 
 class RideshareListScreen extends StatefulWidget {
   String rider_id;
@@ -27,30 +27,31 @@ class RideshareListState extends State<RideshareListScreen> {
   
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    return Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false,
-      appBar: new AppBar(
+      appBar: AppBar(
         backgroundColor: appThemeColor,
-        title: new Text(
+        elevation: 0,
+        title: Text(
           'Rideshares',
-          style: new TextStyle(
+          style: TextStyle(
               fontSize: 24.0,
               color: Colors.white,
             ),
           ),
         ),
-      body: new Container(
-          height: double.infinity,
+      body: Container(
           width: double.infinity,
-          child: new Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
+              ListViewFilter()
             ],
           ),
         ),
-      bottomNavigationBar: new AppBottomNavigationBar(rider_id, 0, true),
+      bottomNavigationBar: AppBottomNavigationBar(rider_id, 0, true),
     );
   }
 }
