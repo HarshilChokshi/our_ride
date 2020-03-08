@@ -4,6 +4,7 @@ import 'package:our_ride/src/contants.dart';
 import 'package:our_ride/src/screens/driver_my_rideshares_screen.dart';
 import 'package:our_ride/src/screens/driver_ride_requests_screen.dart';
 import 'package:our_ride/src/screens/rider_my_rideshares_screen.dart';
+import 'package:our_ride/src/screens/rider_rideshare_requests_screen.dart';
 import 'package:our_ride/src/screens/rideshare_list_screen.dart';
 import 'package:our_ride/src/screens/user_profile_screen.dart';
 
@@ -61,7 +62,7 @@ class AppBottomNavigationBar extends StatelessWidget {
                 Navigator.pushReplacement(
                   context, 
                   new CupertinoPageRoute(
-                    builder: (context) => DriverRideRequestsScreen(user_id)
+                    builder: (context) =>  isRider ? RiderRideshareRequestScreen(user_id) : DriverRideRequestsScreen(user_id)
                 ));
               },
               iconSize: 30.0,

@@ -30,7 +30,7 @@ class DriverRideRequestsState extends State<DriverRideRequestsScreen> {
     return FutureBuilder(
       future: fetchRideRequests(),
       builder: (BuildContext context, AsyncSnapshot<List<RideRequest>> snapshot) {
-        if(snapshot.connectionState != ConnectionState.done) {
+        if(snapshot.connectionState == ConnectionState.waiting) {
           return new Scaffold(
             backgroundColor: Colors.white,
             body: new Center(
@@ -42,7 +42,7 @@ class DriverRideRequestsState extends State<DriverRideRequestsScreen> {
             ) 
           );
         } else {
-          rideRequests = snapshot.data;
+          rideRequests = snapshot.data == null ? [] : snapshot.data;
           return new Scaffold(
             appBar: new AppBar(
               leading: new Container(),

@@ -79,7 +79,7 @@ class MyRideSharesRidersState extends State<MyRideSharesRidersScreen> {
         snapShot.documents.forEach((f) {
           List<dynamic> riders = f.data['riders'] as List;
           for(int i = 0; i < riders.length; i++) {
-            ;String rider = riders[i].toString();
+            String rider = riders[i].toString();
             if(rider == rider_id) {
               Car car = Car.fromCarDetails(
                 f.data['car']['model'],
