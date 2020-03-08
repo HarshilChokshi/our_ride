@@ -1,9 +1,11 @@
 import 'dart:math' as math;
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:our_ride/src/contants.dart';
+import 'package:our_ride/src/widgets/TF_autocomplete.dart';
 
-typedef void onChanged(bool val);
 
 class RideshareSearchFilter extends StatefulWidget{
   RideshareSearchFilter({Key key}) : super(key: key);
@@ -76,6 +78,26 @@ Widget _createTextSearchField(String hintText, {dynamic prefix = Icons.search}) 
   );
 }
 
+Widget _createSubmitButton() {
+  return Container(
+    height: 40,
+    width: double.infinity,
+    margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
+    child:  RaisedButton(
+      child: new Text(
+        'Seach Rideshares',
+        style: new TextStyle(color: Colors.white),
+      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+      onPressed: () {
+        
+      },
+      elevation: 0,
+      color: Color.fromRGBO(61, 191, 165, 100),
+      )
+  );
+  }
+
 Widget _createToggleWithDescription(String description, bool isToggled, Function _onChanged, {dynamic prefix = Icons.search}) {
   return Container(
     height: 40,
@@ -132,6 +154,10 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
 
 class CollapsingFilter extends StatelessWidget {
   CollapsingFilter({Key key, this.genderValue, this.onGenderToggle}) : super(key: key);
+  GlobalKey<FormState> testFormKey = GlobalKey<FormState>();
+  TextEditingController from = TextEditingController();
+  TextEditingController to = TextEditingController();
+
   bool genderValue;
   final Function onGenderToggle;
 
@@ -142,20 +168,102 @@ class CollapsingFilter extends StatelessWidget {
       delegate: _SliverAppBarDelegate(
         minHeight: 120.0,
         maxHeight: 200.0,
+        // minHeight: 200.0,
+        // maxHeight: 300.0,
         child: Container(
             color: appThemeColor,
             child: Center(
-              child: Column(
+              child: Form(
+                key: this.testFormKey,
+                child: Column(
                 children: <Widget>[
-                  _createTextSearchField('From', prefix:Icons.edit_location),
-                  _createTextSearchField('To', prefix:Icons.edit_location),
-                  _createTextSearchField('Time', prefix:Icons.access_time),
-                  _createToggleWithDescription("Same Gender Only", this.genderValue, this.onGenderToggle, prefix:Icons.person)
+                  TFWithAutoComplete(
+                    typeAheadController: from,
+                    hintText:'From',
+                    prefix:Icons.edit_location,
+                    suggestionsCallback: (prefixSearch) async { //this should be async
+                      return await fetchLocationSuggestions(prefixSearch);
+                    },
+                    itemBuilder: (context, suggestion) {
+                      return Container(
+                            // decoration: BoxDecoration(color: appThemeColor),
+                            child:  ListTile(
+                                leading: Icon(Icons.location_searching),
+                                title: Text(suggestion['description']),
+                                // subtitle: Text('\$${suggestion['price']}'),
+                      ),
+                          );
+                    },
+                    onSuggestionsSelected: (suggestion) {
+                      from.text = suggestion['description'];
+                      // Navigator.of(context).push(MaterialPageRoute(
+                      //   builder: (context) => ProductPage(product: suggestion)
+                      // ));
+                    },
+                  ),
+                  TFWithAutoComplete(
+                    typeAheadController: to,
+                    hintText:'To',
+                    prefix:Icons.edit_location,
+                    suggestionsCallback: (prefixSearch) async { //this should be async
+                      return await fetchLocationSuggestions(prefixSearch);
+                    },
+                    itemBuilder: (context, suggestion) {
+                      return Container(
+                            // decoration: BoxDecoration(color: appThemeColor),
+                            child:  ListTile(
+                                leading: Icon(Icons.location_searching),
+                                title: Text(suggestion['description']),
+                                // subtitle: Text('\$${suggestion['price']}'),
+                      ),
+                          );
+                    },
+                    onSuggestionsSelected: (suggestion) {
+                      to.text = suggestion['description'];
+                      // Navigator.of(context).push(MaterialPageRoute(
+                      //   builder: (context) => ProductPage(product: suggestion)
+                      // ));
+                    },
+                  ),
+                  // _createTextSearchField('To', prefix:Icons.edit_location),
+                  // _createTextSearchField('Time', prefix:Icons.access_time),
+                  _createToggleWithDescription("Same Gender Only", this.genderValue, this.onGenderToggle, prefix:Icons.person),
+                  _createSubmitButton(),
                 ]
               )
+              ),
             ),
         ),
       ) ,
     );
   }
+}
+
+//async call to google maps api
+Future<List> fetchLocationSuggestions(String prefixText) async{
+  const kGoogleAPIKey = "AIzaSyCoasYE-PQfb6PBIVR8d4M9vxx53pNiNos";
+  String vettedPrefix = prefixText.trim().replaceAll(" ", "+");
+
+  const String base = "https://maps.googleapis.com/maps/api/place/autocomplete/json?";
+  String params = "input=$vettedPrefix&key=$kGoogleAPIKey&language=en";
+  final resp = await http.get(base+params);
+  
+  if (resp.statusCode == 200) {
+    return loadSuggestions(json.decode(resp.body));
+  } else {
+    return [];
+  }
+}
+
+List<Map> loadSuggestions(dynamic results){
+  List<Map> suggestions = new List<Map>();
+  int suggestionInt = 10;
+  for(var prediction in results['predictions']){
+    suggestions.add({
+      'description':prediction['description'],
+      'id':prediction['id'],
+    });
+    if(--suggestionInt == 0) break;
+  }
+  return suggestions;
 }
