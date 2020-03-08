@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:our_ride/src/contants.dart';
 import 'package:our_ride/src/widgets/TF_with_floatinglist.dart';
+import 'package:our_ride/src/widgets/TF_autocomplete.dart';
 
 
 class RideshareSearchFilter extends StatefulWidget{
@@ -133,6 +134,9 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
 class CollapsingFilter extends StatelessWidget {
   CollapsingFilter({Key key, this.genderValue, this.onGenderToggle}) : super(key: key);
   GlobalKey<FormState> testFormKey = GlobalKey<FormState>();
+  TextEditingController from = TextEditingController();
+  TextEditingController to = TextEditingController();
+
   bool genderValue;
   final Function onGenderToggle;
 
@@ -152,9 +156,32 @@ class CollapsingFilter extends StatelessWidget {
                 key: this.testFormKey,
                 child: Column(
                 children: <Widget>[
-                  TFWithFloatingList(hintText:'From', prefix:Icons.edit_location),
-                  TFWithFloatingList(hintText:'To', prefix:Icons.edit_location),
-                  TFWithFloatingList(hintText:'Time', prefix:Icons.access_time),
+                  TFWithAutoComplete(
+                    typeAheadController: from,
+                    hintText:'From',
+                    prefix:Icons.edit_location,
+                    suggestionsCallback: (pattern)  { //this should be async
+                      var item = {'name': "item 1", "price": "10"};
+                      return [item, item];
+                    },
+                    itemBuilder: (context, suggestion) {
+                      return Container(
+                            // decoration: BoxDecoration(color: appThemeColor),
+                            child:  ListTile(
+                                leading: Icon(Icons.location_searching),
+                                title: Text(suggestion['name']),
+                                subtitle: Text('\$${suggestion['price']}'),
+                      ),
+                          );
+                    },
+                    onSuggestionsSelected: (suggestion) {
+                      from.text = suggestion['name'];
+                      // Navigator.of(context).push(MaterialPageRoute(
+                      //   builder: (context) => ProductPage(product: suggestion)
+                      // ));
+                    },
+                  ),
+                  // TFWithFloatingList(hintText:'Time', prefix:Icons.access_time),
                   // _createTextSearchField('To', prefix:Icons.edit_location),
                   // _createTextSearchField('Time', prefix:Icons.access_time),
                   _createToggleWithDescription("Same Gender Only", this.genderValue, this.onGenderToggle, prefix:Icons.person)
