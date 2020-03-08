@@ -45,40 +45,6 @@ class RideshareListState extends State<RideshareListScreen> {
             ),
           ),
         ),
-        // body: TypeAheadField(
-        //   textFieldConfiguration: TextFieldConfiguration(
-        //     autofocus: true,
-        //     style: DefaultTextStyle.of(context).style.copyWith(
-        //       fontStyle: FontStyle.italic
-        //     ),
-        //     decoration: InputDecoration(
-        //       border: OutlineInputBorder()
-        //     )
-        //   ),
-        //   suggestionsCallback: (pattern)  {
-        //     var item = {'name': "item 1", "price": "10"};
-        //     return [item];
-        //   },
-        //   itemBuilder: (context, suggestion) {
-        //     return ListTile(
-        //       leading: Icon(Icons.shopping_cart),
-        //       title: Text(suggestion['name']),
-        //       subtitle: Text('\$${suggestion['price']}'),
-        //     );
-        //   },
-        //   onSuggestionSelected: (suggestion) {
-        //     // Navigator.of(context).push(MaterialPageRoute(
-        //     //   builder: (context) => ProductPage(product: suggestion)
-        //     // ));
-        //   },
-        // ),
-        // body: TFWithFloatingList(hintText:'From', prefix:Icons.edit_location),
-        
-      // body: Form(
-      //           key: this.testFormKey,
-      //           child:
-      //           TFWithFloatingList(hintText:'From', prefix:Icons.edit_location),
-      //       ),
       body: CustomScrollView(
           slivers: <Widget>[
             RideshareSearchFilter(),

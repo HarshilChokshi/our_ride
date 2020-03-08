@@ -78,6 +78,26 @@ Widget _createTextSearchField(String hintText, {dynamic prefix = Icons.search}) 
   );
 }
 
+Widget _createSubmitButton() {
+  return Container(
+    height: 40,
+    width: double.infinity,
+    margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
+    child:  RaisedButton(
+      child: new Text(
+        'Seach Rideshares',
+        style: new TextStyle(color: Colors.white),
+      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+      onPressed: () {
+        
+      },
+      elevation: 0,
+      color: Color.fromRGBO(61, 191, 165, 100),
+      )
+  );
+  }
+
 Widget _createToggleWithDescription(String description, bool isToggled, Function _onChanged, {dynamic prefix = Icons.search}) {
   return Container(
     height: 40,
@@ -181,10 +201,34 @@ class CollapsingFilter extends StatelessWidget {
                       // ));
                     },
                   ),
-                  // TFWithFloatingList(hintText:'Time', prefix:Icons.access_time),
+                  TFWithAutoComplete(
+                    typeAheadController: to,
+                    hintText:'To',
+                    prefix:Icons.edit_location,
+                    suggestionsCallback: (prefixSearch) async { //this should be async
+                      return await fetchLocationSuggestions(prefixSearch);
+                    },
+                    itemBuilder: (context, suggestion) {
+                      return Container(
+                            // decoration: BoxDecoration(color: appThemeColor),
+                            child:  ListTile(
+                                leading: Icon(Icons.location_searching),
+                                title: Text(suggestion['description']),
+                                // subtitle: Text('\$${suggestion['price']}'),
+                      ),
+                          );
+                    },
+                    onSuggestionsSelected: (suggestion) {
+                      to.text = suggestion['description'];
+                      // Navigator.of(context).push(MaterialPageRoute(
+                      //   builder: (context) => ProductPage(product: suggestion)
+                      // ));
+                    },
+                  ),
                   // _createTextSearchField('To', prefix:Icons.edit_location),
                   // _createTextSearchField('Time', prefix:Icons.access_time),
-                  _createToggleWithDescription("Same Gender Only", this.genderValue, this.onGenderToggle, prefix:Icons.person)
+                  _createToggleWithDescription("Same Gender Only", this.genderValue, this.onGenderToggle, prefix:Icons.person),
+                  _createSubmitButton(),
                 ]
               )
               ),
