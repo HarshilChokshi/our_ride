@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:our_ride/src/app.dart';
+import 'package:flutter/services.dart';
 import 'package:our_ride/src/models/user_profile.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:our_ride/src/screens/driver_my_rideshares_screen.dart';
@@ -93,7 +93,6 @@ class UserInfoState extends State<UserInfoScreen> {
         return null;
       },
     );
-
   }
 
   Widget createSubmitButton() {
@@ -113,6 +112,9 @@ class UserInfoState extends State<UserInfoScreen> {
 
           formKey.currentState.save();
           registerUser(userProfile).then((FirebaseUser user) {
+            if(user == null)
+              return;
+
             addUserToDB(user.uid);
             if(userProfile.driverLicenseNumber.isNotEmpty) {
               Navigator.pushReplacement(
@@ -127,9 +129,7 @@ class UserInfoState extends State<UserInfoScreen> {
                     builder: (context) => MyRideSharesRidersScreen(user.uid)
                 ));               
             }
-
           });
-
         },
         color: appThemeColor,
       )
@@ -138,12 +138,40 @@ class UserInfoState extends State<UserInfoScreen> {
   }
 
   Future<FirebaseUser> registerUser(UserProfile userProfile) async {
-    final FirebaseUser user = (await _auth.createUserWithEmailAndPassword(
-      email: userProfile.email,
-      password: userProfile.password,
-    )).user;
-    return user;
+    try {
+      final FirebaseUser user = (await _auth.createUserWithEmailAndPassword(
+        email: userProfile.email,
+        password: userProfile.password,
+      )).user;
+      return user;
+    }  catch(signUpError) {
+        if(signUpError is PlatformException) {
+          if(signUpError.code == 'ERROR_EMAIL_ALREADY_IN_USE') {
+            showEmailExistsAlert();
+          }
+        }
+    }
+    return null;
+  }
 
+  void showEmailExistsAlert() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text('Facebook Account Linking'),
+          content: new Text('A user with this email has already been registered.'),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text('Close', style: new TextStyle(color: Colors.red)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      }
+    );
   }
 
   void addUserToDB(String userId) async {
@@ -165,6 +193,7 @@ class UserInfoState extends State<UserInfoScreen> {
         "facebookUserId": userProfile.facebookUserId,
         "university": userProfile.university,
         "reviews": userProfile.reviews,
+        "paymentMethod": userProfile.paymentMethod.toJson(),
       }
     );
   }

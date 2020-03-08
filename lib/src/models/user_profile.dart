@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:our_ride/src/models/payment_method.dart';
 import 'package:our_ride/src/models/review.dart';
 
 class UserProfile {
@@ -20,6 +21,7 @@ class UserProfile {
   String profilePic;
   String facebookUserId;
   List<Review> reviews;
+  PaymentMethod paymentMethod;
 
   UserProfile() {
     this.email = '';
@@ -38,6 +40,7 @@ class UserProfile {
     this.profilePic = '';
     this.facebookUserId = '';
     this.reviews = [];
+    this.paymentMethod = new PaymentMethod();
   }
 
   UserProfile.fromDetails(
@@ -57,5 +60,6 @@ class UserProfile {
     this.profilePic,
     this.facebookUserId,
     this.reviews,
-    );
+    this.paymentMethod
+  );
 }

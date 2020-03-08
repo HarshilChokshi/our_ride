@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:our_ride/src/models/payment_method.dart';
 
 import '../models/user_profile.dart';
 import '../models/review.dart';
@@ -54,6 +55,13 @@ class UserProfileData{
       );
       index++;
     }
+    PaymentMethod paymentMethod = PaymentMethod.fromDetails(
+      data['paymentMethod']['cardHolderName'],
+      data['paymentMethod']['cardNumber'],
+      data['paymentMethod']['expireDate'],
+      data['paymentMethod']['cvv']
+    );
+
     return Future.value(new UserProfile.fromDetails(
       email,
       password,
@@ -71,6 +79,7 @@ class UserProfileData{
       profilePic,
       facebookUserId,
       reviewList,
+      paymentMethod,
     ));      
   }
 
