@@ -31,34 +31,52 @@ class MyRideSharesDriversState extends State<MyRideSharesDriversScreen> {
   
   MyRideSharesDriversState(String driver_id) {
     this.driver_id = driver_id;
-    fetchRideShares();
   }
   
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      body: new RideSharesList(rideShareDataList, context, this, null),
-      appBar: new AppBar(
-        leading: new Container(),
-        backgroundColor: appThemeColor,
-        title: new Text(
-          'My Rideshares',
-          style: new TextStyle(
-            fontSize: 24.0,
-            color: Colors.white,
-          ),
-        ),
-        actions: <Widget>[
-          new FlatButton(
-            onPressed: addRideShare,
-            child: new Icon(
-              Icons.add,
-              color: Colors.white,
-            ),
-          )
-        ],
-      ),
-      bottomNavigationBar: new AppBottomNavigationBar(driver_id, 1, false),
+    return FutureBuilder<List<Rideshare>> (
+      future: fetchRideShares(),
+      builder: (BuildContext context, AsyncSnapshot<List<Rideshare>> snapshot) {
+        if(snapshot.connectionState == ConnectionState.waiting) {
+          return new Scaffold(
+            backgroundColor: Colors.white,
+            body: new Center(
+              child: Container(
+                child: new Text('Loading rideshare data...', style: (
+                  new TextStyle(color: Colors.grey, fontSize: 20.0)
+                ),),
+              ),
+            ) 
+          );
+        } else {
+            rideShareDataList = snapshot.data;
+            return new Scaffold(
+              body: new RideSharesList(rideShareDataList, context, this, null),
+              appBar: new AppBar(
+                leading: new Container(),
+                backgroundColor: appThemeColor,
+                title: new Text(
+                  'My Rideshares',
+                  style: new TextStyle(
+                    fontSize: 24.0,
+                    color: Colors.white,
+                  ),
+                ),
+                actions: <Widget>[
+                  new FlatButton(
+                    onPressed: addRideShare,
+                    child: new Icon(
+                      Icons.add,
+                      color: Colors.white,
+                    ),
+                  )
+                ],
+              ),
+              bottomNavigationBar: new AppBottomNavigationBar(driver_id, 1, false),
+            );
+        }
+      }
     );
   }
 
@@ -70,8 +88,9 @@ class MyRideSharesDriversState extends State<MyRideSharesDriversScreen> {
       ));
   }
 
-  void fetchRideShares() async {
-    databaseReference
+  Future<List<Rideshare>> fetchRideShares() async {
+    List<Rideshare> driverRideShares = [];
+    await databaseReference
       .collection('rideshares')
       .getDocuments()
       .then((QuerySnapshot snapShot) {
@@ -102,12 +121,11 @@ class MyRideSharesDriversState extends State<MyRideSharesDriversScreen> {
               car,
               riders,
             );
-            
-            setState(() {
-              rideShareDataList.add(driverRideShare);
-            });
+
+           driverRideShares.add(driverRideShare);
           }
         });
       });
+      return Future.value(driverRideShares);
   }
 }

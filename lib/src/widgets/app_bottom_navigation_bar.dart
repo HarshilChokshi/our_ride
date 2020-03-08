@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:our_ride/src/contants.dart';
 import 'package:our_ride/src/screens/driver_my_rideshares_screen.dart';
+import 'package:our_ride/src/screens/driver_ride_requests_screen.dart';
 import 'package:our_ride/src/screens/rider_my_rideshares_screen.dart';
 import 'package:our_ride/src/screens/rideshare_list_screen.dart';
 import 'package:our_ride/src/screens/user_profile_screen.dart';
@@ -53,6 +54,18 @@ class AppBottomNavigationBar extends StatelessWidget {
               },
               iconSize: 30.0,
               color: page == 2 ? Colors.blue : Colors.black,
+            ), 
+            new IconButton(
+              icon: Icon(Icons.input),
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context, 
+                  new CupertinoPageRoute(
+                    builder: (context) => DriverRideRequestsScreen(user_id)
+                ));
+              },
+              iconSize: 30.0,
+              color: page == 3 ? Colors.blue : Colors.black,
             ), 
           ].where(notNull).toList(),
         ),

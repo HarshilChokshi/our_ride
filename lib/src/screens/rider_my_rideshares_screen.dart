@@ -30,37 +30,56 @@ class MyRideSharesRidersState extends State<MyRideSharesRidersScreen> {
   
   MyRideSharesRidersState(String rider_id) {
     this.rider_id = rider_id;
-    fetchRideShares();
   }
   
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      body: new RideSharesList(rideShareDataList, context, null, this),
-      appBar: new AppBar(
-        leading: new Container(),
-        backgroundColor: appThemeColor,
-        title: new Text(
-          'My Rideshares',
-          style: new TextStyle(
-            fontSize: 24.0,
-            color: Colors.white,
-          ),
-        ),
-      ),
-      bottomNavigationBar: new AppBottomNavigationBar(rider_id, 1, true),
+    return FutureBuilder(
+      future: fetchRideShares(),
+      builder: (BuildContext context, AsyncSnapshot<List<Rideshare>> snapshot) {
+        if(snapshot.connectionState == ConnectionState.waiting) {
+          return new Scaffold(
+            backgroundColor: Colors.white,
+            body: new Center(
+              child: Container(
+                child: new Text('Loading rideshare data...', style: (
+                  new TextStyle(color: Colors.grey, fontSize: 20.0)
+                ),),
+              ),
+            ) 
+          );
+        } else {
+          rideShareDataList = snapshot.data;
+          return new Scaffold(
+            body: new RideSharesList(rideShareDataList, context, null, this),
+            appBar: new AppBar(
+              leading: new Container(),
+              backgroundColor: appThemeColor,
+              title: new Text(
+                'My Rideshares',
+                style: new TextStyle(
+                  fontSize: 24.0,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            bottomNavigationBar: new AppBottomNavigationBar(rider_id, 1, true),
+          );
+        }
+      }
     );
   }
 
-  void fetchRideShares() async {
-    databaseReference
+  Future<List<Rideshare>> fetchRideShares() async {
+    List<Rideshare> riderRideshares = [];
+    await databaseReference
       .collection('rideshares')
       .getDocuments()
       .then((QuerySnapshot snapShot) {
         snapShot.documents.forEach((f) {
           List<dynamic> riders = f.data['riders'] as List;
           for(int i = 0; i < riders.length; i++) {
-            String rider = riders[i].toString();
+            ;String rider = riders[i].toString();
             if(rider == rider_id) {
               Car car = Car.fromCarDetails(
                 f.data['car']['model'],
@@ -88,13 +107,13 @@ class MyRideSharesRidersState extends State<MyRideSharesRidersScreen> {
                 riders,
               );
               
-              setState(() {
-                rideShareDataList.add(riderRideShare);
-              });
+              riderRideshares.add(riderRideShare);
               break;
             }
           }
         });
       });
+
+      return Future.value(riderRideshares);
   }
 }
