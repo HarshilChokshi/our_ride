@@ -172,7 +172,7 @@ class CollapsingFilter extends StatelessWidget {
       pinned: true,
       delegate: _SliverAppBarDelegate(
         minHeight: 120.0,
-        maxHeight: 325.0,
+        maxHeight: 260.0,
         // minHeight: 200.0,
         // maxHeight: 300.0,
         child: Container(

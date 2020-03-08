@@ -7,8 +7,8 @@ class DateTimePicker extends StatefulWidget {
 }
 
 class _DateTimePickerState extends State<DateTimePicker> {
-  String _date = "Not set";
-  String _time = "Not set";
+  String _date = "Date";
+  String _time = "Time";
 
   @override
   void initState() {
