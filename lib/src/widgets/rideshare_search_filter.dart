@@ -2,8 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:our_ride/src/contants.dart';
+import 'package:our_ride/src/widgets/TF_with_floatinglist.dart';
 
-typedef void onChanged(bool val);
 
 class RideshareSearchFilter extends StatefulWidget{
   RideshareSearchFilter({Key key}) : super(key: key);
@@ -132,6 +132,7 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
 
 class CollapsingFilter extends StatelessWidget {
   CollapsingFilter({Key key, this.genderValue, this.onGenderToggle}) : super(key: key);
+  GlobalKey<FormState> testFormKey = GlobalKey<FormState>();
   bool genderValue;
   final Function onGenderToggle;
 
@@ -142,17 +143,24 @@ class CollapsingFilter extends StatelessWidget {
       delegate: _SliverAppBarDelegate(
         minHeight: 120.0,
         maxHeight: 200.0,
+        // minHeight: 200.0,
+        // maxHeight: 300.0,
         child: Container(
             color: appThemeColor,
             child: Center(
-              child: Column(
+              child: Form(
+                key: this.testFormKey,
+                child: Column(
                 children: <Widget>[
-                  _createTextSearchField('From', prefix:Icons.edit_location),
-                  _createTextSearchField('To', prefix:Icons.edit_location),
-                  _createTextSearchField('Time', prefix:Icons.access_time),
+                  TFWithFloatingList(hintText:'From', prefix:Icons.edit_location),
+                  TFWithFloatingList(hintText:'To', prefix:Icons.edit_location),
+                  TFWithFloatingList(hintText:'Time', prefix:Icons.access_time),
+                  // _createTextSearchField('To', prefix:Icons.edit_location),
+                  // _createTextSearchField('Time', prefix:Icons.access_time),
                   _createToggleWithDescription("Same Gender Only", this.genderValue, this.onGenderToggle, prefix:Icons.person)
                 ]
               )
+              ),
             ),
         ),
       ) ,
