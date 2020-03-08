@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:our_ride/src/contants.dart';
 import 'package:our_ride/src/widgets/TF_autocomplete.dart';
+import 'package:our_ride/src/widgets/DT_picker.dart';
 
 
 class RideshareSearchFilter extends StatefulWidget{
@@ -47,6 +48,10 @@ class _RideshareSearchFilterState extends State<RideshareSearchFilter>{
 }
 
 //composable widgets
+Widget _createDateTimePicker(){
+  return DateTimePicker();
+}
+
 Widget _createTextSearchField(String hintText, {dynamic prefix = Icons.search}) {
   return Container(
     height: 40,
@@ -167,7 +172,7 @@ class CollapsingFilter extends StatelessWidget {
       pinned: true,
       delegate: _SliverAppBarDelegate(
         minHeight: 120.0,
-        maxHeight: 200.0,
+        maxHeight: 325.0,
         // minHeight: 200.0,
         // maxHeight: 300.0,
         child: Container(
@@ -192,7 +197,7 @@ class CollapsingFilter extends StatelessWidget {
                                 title: Text(suggestion['description']),
                                 // subtitle: Text('\$${suggestion['price']}'),
                       ),
-                          );
+                          );  
                     },
                     onSuggestionsSelected: (suggestion) {
                       from.text = suggestion['description'];
@@ -227,6 +232,7 @@ class CollapsingFilter extends StatelessWidget {
                   ),
                   // _createTextSearchField('To', prefix:Icons.edit_location),
                   // _createTextSearchField('Time', prefix:Icons.access_time),
+                  _createDateTimePicker(),
                   _createToggleWithDescription("Same Gender Only", this.genderValue, this.onGenderToggle, prefix:Icons.person),
                   _createSubmitButton(),
                 ]
