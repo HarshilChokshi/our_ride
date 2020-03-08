@@ -3,9 +3,16 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:our_ride/src/contants.dart';
 
+typedef void onChanged(bool val);
+
 class RideshareSearchFilter extends StatefulWidget{
   RideshareSearchFilter({Key key}) : super(key: key);
-    Map<String, dynamic> _filterOptions = {
+  @override
+  _RideshareSearchFilterState createState() => _RideshareSearchFilterState();
+}
+
+class _RideshareSearchFilterState extends State<RideshareSearchFilter>{
+  Map<String, dynamic> _filterOptions = {
     'from': null,
     'to': null,
     'datetime': null,
@@ -14,25 +21,26 @@ class RideshareSearchFilter extends StatefulWidget{
 
   bool _isFilterEmpty = true;
   bool _isFilterExpanded = false;
-
-  @override
-  _RideshareSearchFilterState createState() => _RideshareSearchFilterState();
-}
-
-class _RideshareSearchFilterState extends State<RideshareSearchFilter>{
       //define default filter options state
 
   @override
   void initState(){
     super.initState();
-    widget._filterOptions['sameGender'] = false;
-    widget._isFilterEmpty = true;
-    widget._isFilterExpanded = false;
+    this._filterOptions['sameGender'] = false;
+    this._isFilterEmpty = true;
+    this._isFilterExpanded = false;
   }
+
+  //state change functions
+  void _onToggle(bool val) => {
+    setState(() {
+      this._filterOptions['sameGender'] = val;
+    })
+  };
 
   @override
   Widget build(BuildContext context){
-    return CollapsingFilter();
+    return CollapsingFilter(genderValue: this._filterOptions['sameGender'], onGenderToggle: _onToggle);
   }
 }
 
@@ -50,9 +58,8 @@ Widget _createTextSearchField(String hintText, {dynamic prefix = Icons.search}) 
       style: TextStyle(fontSize: 14, color: Colors.white),
       cursorColor: Colors.white,
       decoration: InputDecoration(
-        // contentPadding: EdgeInsets.all(10),
         prefixIcon: Padding(
-          padding: EdgeInsets.all(0.0),
+          padding: EdgeInsets.fromLTRB(8, 0, 0, 0),
           child: Icon(
             prefix,
             color: Colors.white,
@@ -66,6 +73,26 @@ Widget _createTextSearchField(String hintText, {dynamic prefix = Icons.search}) 
         border: InputBorder.none
       )
   )
+  );
+}
+
+Widget _createToggleWithDescription(String description, bool isToggled, Function _onChanged, {dynamic prefix = Icons.search}) {
+  return Container(
+    height: 40,
+    margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+    decoration: BoxDecoration(
+      shape: BoxShape.rectangle,
+      borderRadius: BorderRadius.all(Radius.circular(10)) 
+    ),
+    child:  SwitchListTile(
+      title: Text(
+        description,
+        style: TextStyle(fontSize: 14, color: Color.fromRGBO(53, 154, 131, 100), fontWeight: FontWeight.w700),
+      ),
+      value: isToggled,
+      onChanged: _onChanged,
+      secondary: Icon(prefix, color: Colors.white),
+    )
   );
 }
 
@@ -104,21 +131,9 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
 }
 
 class CollapsingFilter extends StatelessWidget {
-  //generic makeHeader function
-  SliverPersistentHeader makeHeader(String headerText) {
-    return SliverPersistentHeader(
-      pinned: true,
-      delegate: new _SliverAppBarDelegate(
-        minHeight: 100.0,
-        maxHeight: 200.0,
-        child: Container(
-            color: Colors.lightBlue,
-            child: Center(child:
-                Text(headerText)
-          )),
-      ),
-    );
-  }
+  CollapsingFilter({Key key, this.genderValue, this.onGenderToggle}) : super(key: key);
+  bool genderValue;
+  final Function onGenderToggle;
 
   @override
   Widget build(BuildContext context) {
@@ -135,6 +150,7 @@ class CollapsingFilter extends StatelessWidget {
                   _createTextSearchField('From', prefix:Icons.edit_location),
                   _createTextSearchField('To', prefix:Icons.edit_location),
                   _createTextSearchField('Time', prefix:Icons.access_time),
+                  _createToggleWithDescription("Same Gender Only", this.genderValue, this.onGenderToggle, prefix:Icons.person)
                 ]
               )
             ),
