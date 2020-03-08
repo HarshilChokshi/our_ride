@@ -70,8 +70,7 @@ class RideShareUsersList extends StatelessWidget {
         ),
         borderRadius: new BorderRadius.all(new Radius.circular(50.0)),
       ),
-    );
-      
+    ); 
   }
 
 
