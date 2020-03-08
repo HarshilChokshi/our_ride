@@ -5,9 +5,6 @@ import 'package:our_ride/src/contants.dart';
 import 'package:our_ride/src/widgets/app_bottom_navigation_bar.dart';
 import 'package:our_ride/src/widgets/rideshare_search_filter.dart';
 
-import 'package:our_ride/src/widgets/TF_with_floatinglist.dart';
-
-
 class RideshareListScreen extends StatefulWidget {
   String rider_id;
 
