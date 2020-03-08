@@ -85,13 +85,15 @@ class UserProfileState extends State<UserProfileScreen> {
     return new Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomPadding: false,
-      body: new Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          topComponent(),
-          new Container(margin: EdgeInsets.only(bottom: 10)),
-          bottomComponent(),
-        ],
+      body: new SingleChildScrollView(
+        child: new Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            topComponent(),
+            new Container(margin: EdgeInsets.only(bottom: 10)),
+            bottomComponent(),
+          ],
+        ),
       ),
       appBar: topBar,
       bottomNavigationBar: bottomBar,
@@ -127,26 +129,45 @@ class UserProfileState extends State<UserProfileScreen> {
       child: new Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          createDesciption('About me'),
+          createDesciption('About me', true),
           new Padding(padding: EdgeInsets.only(bottom: 3)),
-          createText(userProfile.aboutMe),
-          new Padding(padding: EdgeInsets.only(bottom: 30)),
-          createDesciption('Gender'),
+          createText(userProfile.aboutMe, true),
+          new Padding(padding: EdgeInsets.only(bottom: 20)),
+          createDesciption('Gender', true),
           new Padding(padding: EdgeInsets.only(bottom: 3)),
-          createText(userProfile.isMale ? 'Male' : 'Female'),
-          new Padding(padding: EdgeInsets.only(bottom: 30)),
-          createDesciption('Program'),
+          createText(userProfile.isMale ? 'Male' : 'Female', true),
+          new Padding(padding: EdgeInsets.only(bottom: 20)),
+          createDesciption('Program', true),
           new Padding(padding: EdgeInsets.only(bottom: 3)),
-          createText(userProfile.program),
-          new Padding(padding: EdgeInsets.only(bottom: 30)),
-          createDesciption('University'),
+          createText(userProfile.program, true),
+          new Padding(padding: EdgeInsets.only(bottom: 20)),
+          createDesciption('University', true),
           new Padding(padding: EdgeInsets.only(bottom: 3)),
-          createText(userProfile.university),
-          new Padding(padding: EdgeInsets.only(bottom: 30)),
-          createDesciption('City'),
+          createText(userProfile.university, true),
+          new Padding(padding: EdgeInsets.only(bottom: 20)),
+          createDesciption('City', true),
           new Padding(padding: EdgeInsets.only(bottom: 3)),
-          createText(userProfile.city),
-          new Padding(padding: EdgeInsets.only(bottom: 30)),
+          createText(userProfile.city, true),
+          new Padding(padding: EdgeInsets.only(bottom: 20)),
+          createDesciption('Card Holder Name', isUsersProfile),
+          createBottomPadding(3, isUsersProfile),
+          createText(userProfile.paymentMethod.cardHolderName, isUsersProfile),
+          createBottomPadding(20, isUsersProfile),
+          createDesciption('Card Number', isUsersProfile),
+          createBottomPadding(3, isUsersProfile),
+          createText(userProfile.paymentMethod.cardNumber, isUsersProfile),
+          createBottomPadding(20, isUsersProfile),
+          createDesciption('Expire Date: mm/yy', isUsersProfile),
+          createBottomPadding(3, isUsersProfile),
+          createText(userProfile.paymentMethod.expireDate, isUsersProfile),
+          createBottomPadding(20, isUsersProfile),
+          createDesciption('CVV', isUsersProfile),
+          createBottomPadding(3, isUsersProfile),
+          createText(userProfile.paymentMethod.cvv, isUsersProfile),
+          createBottomPadding(20, isUsersProfile),
+          createDesciption('Driver\'s License', !isRider && isUsersProfile),
+          createBottomPadding(3, !isRider && isUsersProfile),
+          createText(userProfile.driverLicenseNumber, !isRider && isUsersProfile),
           createReviewsButton(),
         ].where(notNull).toList(),
       ),
@@ -290,86 +311,100 @@ class UserProfileState extends State<UserProfileScreen> {
       );
     }
 
-    Widget createEditProfileButton() {
-      if(!isUsersProfile) {
-        return null;
-      }
+  Widget createEditProfileButton() {
+    if(!isUsersProfile) {
+      return null;
+    }
 
-      return new FlatButton(
+    return new FlatButton(
+      child: new Text(
+        'Edit Profile',
+        style: new TextStyle(color: Colors.white),
+      ),
+      onPressed: () {  
+        Navigator.pushReplacement(
+          context, 
+          new CupertinoPageRoute(
+            builder: (context) => EditProfileScreen(userProfile, user_id, isRider)
+        ));
+      },
+      color: appThemeColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: new BorderRadius.circular(18.0),
+        side: BorderSide(color: Colors.white)
+      ),
+    );
+  }
+
+  Widget createViewFacebookProfileButton() {
+    return new FlatButton(
+      child: new Text(
+        'View FB Profile',
+        style: new TextStyle(color: Colors.white),
+      ),
+      onPressed: () { 
+          UserProfileData.openFacebookProfile(userProfile.facebookUserId);
+      },
+      color: Colors.blue,
+      shape: RoundedRectangleBorder(
+        borderRadius: new BorderRadius.circular(18.0),
+        side: BorderSide(color: Colors.blue)
+      ),
+    );     
+  }
+
+  Widget createDesciption(String text, bool show) {
+    if(!show)
+      return null;
+
+    return new Text(
+      text,
+      style: new TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: 16.0
+      ),
+    );
+  }
+
+  Widget createBottomPadding(double value, bool show) {
+    if(!show)
+      return null;
+
+    return new Padding(padding: EdgeInsets.only(bottom: value));
+  }
+
+  Widget createText(String text, bool show) {
+    if(!show) {
+      return null;
+    }
+
+    return new Text(
+      text,
+      style: new TextStyle(
+        fontSize: 14.0
+      ),
+    );
+  }
+
+  Widget createReviewsButton() {
+    if(isRider) {
+      return null;
+    }
+    return new Center(
+      child: FlatButton(
         child: new Text(
-          'Edit Profile',
-          style: new TextStyle(color: Colors.white),
+          'See Reviews',
+          style: new TextStyle(color: Colors.blue),
         ),
-        onPressed: () {  
-          Navigator.pushReplacement(
+        onPressed: () {
+          Navigator.push(
             context, 
-            new CupertinoPageRoute(
-              builder: (context) => EditProfileScreen(userProfile, user_id, isRider)
+            CupertinoPageRoute(
+              builder: (context) => DriverReviewsScreen(userProfile.reviews, userProfile.firstName)
           ));
         },
-        color: appThemeColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: new BorderRadius.circular(18.0),
-          side: BorderSide(color: Colors.white)
-        ),
-      );
-    }
-
-    Widget createViewFacebookProfileButton() {
-      return new FlatButton(
-        child: new Text(
-          'View FB Profile',
-          style: new TextStyle(color: Colors.white),
-        ),
-        onPressed: () { 
-           UserProfileData.openFacebookProfile(userProfile.facebookUserId);
-        },
-        color: Colors.blue,
-        shape: RoundedRectangleBorder(
-          borderRadius: new BorderRadius.circular(18.0),
-          side: BorderSide(color: Colors.blue)
-        ),
-      );     
-    }
-
-    Widget createDesciption(String text) {
-      return new Text(
-        text,
-        style: new TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 16.0
-        ),
-      );
-    }
-
-    Widget createText(String text) {
-      return new Text(
-        text,
-        style: new TextStyle(
-          fontSize: 14.0
-        ),
-      );
-    }
-
-    Widget createReviewsButton() {
-      if(isRider) {
-        return null;
-      }
-      return new Center(
-        child: FlatButton(
-          child: new Text(
-            'See Reviews',
-            style: new TextStyle(color: Colors.blue),
-          ),
-          onPressed: () {
-            Navigator.push(
-              context, 
-              CupertinoPageRoute(
-                builder: (context) => DriverReviewsScreen(userProfile.reviews, userProfile.firstName)
-            ));
-          },
-          color: Colors.transparent,
-        )
-      );
-    }
+        color: Colors.transparent,
+      )
+    );
+  }
 }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:our_ride/src/models/user_profile.dart';
+import 'package:our_ride/src/screens/payment_info_screen.dart';
 import 'package:our_ride/src/screens/user_info_screen.dart';
 import '../contants.dart';
 import '../widgets/our_ride_title.dart';
@@ -273,7 +274,7 @@ class SignUpState extends State<SignUpScreen> {
           Navigator.push(
               context, 
               CupertinoPageRoute(
-                builder: (context) => UserInfoScreen(userProfile)
+                builder: (context) => PaymentInfoScreen(userProfile)
           )); 
         },
         color: appThemeColor,
@@ -281,8 +282,6 @@ class SignUpState extends State<SignUpScreen> {
     )
     );
   }
-
-
 
   bool licenseIsValid(String licenseNumber) {
     // Check if license is valid from API
