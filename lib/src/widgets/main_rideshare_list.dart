@@ -7,6 +7,12 @@ import 'package:our_ride/src/models/car.dart';
 import 'package:flutter/cupertino.dart';
 
 class RideshareSearchList extends StatefulWidget{
+  RideshareSearchList({
+    this.rideShareData
+  });
+
+  // final Function addRide; 
+  final Rideshare rideShareData;
 
   _RidershareSearchListState createState() => _RidershareSearchListState();
 }
@@ -14,7 +20,6 @@ class RideshareSearchList extends StatefulWidget{
 class _RidershareSearchListState extends State<RideshareSearchList>{
   _RidershareSearchListState();
   final SlidableController slidableController = SlidableController();
-
 
   var dummyData = Rideshare.fromDetails(
     "12341234",
@@ -32,6 +37,26 @@ class _RidershareSearchListState extends State<RideshareSearchList>{
     'Systems Design Engineering'
   );
 
+  //textformatters
+  String nameFormatter(String name){
+    //need driver first and lastname
+    return "${widget.rideShareData.driverFirstname}. ${widget.rideShareData.driverLastname[0]}";
+  }
+
+  // AssetImage getImage(String firstname, String lastname){
+  //   String path = driverRideRequestsList[index].profilePic == 'Exists' ? 'assets/images/' +
+  //     driverRideRequestsList[index].riderFirstName + 
+  //     '_' +
+  //     driverRideRequestsList[index].riderLastName +
+  //     '.png'
+  //     :
+  //     'assets/images/default-profile.png';
+  //   return AssetImage(path);
+  // }
+
+
+
+  //composable widgets
   Widget drawCircle(double size, Color color){
     return Container(
       width: size,
@@ -190,23 +215,28 @@ class _RidershareSearchListState extends State<RideshareSearchList>{
            child: //BOTTOM PORTION --> seats left, price of ride
                 Row(
                   children: <Widget>[
-                      Icon(
-                        Icons.person_pin_circle,
-                      ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(8, 3, 0, 0),
-                        child: 
-                          Text(
-                            '4 seats left',
-                            overflow: TextOverflow.clip,
-                            maxLines: 1,
-                            style: TextStyle(
-                              color: Color.fromRGBO(84, 84, 84, 100),
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500
-                            ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 8),
+                      child:Icon(
+                          Icons.person,
+                          size: 25,
+                          color: Color.fromRGBO(84, 84, 84, 100),
+                        ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(8, 3, 0, 0),
+                      child: 
+                        Text(
+                          '4 seats left',
+                          overflow: TextOverflow.clip,
+                          maxLines: 1,
+                          style: TextStyle(
+                            color: Color.fromRGBO(84, 84, 84, 100),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500
                           ),
                         ),
+                      ),
                     Expanded(
                       child: Container(
 
@@ -246,7 +276,7 @@ class _RidershareSearchListState extends State<RideshareSearchList>{
   Widget build(BuildContext context){
     return Container(
       height: 135,
-      child:Slidable(
+      child: Slidable(
         controller: slidableController,
         actionPane: SlidableDrawerActionPane(),
         child: Container(
@@ -258,13 +288,32 @@ class _RidershareSearchListState extends State<RideshareSearchList>{
             children: <Widget>[
               Expanded(
                 flex: 3,
-                child: leftPortion(),
-              ),
+                child:  GestureDetector(
+                  onTap: () { //link to user profile
+                      // Navigator.pushReplacement(
+                      //   context, 
+                      //   CupertinoPageRoute(
+                      //     builder: (context) => UserProfileScreen(<ENTER DRIVER ID>, false, null, false)
+                      // ));
+                  },
+                  child: leftPortion(),
+                  ),
+                ),
               drawLine(1, 115),
               Expanded(
                 flex: 8,
-                child: rightPortion(),
-              )
+                child:  GestureDetector(
+                  onTap: () { //link to user profile
+                    print("right");
+                      // Navigator.pushReplacement(
+                      //   context, 
+                      //   CupertinoPageRoute(
+                      //     builder: (context) => UserProfileScreen(userId, isRider, userProfile, true)
+                      // ));
+                  },
+                  child: rightPortion(),
+                  ),
+                ),
             ],
           )
         ),
