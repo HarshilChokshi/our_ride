@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:our_ride/src/contants.dart';
 import 'package:our_ride/src/widgets/app_bottom_navigation_bar.dart';
 import 'package:our_ride/src/widgets/rideshare_search_filter.dart';
+import 'package:our_ride/src/widgets/main_rideshare_list.dart';
+
 
 class RideshareListScreen extends StatefulWidget {
   String rider_id;
@@ -45,15 +46,10 @@ class RideshareListState extends State<RideshareListScreen> {
       body: CustomScrollView(
           slivers: <Widget>[
             RideshareSearchFilter(),
-            SliverFixedExtentList(
-              itemExtent: 150.0,
+            SliverList(
               delegate: SliverChildListDelegate(
-                [
-                  Container(color: Colors.red),
-                  Container(color: Colors.purple),
-                  Container(color: Colors.green),
-                  Container(color: Colors.orange),
-                  Container(color: Colors.yellow),
+                [ 
+                  RideshareSearchList(),
                 ],
               ),
             ),
