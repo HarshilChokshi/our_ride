@@ -28,6 +28,8 @@ class UserInfoState extends State<UserInfoScreen> {
   final formKey = new GlobalKey<FormState>();
   final databaseReference = FirebaseDatabase.instance.reference();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  TextEditingController universityTEditingController = new TextEditingController();
+  TextEditingController cityTEditingController = new TextEditingController();
 
   UserInfoState(this.userProfile);
   
@@ -46,18 +48,18 @@ class UserInfoState extends State<UserInfoScreen> {
         backgroundColor: Colors.transparent,
         resizeToAvoidBottomPadding: false,
         body: new Container(
-          margin: new EdgeInsets.only(left: 50, right: 50, top: 100),
+          margin: new EdgeInsets.only(left: 50, right: 50, top: 20),
           child: new Form(
             key: formKey,
             child: new Column(
               children: <Widget>[
                 new OurRideTitle(),
-                new Container(margin: EdgeInsets.only(bottom: 100)),
-                createTextFromField('University'),
-                new Container(margin: EdgeInsets.only(bottom: 10)),
+                new Container(margin: EdgeInsets.only(bottom: 50)),
+                createDropDown(false),
+                new Container(margin: EdgeInsets.only(bottom: 12)),
                 createTextFromField('Program'),
                 new Container(margin: EdgeInsets.only(bottom: 10)),
-                createTextFromField('City'),
+                createDropDown(true),
                 new Container(margin: EdgeInsets.only(bottom: 10)),
                 createSubmitButton(),
               ],
@@ -140,11 +142,13 @@ class UserInfoState extends State<UserInfoScreen> {
 
   Widget createDropDown(bool isCity) {
     return new TFWithAutoComplete(
+      dropDownColor: Color.fromARGB(20, 211, 211, 211),
+      hintText: isCity ? 'City' : 'University',
       suggestionsCallback: (String prefix) {
         if(isCity) {
           return ontarioCities.where((f) => f.startsWith(prefix)).toList();
         } else {
-          return [];
+          return ontarioUniversities.where((f) => f.startsWith(prefix)).toList();
         }
       },
       itemBuilder: (context, value) {
@@ -159,16 +163,22 @@ class UserInfoState extends State<UserInfoScreen> {
               value,
               style: new TextStyle(
                 color: Colors.white,
-                fontSize: 12.0,
+                fontSize: 14.0,
               ),
             ),
           )
         );
       },
       onSuggestionsSelected: (suggestion) {
-
+        if(isCity) {
+          userProfile.city = suggestion;
+          cityTEditingController.text = suggestion;
+        } else {
+          userProfile.university = suggestion;
+          universityTEditingController.text = suggestion;
+        }
       },
-      typeAheadController: null
+      typeAheadController: isCity ? cityTEditingController : universityTEditingController,
     );
   }
 
@@ -194,11 +204,12 @@ class UserInfoState extends State<UserInfoScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Color.fromRGBO(61, 191, 165, 100),
           title: new Text('Facebook Account Linking'),
           content: new Text('A user with this email has already been registered.'),
           actions: <Widget>[
             new FlatButton(
-              child: new Text('Close', style: new TextStyle(color: Colors.red)),
+              child: new Text('Close', style: new TextStyle(color: Colors.white)),
               onPressed: () {
                 Navigator.of(context).pop();
               },

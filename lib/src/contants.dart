@@ -137,3 +137,29 @@ List<String> ontarioCities = [
 ,"Owen Sound"
 ,"York"
 ];
+
+
+List<String> ontarioUniversities = [
+  'Algoma University',
+  'Brock University',
+  'Carleton University',
+  'Lakehead University',
+  'Laurentian University',
+  'McMaster University',
+  'Nipissing University',
+  'Ontario College of Art and Design',
+  'Queen\'s University at Kingston',
+  'Royal Military College of Canada',
+  'Ryerson University',
+  'Trent University Peterborough',
+  'Université de l\'Ontario',
+  'University of Guelph',
+  'Ontario Tech University',
+  'University of Ottawa',
+  'University of Toronto',
+  'University of Waterloo',
+  'University of Western Ontario',
+  'University of Windsor',
+  'Wilfrid Laurier University',
+  'York',
+];

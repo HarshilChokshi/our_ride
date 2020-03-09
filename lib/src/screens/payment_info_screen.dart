@@ -40,7 +40,7 @@ class PaymentInfoState extends State<PaymentInfoScreen> {
         backgroundColor: Colors.transparent,
         resizeToAvoidBottomPadding: false,
         body: new Container(
-          margin: new EdgeInsets.only(left: 50, right: 50, top: 100),
+          margin: new EdgeInsets.only(left: 50, right: 50, top: 20),
           child: new Form(
             key: formKey,
             child: new Column(

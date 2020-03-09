@@ -35,7 +35,7 @@ class LoginState extends State<LoginScreen> {
             backgroundColor: Colors.transparent,
             resizeToAvoidBottomPadding: false,
             body: new Container(
-      margin: new EdgeInsets.only(left: 50, right: 50, top: 100),
+      margin: new EdgeInsets.only(left: 50, right: 50, top: 20),
       child: new Form(
         key: formKey,
         child: new Column(
@@ -126,11 +126,12 @@ class LoginState extends State<LoginScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Color.fromRGBO(61, 191, 165, 100),
           title: new Text('ERROR'),
           content: new Text('Email and/or password entered is incorrect.'),
           actions: <Widget>[
             new FlatButton(
-              child: new Text('Close', style: new TextStyle(color: Colors.red)),
+              child: new Text('Close', style: new TextStyle(color: Colors.white)),
               onPressed: () {
                 Navigator.of(context).pop();
               },

@@ -43,7 +43,7 @@ class SignUpState extends State<SignUpScreen> {
 
       body: new SingleChildScrollView(
         child: new Container(
-          margin: new EdgeInsets.only(left: 50, right: 50, top: 100),
+          margin: new EdgeInsets.only(left: 50, right: 50, top: 20),
           child: new Form(
             key: formKey,
             child: new Column(
@@ -336,11 +336,12 @@ class SignUpState extends State<SignUpScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Color.fromRGBO(61, 191, 165, 100),
           title: new Text('Facebook Account Linking'),
           content: new Text(message),
           actions: <Widget>[
             new FlatButton(
-              child: new Text('Close', style: new TextStyle(color: Colors.red)),
+              child: new Text('Close', style: new TextStyle(color: Colors.white)),
               onPressed: () {
                 Navigator.of(context).pop();
               },

@@ -95,9 +95,14 @@ class CreateRideState extends State<CreateRideScreen> {
 
   void addRideShareToDB(Rideshare r) async {
     bool isDriverMale;
+    String driverUniversity;
+    String driverProgram;
+
     await UserProfileData.fetchUserProfileData(driverId)
     .then((profile) {
       isDriverMale = profile.isMale;
+      driverUniversity = profile.university;
+      driverProgram = profile.program;
     });
     await databaseReference.collection('rideshares')
     .document(r.driverId + '-' + r.rideDate.toString() + '-' + r.rideTime.hour.toString() + ':' + r.rideTime.minute.toString())
@@ -113,6 +118,8 @@ class CreateRideState extends State<CreateRideScreen> {
       'car': r.car.toJson(),
       'riders': r.riders,
       'isDriverMale': isDriverMale,
+      'driverUniversity': driverUniversity,
+      'driverProgram': driverProgram,
     });
   }
 
