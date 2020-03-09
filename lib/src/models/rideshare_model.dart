@@ -13,6 +13,8 @@ class Rideshare {
   Car car;
   List<String> riders;
   bool isDriverMale;
+  String driverUniversity;
+  String driverProgram;
 
   Rideshare(String driverId, Car car) {
     this.driverId = driverId;
@@ -30,7 +32,9 @@ class Rideshare {
     double price,
     Car car,
     List<String> riders,
-    bool isDriverMale,   
+    bool isDriverMale,
+    String driverUniversity,
+    String driverProgram,
   ) {
     this.driverId = driverId;
     this.pickUpLocation = pickUpLocation;
@@ -43,5 +47,7 @@ class Rideshare {
     this.car = car;
     this.riders = riders;
     this.isDriverMale = isDriverMale;
+    this.driverUniversity = driverUniversity;
+    this.driverProgram = driverProgram;
   }
 }

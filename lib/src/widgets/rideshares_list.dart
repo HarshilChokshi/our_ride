@@ -90,17 +90,18 @@ class RideSharesList extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Color.fromRGBO(61, 191, 165, 100),
           title: new Text('Cancel Ride'),
           content: new Text(message),
           actions: <Widget>[
             new FlatButton(
-              child: new Text('Close', style: new TextStyle(color: Colors.blue)),
+              child: new Text('Close', style: new TextStyle(color: Colors.white)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             new FlatButton(
-              child: new Text('Cancel rideshare', style: new TextStyle(color: Colors.red)),
+              child: new Text('Cancel rideshare', style: new TextStyle(color: Colors.white)),
               onPressed: () {
                 if(this.driverStateParent != null) {
                   deleteRideShareRecord(index);

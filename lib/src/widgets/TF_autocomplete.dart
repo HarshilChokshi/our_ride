@@ -14,6 +14,8 @@ class TFWithAutoComplete extends StatefulWidget {
   //customization properties
   dynamic prefix;
   String hintText;
+  Color dropDownColor;
+  double height;
   SuggestionsCallbackType suggestionsCallback;
   ItemBuilderType itemBuilder;
   SuggestionsSelectedType onSuggestionsSelected;
@@ -21,11 +23,15 @@ class TFWithAutoComplete extends StatefulWidget {
   OnSavedType onSaved;
   TextEditingController typeAheadController;
 
+  static const Color _defaultDropDownColor = Color.fromRGBO(61, 191, 165, 100);
+
   
   TFWithAutoComplete({
     Key key,
     this.hintText = "Text/Search Field",
     this.prefix = Icons.search,
+    this.dropDownColor = _defaultDropDownColor,
+    this.height = 40,
     @required this.suggestionsCallback,
     @required this.itemBuilder,
     @required this.onSuggestionsSelected,
@@ -36,18 +42,24 @@ class TFWithAutoComplete extends StatefulWidget {
 
   @override
   _TFWithAutoCompleteState createState() {
-    return _TFWithAutoCompleteState();
+    return _TFWithAutoCompleteState(this.dropDownColor, this.height);
   }
 }
 
 class _TFWithAutoCompleteState extends State<TFWithAutoComplete> {
+ 
+ Color dropDownColor;
+ double height;
+ 
+ _TFWithAutoCompleteState(this.dropDownColor, this.height);
+ 
  @override
   Widget build(BuildContext context) {
     return Container(
-      height: 40,
+      height: height,
       margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
       decoration: BoxDecoration(
-        color: Color.fromRGBO(61, 191, 165, 100),
+        color: dropDownColor,
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.all(Radius.circular(10)) 
       ),
@@ -65,7 +77,7 @@ class _TFWithAutoCompleteState extends State<TFWithAutoComplete> {
                 ),
               ),
               hintText: widget.hintText,
-              hintStyle: TextStyle(fontSize: 14, color: Colors.white),
+              hintStyle: TextStyle(fontSize: 14, color: Color.fromARGB(150, 255, 255, 255)),
               errorStyle: TextStyle(
                 color: Colors.red,
                 fontWeight: FontWeight.bold
@@ -81,7 +93,11 @@ class _TFWithAutoCompleteState extends State<TFWithAutoComplete> {
           suggestionsCallback: widget.suggestionsCallback,
           itemBuilder: widget.itemBuilder,
           onSuggestionSelected: widget.onSuggestionsSelected,
-          // validator: widget.validator,
+          validator: (String value) {
+            if(value.isEmpty) {
+              return 'One of the dropdown values must be selected';
+            }
+          },
           // onSaved: widget.onSaved,
         ),
       );
