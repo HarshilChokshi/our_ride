@@ -7,7 +7,8 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 typedef FutureOr<Iterable<dynamic>> SuggestionsCallbackType(String pattern);
 typedef Widget ItemBuilderType(BuildContext context, dynamic suggestion);
 typedef void SuggestionsSelectedType(dynamic suggestion);
-
+typedef String FieldValidatorType(String value);
+typedef String OnSavedType(String value);
 
 class TFWithAutoComplete extends StatefulWidget {
   //customization properties
@@ -16,6 +17,8 @@ class TFWithAutoComplete extends StatefulWidget {
   SuggestionsCallbackType suggestionsCallback;
   ItemBuilderType itemBuilder;
   SuggestionsSelectedType onSuggestionsSelected;
+  FieldValidatorType validator;
+  OnSavedType onSaved;
   TextEditingController typeAheadController;
 
   
@@ -26,7 +29,9 @@ class TFWithAutoComplete extends StatefulWidget {
     @required this.suggestionsCallback,
     @required this.itemBuilder,
     @required this.onSuggestionsSelected,
+    // @required this.onSaved,
     @required this.typeAheadController,
+    // this.validator,
   }): super(key: key);
 
   @override
@@ -61,7 +66,13 @@ class _TFWithAutoCompleteState extends State<TFWithAutoComplete> {
               ),
               hintText: widget.hintText,
               hintStyle: TextStyle(fontSize: 14, color: Colors.white),
-              errorStyle: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              errorStyle: TextStyle(
+                color: Colors.red,
+                fontWeight: FontWeight.bold
+                ),
+              // errorBorder: OutlineInputBorder(
+              //   borderSide: BorderSide(color: Colors.red, width: 5.0)
+              // ),
               filled: true,
               fillColor: Colors.transparent,
               border: InputBorder.none // icon is 48px widget.
@@ -70,6 +81,8 @@ class _TFWithAutoCompleteState extends State<TFWithAutoComplete> {
           suggestionsCallback: widget.suggestionsCallback,
           itemBuilder: widget.itemBuilder,
           onSuggestionSelected: widget.onSuggestionsSelected,
+          // validator: widget.validator,
+          // onSaved: widget.onSaved,
         ),
       );
   }

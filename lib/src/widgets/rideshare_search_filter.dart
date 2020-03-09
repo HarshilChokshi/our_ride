@@ -146,8 +146,8 @@ class CollapsingFilter extends StatelessWidget {
   )
   );
 }
-
-  Widget _createSubmitButton() {
+  
+  Widget _createSubmitButton(BuildContext context) {
   return Container(
     height: 40,
     width: double.infinity,
@@ -159,7 +159,50 @@ class CollapsingFilter extends StatelessWidget {
       ),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
       onPressed: () {
-        
+        showAlertDialog(BuildContext context) {
+          // set up the AlertDialog
+          AlertDialog alert = AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+            title: Row(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  child: Icon(
+                    Icons.error,
+                    color: Colors.white,
+                  ),
+                ),
+                Text(
+                  "Search Error",
+                  style: TextStyle(
+                    color: Colors.white
+                  ),
+                ),
+              ],
+              ),
+            content: Text(
+              "Make sure all fields are fillied out!",
+              style: TextStyle(
+                color: Colors.white
+              ),
+            ),
+            backgroundColor: Color.fromRGBO(61, 191, 165, 100),
+          );
+
+          // show the dialog
+          showDialog(
+            context: context,
+            builder: (context) {
+              return Center(child: alert);
+            },
+          );
+        }
+        if (fromValue?.isEmpty ?? toValue?.isEmpty ?? timeState?.isEmpty ?? dateState?.isEmpty ?? true){
+          showAlertDialog(context);
+        }
+        else{
+          //fetch listview resuults
+        }
       },
       elevation: 0,
       color: Color.fromRGBO(61, 191, 165, 100),
@@ -194,8 +237,6 @@ class CollapsingFilter extends StatelessWidget {
       delegate: _SliverAppBarDelegate(
         minHeight: 120.0,
         maxHeight: 260.0,
-        // minHeight: 200.0,
-        // maxHeight: 300.0,
         child: Container(
             color: appThemeColor,
             child: Center(
@@ -226,7 +267,7 @@ class CollapsingFilter extends StatelessWidget {
                       // Navigator.of(context).push(MaterialPageRoute(
                       //   builder: (context) => ProductPage(product: suggestion)
                       // ));
-                    },
+                    }
                   ),
                   TFWithAutoComplete(
                     typeAheadController: to,
@@ -251,7 +292,7 @@ class CollapsingFilter extends StatelessWidget {
                       // Navigator.of(context).push(MaterialPageRoute(
                       //   builder: (context) => ProductPage(product: suggestion)
                       // ));
-                    },
+                    }
                   ),
                   DateTimeFilter(
                     updateDateTime: onStateDictChange,
@@ -259,7 +300,7 @@ class CollapsingFilter extends StatelessWidget {
                     timeState: timeState,
                   ),
                   _createToggleWithDescription("Same Gender Only", this.genderValue, this.onGenderToggle, prefix:Icons.person),
-                  _createSubmitButton(),
+                  _createSubmitButton(context),
                 ]
               )
               ),
