@@ -197,7 +197,10 @@ class CollapsingFilter extends StatelessWidget {
             },
           );
         }
-        if (fromValue?.isEmpty ?? toValue?.isEmpty ?? timeState?.isEmpty ?? dateState?.isEmpty ?? true){
+
+        bool isNullOrEmpty(Object o) => o == null || "" == o;
+
+        if (isNullOrEmpty(fromValue) || isNullOrEmpty(toValue) || isNullOrEmpty(timeState) || isNullOrEmpty(dateState) ){
           showAlertDialog(context);
         }
         else{
