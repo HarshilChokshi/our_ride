@@ -4,6 +4,7 @@ import 'package:our_ride/src/contants.dart';
 import 'package:our_ride/src/models/user_profile.dart';
 import 'package:our_ride/src/screens/driver_reviews_screen.dart';
 import 'package:our_ride/src/screens/edit_profile_screen.dart';
+import 'package:our_ride/src/screens/login_screen.dart';
 import 'package:our_ride/src/widgets/app_bottom_navigation_bar.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
@@ -109,16 +110,22 @@ class UserProfileState extends State<UserProfileScreen> {
 
   Widget topComponent() {
     return new Container(
-      padding: new EdgeInsets.only(left: 10.0),
+      padding: new EdgeInsets.only(left: 10.0, right: 10.0),
       color: appThemeColor,
-      height: 200.0,
-      child: new Row(
-        children: <Widget>[
-          createUserProfile(),
-          new Container(margin: EdgeInsets.only(right: 60)),
-          createUserRideData(),
-        ],
-      ),
+      height: 250.0,
+      child: new Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        new Row(
+          children: <Widget>[
+            createUserProfile(),
+            new Container(margin: EdgeInsets.only(right: 30)),
+            createUserRideData(),
+          ],
+        ),
+        createSignOutButton(),
+      ],
+     ),
     );
   }
 
@@ -174,6 +181,27 @@ class UserProfileState extends State<UserProfileScreen> {
     );
   }
 
+  Widget createSignOutButton() {
+    return new FlatButton(
+      child: new Text(
+        'Sign out',
+        style: new TextStyle(color: Colors.white),
+      ),
+      onPressed: () {  
+        Navigator.pushReplacement(
+          context, 
+          new CupertinoPageRoute(
+            builder: (context) => LoginScreen()
+        ));
+      },
+      color: appThemeColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: new BorderRadius.circular(18.0),
+        side: BorderSide(color: Colors.white)
+      ),
+    );
+  }
+
   Widget createUserProfile() {
     return new Column( 
       children: <Widget>[
@@ -195,6 +223,8 @@ class UserProfileState extends State<UserProfileScreen> {
       '.png'
       :
       'assets/images/default-profile.png';
+    
+
 
     return new Container(
       width: 100.0,

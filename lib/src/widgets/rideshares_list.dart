@@ -85,14 +85,14 @@ class RideSharesList extends StatelessWidget {
     String message = isRideShareBeingCancelledWithinDay(rideShareDataList[index].rideDate) ? 
       'Are you sure you want to cancel? You will be charged ' + rideShareDataList[index].price.toString() +
       ' dollars for cancelling within 24 hours.' : 
-      'You cancel this rideshare without being charged.';
+      'You can cancel this rideshare without being charged.';
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Color.fromRGBO(61, 191, 165, 100),
           title: new Text('Cancel Ride'),
-          content: new Text(message),
+          content: new Text(message, style: new TextStyle(fontWeight: FontWeight.bold),),
           actions: <Widget>[
             new FlatButton(
               child: new Text('Close', style: new TextStyle(color: Colors.white)),

@@ -114,6 +114,11 @@ class UserInfoState extends State<UserInfoScreen> {
           }
 
           formKey.currentState.save();
+
+          if(userProfile.program.isEmpty || userProfile.university.isEmpty) {
+            showEmptyFieldAlert();
+          }
+          
           registerUser(userProfile).then((FirebaseUser user) {
             if(user == null)
               return;
@@ -145,6 +150,12 @@ class UserInfoState extends State<UserInfoScreen> {
       dropDownColor: Color.fromARGB(20, 211, 211, 211),
       hintText: isCity ? 'City' : 'University',
       suggestionsCallback: (String prefix) {
+        if(prefix.length == 1) {
+          prefix = prefix[0].toUpperCase();
+        } else {
+           prefix = prefix[0].toUpperCase() + prefix.substring(1, prefix.length);
+        }
+
         if(isCity) {
           return ontarioCities.where((f) => f.startsWith(prefix)).toList();
         } else {
@@ -240,6 +251,27 @@ class UserInfoState extends State<UserInfoScreen> {
         "university": userProfile.university,
         "reviews": userProfile.reviews,
         "paymentMethod": userProfile.paymentMethod.toJson(),
+      }
+    );
+  }
+
+  void showEmptyFieldAlert() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Color.fromRGBO(61, 191, 165, 100),
+          title: new Text('Empty Fields'),
+          content: new Text('Fields cannot be empty', style: new TextStyle(color: Colors.black),),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text('Close', style: new TextStyle(color: Colors.white)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
       }
     );
   }

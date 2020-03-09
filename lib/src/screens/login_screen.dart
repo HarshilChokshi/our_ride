@@ -35,7 +35,7 @@ class LoginState extends State<LoginScreen> {
             backgroundColor: Colors.transparent,
             resizeToAvoidBottomPadding: false,
             body: new Container(
-      margin: new EdgeInsets.only(left: 50, right: 50, top: 20),
+      margin: new EdgeInsets.only(left: 50, right: 50, top: 30),
       child: new Form(
         key: formKey,
         child: new Column(

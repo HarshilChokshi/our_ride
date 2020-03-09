@@ -93,11 +93,8 @@ class _TFWithAutoCompleteState extends State<TFWithAutoComplete> {
           suggestionsCallback: widget.suggestionsCallback,
           itemBuilder: widget.itemBuilder,
           onSuggestionSelected: widget.onSuggestionsSelected,
-          validator: (String value) {
-            if(value.isEmpty) {
-              return 'One of the dropdown values must be selected';
-            }
-          },
+          // validator: (String value) {
+          // },
           // onSaved: widget.onSaved,
         ),
       );
