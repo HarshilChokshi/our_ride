@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
-class DateTimePicker extends StatefulWidget {
-  @override
-  _DateTimePickerState createState() => _DateTimePickerState();
-}
 
-class _DateTimePickerState extends State<DateTimePicker> {
-  String _date = "Date";
-  String _time = "Time";
 
-  @override
-  void initState() {
-    super.initState();
-  }
+class DateTimeFilter extends StatelessWidget{
+  DateTimeFilter({
+    this.updateDateTime,
+    this.dateState,
+    this.timeState,
+  });
+
+  //parent tree state values and functions
+  String dateState;
+  String timeState;
+  final Function updateDateTime;
 
   @override
   Widget build(BuildContext context) {
@@ -36,12 +36,12 @@ class _DateTimePickerState extends State<DateTimePicker> {
                           containerHeight: 210.0,
                         ),
                         showTitleActions: true,
-                        minTime: DateTime(2000, 1, 1),
+                        minTime: DateTime.now(),
                         maxTime: DateTime(2022, 12, 31),
                         onConfirm: (date) {
                           print('confirm $date');
-                          _date = '${date.year} - ${date.month} - ${date.day}';
-                          setState(() {});
+                          dateState = '${date.year} - ${date.month} - ${date.day}';
+                          updateDateTime('date', dateState);
                     }, currentTime: DateTime.now(), locale: LocaleType.en);
                   },
                   child: Container(
@@ -66,7 +66,7 @@ class _DateTimePickerState extends State<DateTimePicker> {
                                   Padding(
                                     padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
                                     child:  Text(
-                                      " $_date",
+                                      " ${dateState != null ? dateState : "Date"}",
                                       style: TextStyle(
                                           color: Colors.white,
                                           // fontWeight: FontWeight.bold,
@@ -96,12 +96,13 @@ class _DateTimePickerState extends State<DateTimePicker> {
                           theme: DatePickerTheme(
                             containerHeight: 210.0,
                           ),
-                          showTitleActions: true, onConfirm: (time) {
-                        print('confirm $time');
-                        _time = '${time.hour} : ${time.minute} : ${time.second}';
-                        setState(() {});
-                      }, currentTime: DateTime.now(), locale: LocaleType.en);
-                      setState(() {});
+                          showTitleActions: true, 
+                          onConfirm: (time) {
+                            print('confirm $time');
+                            timeState = '${time.hour} : ${time.minute} : ${time.second}';
+                            updateDateTime('time', timeState);
+                          }, 
+                          currentTime: DateTime.now(), locale: LocaleType.en);
                     },
                     child: Container(
                       alignment: Alignment.center,
@@ -125,7 +126,7 @@ class _DateTimePickerState extends State<DateTimePicker> {
                                     Padding(
                                       padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
                                       child:  Text(
-                                        " $_time",
+                                         " ${timeState != null ? timeState : "Time"}",
                                         style: TextStyle(
                                             color: Colors.white,
                                             // fontWeight: FontWeight.bold,

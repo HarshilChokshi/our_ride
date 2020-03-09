@@ -18,7 +18,8 @@ class _RideshareSearchFilterState extends State<RideshareSearchFilter>{
   Map<String, dynamic> _filterOptions = {
     'from': null,
     'to': null,
-    'datetime': null,
+    'date': null,
+    'time': null,
     'sameGender': false
   };
 
@@ -41,86 +42,24 @@ class _RideshareSearchFilterState extends State<RideshareSearchFilter>{
     })
   };
 
+  void _onStateDictChange(String field, String location) => {
+    setState(() {
+      this._filterOptions[field] = location;
+    })
+  };
+
   @override
   Widget build(BuildContext context){
-    return CollapsingFilter(genderValue: this._filterOptions['sameGender'], onGenderToggle: _onToggle);
+    return CollapsingFilter(
+      genderValue: this._filterOptions['sameGender'],
+      fromValue: this._filterOptions['from'],
+      toValue: this._filterOptions['to'],
+      dateState: this._filterOptions['date'],
+      timeState: this._filterOptions['time'],
+      onStateDictChange: _onStateDictChange,
+      onGenderToggle: _onToggle
+    );
   }
-}
-
-//composable widgets
-Widget _createDateTimePicker(){
-  return DateTimePicker();
-}
-
-Widget _createTextSearchField(String hintText, {dynamic prefix = Icons.search}) {
-  return Container(
-    height: 40,
-    margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
-    decoration: BoxDecoration(
-      color: Color.fromRGBO(61, 191, 165, 100),
-      shape: BoxShape.rectangle,
-      borderRadius: BorderRadius.all(Radius.circular(10)) 
-    ),
-    child: TextFormField(
-      style: TextStyle(fontSize: 14, color: Colors.white),
-      cursorColor: Colors.white,
-      decoration: InputDecoration(
-        prefixIcon: Padding(
-          padding: EdgeInsets.fromLTRB(8, 0, 0, 0),
-          child: Icon(
-            prefix,
-            color: Colors.white,
-          ), // icon is 48px widget.
-        ),
-        hintText: hintText,
-        hintStyle: TextStyle(fontSize: 14, color: Colors.white),
-        errorStyle: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        filled: true,
-        fillColor: Colors.transparent,
-        border: InputBorder.none
-      )
-  )
-  );
-}
-
-Widget _createSubmitButton() {
-  return Container(
-    height: 40,
-    width: double.infinity,
-    margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
-    child:  RaisedButton(
-      child: new Text(
-        'Seach Rideshares',
-        style: new TextStyle(color: Colors.white),
-      ),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-      onPressed: () {
-        
-      },
-      elevation: 0,
-      color: Color.fromRGBO(61, 191, 165, 100),
-      )
-  );
-  }
-
-Widget _createToggleWithDescription(String description, bool isToggled, Function _onChanged, {dynamic prefix = Icons.search}) {
-  return Container(
-    height: 40,
-    margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
-    decoration: BoxDecoration(
-      shape: BoxShape.rectangle,
-      borderRadius: BorderRadius.all(Radius.circular(10)) 
-    ),
-    child:  SwitchListTile(
-      title: Text(
-        description,
-        style: TextStyle(fontSize: 14, color: Color.fromRGBO(53, 154, 131, 100), fontWeight: FontWeight.w700),
-      ),
-      value: isToggled,
-      onChanged: _onChanged,
-      secondary: Icon(prefix, color: Colors.white),
-    )
-  );
 }
 
 //custom collapsable sliver
@@ -158,14 +97,96 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
 }
 
 class CollapsingFilter extends StatelessWidget {
-  CollapsingFilter({Key key, this.genderValue, this.onGenderToggle}) : super(key: key);
+  CollapsingFilter({
+    Key key,
+    this.fromValue,
+    this.toValue,
+    this.genderValue,
+    this.onGenderToggle,
+    this.onStateDictChange,
+    this.dateState,
+    this.timeState
+  }) : super(key: key);
   GlobalKey<FormState> testFormKey = GlobalKey<FormState>();
   TextEditingController from = TextEditingController();
   TextEditingController to = TextEditingController();
 
   bool genderValue;
-  final Function onGenderToggle;
+  String fromValue, toValue, timeState, dateState;
+  final Function onGenderToggle, onStateDictChange;
 
+  //composable widgets
+  Widget _createTextSearchField(String hintText, {dynamic prefix = Icons.search}) {
+  return Container(
+    height: 40,
+    margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
+    decoration: BoxDecoration(
+      color: Color.fromRGBO(61, 191, 165, 100),
+      shape: BoxShape.rectangle,
+      borderRadius: BorderRadius.all(Radius.circular(10)) 
+    ),
+    child: TextFormField(
+      style: TextStyle(fontSize: 14, color: Colors.white),
+      cursorColor: Colors.white,
+      decoration: InputDecoration(
+        prefixIcon: Padding(
+          padding: EdgeInsets.fromLTRB(8, 0, 0, 0),
+          child: Icon(
+            prefix,
+            color: Colors.white,
+          ), // icon is 48px widget.
+        ),
+        hintText: hintText,
+        hintStyle: TextStyle(fontSize: 14, color: Colors.white),
+        errorStyle: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        filled: true,
+        fillColor: Colors.transparent,
+        border: InputBorder.none
+      )
+  )
+  );
+}
+
+  Widget _createSubmitButton() {
+  return Container(
+    height: 40,
+    width: double.infinity,
+    margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
+    child:  RaisedButton(
+      child: new Text(
+        'Seach Rideshares',
+        style: new TextStyle(color: Colors.white),
+      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+      onPressed: () {
+        
+      },
+      elevation: 0,
+      color: Color.fromRGBO(61, 191, 165, 100),
+      )
+  );
+  }
+
+  Widget _createToggleWithDescription(String description, bool isToggled, Function _onChanged, {dynamic prefix = Icons.search}) {
+    return Container(
+      height: 40,
+      margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+      decoration: BoxDecoration(
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.all(Radius.circular(10)) 
+      ),
+      child:  SwitchListTile(
+        title: Text(
+          description,
+          style: TextStyle(fontSize: 14, color: Color.fromRGBO(53, 154, 131, 100), fontWeight: FontWeight.w700),
+        ),
+        value: isToggled,
+        onChanged: _onChanged,
+        secondary: Icon(prefix, color: Colors.white),
+      )
+    );
+  }
+  
   @override
   Widget build(BuildContext context) {
     return SliverPersistentHeader(
@@ -184,7 +205,7 @@ class CollapsingFilter extends StatelessWidget {
                 children: <Widget>[
                   TFWithAutoComplete(
                     typeAheadController: from,
-                    hintText:'From',
+                    hintText: (fromValue != null ? fromValue : 'From'),
                     prefix:Icons.edit_location,
                     suggestionsCallback: (prefixSearch) async { //this should be async
                       return await fetchLocationSuggestions(prefixSearch);
@@ -200,6 +221,7 @@ class CollapsingFilter extends StatelessWidget {
                           );  
                     },
                     onSuggestionsSelected: (suggestion) {
+                      onStateDictChange('from', suggestion['description']);
                       from.text = suggestion['description'];
                       // Navigator.of(context).push(MaterialPageRoute(
                       //   builder: (context) => ProductPage(product: suggestion)
@@ -208,7 +230,7 @@ class CollapsingFilter extends StatelessWidget {
                   ),
                   TFWithAutoComplete(
                     typeAheadController: to,
-                    hintText:'To',
+                    hintText:(toValue != null ? toValue : 'To'),
                     prefix:Icons.edit_location,
                     suggestionsCallback: (prefixSearch) async { //this should be async
                       return await fetchLocationSuggestions(prefixSearch);
@@ -224,15 +246,18 @@ class CollapsingFilter extends StatelessWidget {
                           );
                     },
                     onSuggestionsSelected: (suggestion) {
+                      onStateDictChange('to', suggestion['description']);
                       to.text = suggestion['description'];
                       // Navigator.of(context).push(MaterialPageRoute(
                       //   builder: (context) => ProductPage(product: suggestion)
                       // ));
                     },
                   ),
-                  // _createTextSearchField('To', prefix:Icons.edit_location),
-                  // _createTextSearchField('Time', prefix:Icons.access_time),
-                  _createDateTimePicker(),
+                  DateTimeFilter(
+                    updateDateTime: onStateDictChange,
+                    dateState: dateState,
+                    timeState: timeState,
+                  ),
                   _createToggleWithDescription("Same Gender Only", this.genderValue, this.onGenderToggle, prefix:Icons.person),
                   _createSubmitButton(),
                 ]
