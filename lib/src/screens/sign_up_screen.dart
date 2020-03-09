@@ -40,33 +40,36 @@ class SignUpState extends State<SignUpScreen> {
       ),
       backgroundColor: Colors.transparent,
       resizeToAvoidBottomPadding: false,
-      body: new Container(
-        margin: new EdgeInsets.only(left: 50, right: 50, top: 100),
-        child: new Form(
-          key: formKey,
-          child: new Column(
-            children: <Widget>[
-              new OurRideTitle(),
-              new Container(margin: EdgeInsets.only(bottom: 100)),
-              createEmailTextField(),
-              new Container(margin: EdgeInsets.only(bottom: 10)),
-              createPasswordTextField(),
-              new Container(margin: EdgeInsets.only(bottom: 10)),
-              createNameTextField(true),
-              new Container(margin: EdgeInsets.only(bottom: 10)),
-              createNameTextField(false),
-              new Container(margin: EdgeInsets.only(bottom: 10)),
-              createGenderDropDown(),
-              new Container(margin: EdgeInsets.only(bottom: 10)),
-              createLinkFacebookAccount(),
-              new Container(margin: EdgeInsets.only(bottom: 10)),
-              createDriversLicenseTextField(),
-              new Container(margin: EdgeInsets.only(bottom: 10)),
-              createRiderDriverOption(),
-              createNextButton(),
-            ],
+
+      body: new SingleChildScrollView(
+        child: new Container(
+          margin: new EdgeInsets.only(left: 50, right: 50, top: 100),
+          child: new Form(
+            key: formKey,
+            child: new Column(
+              children: <Widget>[
+                new OurRideTitle(),
+                new Container(margin: EdgeInsets.only(bottom: 100)),
+                createEmailTextField(),
+                new Container(margin: EdgeInsets.only(bottom: 10)),
+                createPasswordTextField(),
+                new Container(margin: EdgeInsets.only(bottom: 10)),
+                createNameTextField(true),
+                new Container(margin: EdgeInsets.only(bottom: 10)),
+                createNameTextField(false),
+                new Container(margin: EdgeInsets.only(bottom: 10)),
+                createGenderDropDown(),
+                new Container(margin: EdgeInsets.only(bottom: 10)),
+                createLinkFacebookAccount(),
+                new Container(margin: EdgeInsets.only(bottom: 10)),
+                createDriversLicenseTextField(),
+                new Container(margin: EdgeInsets.only(bottom: 10)),
+                createRiderDriverOption(),
+                createNextButton(),
+              ],
+            ),
           ),
-        ),
+        )
       ),
      ),
    );

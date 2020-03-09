@@ -8,6 +8,7 @@ import '../widgets/our_ride_title.dart';
 import '../contants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import '../widgets/TF_autocomplete.dart';
 
 class UserInfoScreen extends StatefulWidget {
   UserProfile userProfile;
@@ -134,6 +135,40 @@ class UserInfoState extends State<UserInfoScreen> {
         color: appThemeColor,
       )
     )
+    );
+  }
+
+  Widget createDropDown(bool isCity) {
+    return new TFWithAutoComplete(
+      suggestionsCallback: (String prefix) {
+        if(isCity) {
+          return ontarioCities.where((f) => f.startsWith(prefix)).toList();
+        } else {
+          return [];
+        }
+      },
+      itemBuilder: (context, value) {
+        Icon leadingIcon = isCity ? 
+          new Icon(Icons.location_city) :
+          new Icon(Icons.school);
+        return new Container(
+          color: appThemeColor,
+          child: ListTile(
+            leading: leadingIcon,
+            title: new Text(
+              value,
+              style: new TextStyle(
+                color: Colors.white,
+                fontSize: 12.0,
+              ),
+            ),
+          )
+        );
+      },
+      onSuggestionsSelected: (suggestion) {
+
+      },
+      typeAheadController: null
     );
   }
 

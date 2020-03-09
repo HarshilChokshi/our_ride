@@ -94,6 +94,8 @@ class MyRideSharesRidersState extends State<MyRideSharesRidersScreen> {
                 riders.add(rider.toString());
               }
 
+              bool isDriverMale = f.data['isDriverMale'];
+
               Rideshare riderRideShare = Rideshare.fromDetails(
                 f.data['driverId'],
                 f.data['pickUpLocation'],
@@ -105,6 +107,7 @@ class MyRideSharesRidersState extends State<MyRideSharesRidersScreen> {
                 f.data['price'],
                 car,
                 riders,
+                isDriverMale,
               );
               
               riderRideshares.add(riderRideShare);

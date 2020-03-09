@@ -56,23 +56,25 @@ class ViewRideShareDetailsState extends State<ViewRideshareDetailsScreen> {
         } else {
             List<UserProfile> rideShareUsers = snapshot.data;
             return new Scaffold(
-              backgroundColor: lightGreyColor,
-              body: new Container(
-                child: new Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    new Container(margin: EdgeInsets.only(bottom: 20)),
-                    createTitleText('Riders and Drivers'),
-                    new Container(margin: EdgeInsets.only(bottom: 20)),
-                    new SizedBox(height: 200.0, child: new RideShareUsersList(rideShareUsers, this)),
-                    new Container(margin: EdgeInsets.only(bottom: 40)),
-                    createTitleText('Vehicle Details'),
-                    new Container(margin: EdgeInsets.only(bottom: 20)),
-                    createCarDetails(rideshareVehicle.make, rideshareVehicle.model),
-                    new Container(margin: EdgeInsets.only(bottom: 40)),
-                    createGroupChatButton(),
-                  ],
-                ),
+              backgroundColor: Colors.white,
+              body: new SingleChildScrollView(
+                child: new Container(
+                  child: new Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      new Container(margin: EdgeInsets.only(bottom: 20)),
+                      createTitleText('Vehicle Details'),
+                      new Container(margin: EdgeInsets.only(bottom: 20)),
+                      createCarDetails(rideshareVehicle.make, rideshareVehicle.model),
+                      new Container(margin: EdgeInsets.only(bottom: 40)),
+                      createTitleText('Riders and Drivers'),
+                      new Container(margin: EdgeInsets.only(bottom: 20)),
+                      new SizedBox(height: 300.0, child: new RideShareUsersList(rideShareUsers, this)),
+                      new Container(margin: EdgeInsets.only(bottom: 40)),
+                      createGroupChatButton(),
+                    ],
+                  ),
+                )
               ),
               appBar: new AppBar(
                 backgroundColor: appThemeColor,
@@ -95,7 +97,8 @@ class ViewRideShareDetailsState extends State<ViewRideshareDetailsScreen> {
       title,
       style: new TextStyle(
         color: Colors.black,
-        fontSize: 16.0,
+        fontSize: 20.0,
+        fontWeight: FontWeight.bold,
       ),
     );
   }
@@ -134,7 +137,7 @@ class ViewRideShareDetailsState extends State<ViewRideshareDetailsScreen> {
             description + ':',
             style: new TextStyle(
               color: Colors.black,
-              fontSize: 18.0,
+              fontSize: 12.0,
             ),
           ),
           new Container(padding: new EdgeInsets.only(left: 20)),
@@ -142,7 +145,7 @@ class ViewRideShareDetailsState extends State<ViewRideshareDetailsScreen> {
             value,
             style: new TextStyle(
               color: Colors.grey,
-              fontSize: 18.0,
+              fontSize: 12.0,
             ),
           ),
         ],
