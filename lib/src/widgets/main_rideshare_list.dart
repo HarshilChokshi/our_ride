@@ -21,8 +21,27 @@ class _RidershareSearchListState extends State<RideshareSearchList>{
   _RidershareSearchListState();
   final SlidableController slidableController = SlidableController();
 
+
+  '''
+   String driverId,
+    DateTime rideDate,
+    TimeOfDay rideTime,
+    int capacity,
+    int numberOfCurrentRiders,
+    double price,
+    Car car,
+    List<String> riders,
+    bool isDriverMale,
+    String driverUniversity,
+    String driverProgram,
+    String driverFirstName,
+    String driverLastName,
+    String driverProfilePic,
+    Location locationPickUp,
+    Location locationDropOff,
+  '''
   var dummyData = Rideshare.fromDetails(
-    "12341234",
+    "diver_id",
     'University, Toronto Waterloo',
     'Square One, Mississauga',
     DateTime.now(),
