@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:our_ride/src/DAOs/UserProfileData.dart';
 import 'package:our_ride/src/models/car.dart';
 import 'package:our_ride/src/models/rideshare_model.dart';
 import 'package:our_ride/src/screens/ride_share_created_screen.dart';
@@ -93,6 +94,11 @@ class CreateRideState extends State<CreateRideScreen> {
   }
 
   void addRideShareToDB(Rideshare r) async {
+    bool isDriverMale;
+    await UserProfileData.fetchUserProfileData(driverId)
+    .then((profile) {
+      isDriverMale = profile.isMale;
+    });
     await databaseReference.collection('rideshares')
     .document(r.driverId + '-' + r.rideDate.toString() + '-' + r.rideTime.hour.toString() + ':' + r.rideTime.minute.toString())
     .setData({
@@ -106,6 +112,7 @@ class CreateRideState extends State<CreateRideScreen> {
       'price': r.price,
       'car': r.car.toJson(),
       'riders': r.riders,
+      'isDriverMale': isDriverMale,
     });
   }
 

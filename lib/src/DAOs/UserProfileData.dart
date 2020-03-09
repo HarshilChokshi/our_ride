@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:our_ride/src/models/payment_method.dart';
-
 import '../models/user_profile.dart';
 import '../models/review.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -91,16 +88,7 @@ class UserProfileData{
   }
 
   static void openFacebookProfile(String facebookUserId) async {
-    String fbProtocolUrl = 'fb://profile/' + facebookUserId;
-    String fallbackUrl = 'https://www.facebook.com/profile?id=' + facebookUserId;
-    try {
-      bool launched = await launch(fbProtocolUrl, forceSafariVC: false);
-      
-      if (!launched) {
-        await launch(fallbackUrl, forceSafariVC: false);
-      }
-    } catch (e) {
-      await launch(fallbackUrl, forceSafariVC: false);
-    }
+    String fbProtocolUrl = 'https://www.facebook.com/profile?id=' + facebookUserId;
+    await launch(fbProtocolUrl, forceSafariVC: false);
   } 
 }
