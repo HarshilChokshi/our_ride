@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:our_ride/src/contants.dart';
 import 'package:our_ride/src/models/car.dart';
+import 'package:our_ride/src/models/location_model.dart';
 import 'package:our_ride/src/models/rideshare_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:our_ride/src/widgets/app_bottom_navigation_bar.dart';
@@ -97,13 +98,29 @@ class MyRideSharesRidersState extends State<MyRideSharesRidersScreen> {
               bool isDriverMale = f.data['isDriverMale'];
               String driverUniversity = f.data['driverUniversity'];
               String driverProgram = f.data['driverProgram'];
+              String driverFirstName =  f.data['driverFirstName'];
+              String driverLastName =  f.data['driverLastName'];
+              String driverProfilePic = f.data['driverProfilePic'];
+
+
+            Location locationPickUp = Location.fromDetails(
+              f.data['locationPickUp']['description'],
+              f.data['locationPickUp']['placeId'],
+              f.data['locationPickUp']['lat'],
+              f.data['locationPickUp']['long']
+            );
+
+            Location locationDropOff = Location.fromDetails(
+              f.data['locationPickUp']['description'],
+              f.data['locationPickUp']['placeId'],
+              f.data['locationPickUp']['lat'],
+              f.data['locationPickUp']['long']
+            );
 
               Rideshare riderRideShare = Rideshare.fromDetails(
                 f.data['driverId'],
                 f.data['pickUpLocation'],
                 f.data['dropOffLocation'],
-                DateTime.parse(f.data['rideDate']),
-                new TimeOfDay(hour: int.parse(rideShareTime[0]), minute: int.parse(rideShareTime[1])),
                 f.data['capacity'],
                 f.data['numberOfCurrentRiders'],
                 f.data['price'],
@@ -112,6 +129,11 @@ class MyRideSharesRidersState extends State<MyRideSharesRidersScreen> {
                 isDriverMale,
                 driverUniversity,
                 driverProgram,
+                driverFirstName,
+                driverLastName,
+                driverProfilePic,
+                locationPickUp,
+                locationDropOff,
               );
               
               riderRideshares.add(riderRideShare);

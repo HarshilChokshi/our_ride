@@ -186,7 +186,7 @@ class RideSharesList extends StatelessWidget {
         createLocationIcon(),
         new Container(margin: EdgeInsets.only(left: 2)),
         createBoldText('Pick Up Location: '),
-        createText(rideShareDataList[index].pickUpLocation),
+        createText(rideShareDataList[index].locationPickUp.description),
       ],
     );
   }
@@ -198,7 +198,7 @@ class RideSharesList extends StatelessWidget {
         createLocationIcon(),
         new Container(margin: EdgeInsets.only(left: 2)),
         createBoldText('Drop Off Location: '),
-        createText(rideShareDataList[index].dropOffLocation),
+        createText(rideShareDataList[index].locationDropOff.description),
       ],
     );
   }

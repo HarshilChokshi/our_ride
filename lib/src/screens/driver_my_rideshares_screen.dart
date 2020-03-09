@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:our_ride/src/contants.dart';
 import 'package:our_ride/src/models/car.dart';
+import 'package:our_ride/src/models/location_model.dart';
 import 'package:our_ride/src/models/rideshare_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:our_ride/src/screens/create_ride_screen.dart';
@@ -102,6 +103,23 @@ class MyRideSharesDriversState extends State<MyRideSharesDriversScreen> {
               f.data['car']['year'],
               f.data['car']['licensePlate'],
             );
+
+            String driverFirstName =  f.data['driverFirstName'];
+            String driverLastName =  f.data['driverLastName'];
+
+            Location locationPickUp = Location.fromDetails(
+              f.data['locationPickUp']['description'],
+              f.data['locationPickUp']['placeId'],
+              f.data['locationPickUp']['lat'],
+              f.data['locationPickUp']['long']
+            );
+
+            Location locationDropOff = Location.fromDetails(
+              f.data['locationPickUp']['description'],
+              f.data['locationPickUp']['placeId'],
+              f.data['locationPickUp']['lat'],
+              f.data['locationPickUp']['long']
+            );
             List<String> rideShareTime = f.data['rideTime'].split(':');
             List<String> riders = [];
 
@@ -111,11 +129,10 @@ class MyRideSharesDriversState extends State<MyRideSharesDriversScreen> {
             bool isDriverMale = f.data['isDriverMale'];
             String driverUniversity = f.data['driverUniversity'];
             String driverProgram = f.data['driverProgram'];
+            String driverProfilePic = f.data['driverProfilePic'];
 
             Rideshare driverRideShare = Rideshare.fromDetails(
               f.data['driverId'],
-              f.data['pickUpLocation'],
-              f.data['dropOffLocation'],
               DateTime.parse(f.data['rideDate']),
               new TimeOfDay(hour: int.parse(rideShareTime[0]), minute: int.parse(rideShareTime[1])),
               f.data['capacity'],
@@ -126,6 +143,11 @@ class MyRideSharesDriversState extends State<MyRideSharesDriversScreen> {
               isDriverMale,
               driverUniversity,
               driverProgram,
+              driverFirstName,
+              driverLastName,
+              driverProfilePic,
+              locationPickUp,
+              locationDropOff,
             );
 
            driverRideShares.add(driverRideShare);

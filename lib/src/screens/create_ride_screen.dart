@@ -1,11 +1,15 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:our_ride/src/DAOs/UserProfileData.dart';
 import 'package:our_ride/src/models/car.dart';
 import 'package:our_ride/src/models/rideshare_model.dart';
 import 'package:our_ride/src/screens/ride_share_created_screen.dart';
+import 'package:our_ride/src/widgets/TF_autocomplete.dart';
+import 'package:our_ride/src/widgets/rideshare_search_filter.dart';
 import '../contants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:http/http.dart' as http;
 
 class CreateRideScreen extends StatefulWidget {
   String driverId;
@@ -28,6 +32,8 @@ class CreateRideState extends State<CreateRideScreen> {
   final carFormKey = new GlobalKey<FormState>();
   Rideshare rideshare;
   final databaseReference = Firestore.instance;
+  TextEditingController pickUpLocationController = TextEditingController();
+  TextEditingController dropOffLocationController = TextEditingController();
 
   CreateRideState(String driverId) {
     this.driverId = driverId;
@@ -59,17 +65,20 @@ class CreateRideState extends State<CreateRideScreen> {
           )
         ],
       ),
-      body: new Column(
-        children: <Widget>[
-          new Container(margin: EdgeInsets.only(bottom: 20)),
-          createAddLocationImage(),
-          new Container(margin: EdgeInsets.only(bottom: 10)),
-          createLocationForm(),
-          new Container(margin: EdgeInsets.only(bottom: 20)),
-          createYourCarText(),
-          new Container(margin: EdgeInsets.only(bottom: 20)),
-          createCarSection(),
-        ],
+      body: new SingleChildScrollView(
+        child: new Column(
+          children: <Widget>[
+            new Container(margin: EdgeInsets.only(bottom: 20)),
+            createAddLocationImage(),
+            new Container(
+            margin: EdgeInsets.only(bottom: 10)),
+            createLocationForm(),
+            new Container(margin: EdgeInsets.only(bottom: 20)),
+            createYourCarText(),
+            new Container(margin: EdgeInsets.only(bottom: 20)),
+            createCarSection(),
+          ],
+        )
       ),
     );
   }
@@ -97,19 +106,23 @@ class CreateRideState extends State<CreateRideScreen> {
     bool isDriverMale;
     String driverUniversity;
     String driverProgram;
+    String driverFirstName;
+    String driverLastName;
+    String driverProfilePic;
 
     await UserProfileData.fetchUserProfileData(driverId)
     .then((profile) {
       isDriverMale = profile.isMale;
       driverUniversity = profile.university;
       driverProgram = profile.program;
+      driverFirstName = profile.firstName;
+      driverLastName = profile.lastName;
+      driverProfilePic = profile.profilePic;
     });
     await databaseReference.collection('rideshares')
     .document(r.driverId + '-' + r.rideDate.toString() + '-' + r.rideTime.hour.toString() + ':' + r.rideTime.minute.toString())
     .setData({
       'driverId': r.driverId,
-      'pickUpLocation': r.pickUpLocation,
-      'dropOffLocation': r.dropOffLocation,
       'rideDate': r.rideDate.toString(),
       'rideTime': r.rideTime.hour.toString() + ':' + r.rideTime.minute.toString(),
       'capacity': r.capacity,
@@ -120,6 +133,11 @@ class CreateRideState extends State<CreateRideScreen> {
       'isDriverMale': isDriverMale,
       'driverUniversity': driverUniversity,
       'driverProgram': driverProgram,
+      'driverFirstName': driverFirstName,
+      'driverLastName': driverLastName,
+      'driverProfilePic': driverProfilePic,
+      'locationPickUp': r.locationPickUp.toJson(),
+      'locationDropOff': r.locationDropOff.toJson(),
     });
   }
 
@@ -146,8 +164,8 @@ class CreateRideState extends State<CreateRideScreen> {
                     createDateTextField(),
                     createTimeTextField(),
                     createCapacityTextField(),
-                    createLocationTextField(true),
-                    createLocationTextField(false),
+                    createLocationDropDown(true),
+                    createLocationDropDown(false),
                     createPriceTextField(),
                   ],
                 ),
@@ -325,6 +343,41 @@ class CreateRideState extends State<CreateRideScreen> {
     );
   }
 
+  Widget createLocationDropDown(bool isPickUpLocation) {
+    return new TFWithAutoComplete(
+      dropDownColor: Color.fromARGB(20, 211, 211, 211),
+      hintText: isPickUpLocation ? 'Pick up location' : 'Drop off location',
+      suggestionsCallback: (String prefix) async {
+        return await fetchLocationSuggestions(prefix);
+      },
+      itemBuilder: (context, value) {
+        return new Container(
+          color: appThemeColor,
+          child: ListTile(
+            leading: Icon(Icons.location_searching),
+            title: new Text(
+              value,
+              style: new TextStyle(
+                color: Colors.white,
+                fontSize: 14.0,
+              ),
+            ),
+          )
+        );
+      },
+      onSuggestionsSelected: (suggestion) {
+        if(isPickUpLocation) {
+          //rideshare.pickUpLocation = suggestion;
+          pickUpLocationController.text = suggestion;
+        } else {
+          //rideshare.dropOffLocation = suggestion;
+          dropOffLocationController.text = suggestion;
+        }
+      },
+      typeAheadController: isPickUpLocation ? pickUpLocationController : dropOffLocationController,
+    );
+  }
+
   Widget createLocationTextField(bool isPickUpLocation) {
     String text = isPickUpLocation ? 'From' : 'To';
     return new TextFormField(
@@ -358,9 +411,9 @@ class CreateRideState extends State<CreateRideScreen> {
       },
       onSaved: (String value) {
         if(isPickUpLocation) {
-          rideshare.pickUpLocation = value;
+          //rideshare.pickUpLocation = value;
         } else {
-          rideshare.dropOffLocation = value;
+          //rideshare.dropOffLocation = value;
         }
       },
     );
