@@ -3,11 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:our_ride/src/contants.dart';
 import 'package:our_ride/src/widgets/app_bottom_navigation_bar.dart';
 import 'package:our_ride/src/widgets/rideshare_search_filter.dart';
-import 'package:our_ride/src/widgets/main_rideshare_list.dart';
+import 'package:our_ride/src/widgets/rideshare_result.dart';
 import 'package:our_ride/src/DAOs/SearchFilter.dart';
 import 'package:our_ride/src/models/rideshare_model.dart';
-import 'package:our_ride/src/models/car.dart';
-import 'package:our_ride/src/models/location_model.dart';
 
 class RideshareListScreen extends StatefulWidget {
   String rider_id;
@@ -37,8 +35,7 @@ class RideshareListState extends State<RideshareListScreen> {
     this.searchResultsFuture = null;
   }
 
-  void updateFuture({bool callingFromChild = false}){
-    // fetching results for future
+  void updateFuture({bool callingFromChild = false, Map searchOptions}){
     setState((){
       this.searchResultsFuture = RideShareSearch.fetchRideshareFilterResults();
     });
@@ -80,7 +77,9 @@ class RideshareListState extends State<RideshareListScreen> {
                                 margin: EdgeInsets.only(top: 70),
                                 width: 50,
                                 height: 50,
-                                child: CircularProgressIndicator()
+                                child: CircularProgressIndicator(
+                                  backgroundColor: appThemeColor,
+                                )
                               )
                             ],
                           );
@@ -92,23 +91,28 @@ class RideshareListState extends State<RideshareListScreen> {
                           }
                           return Column(
                             children: res,
-                            // children: <Widget>[Text("sdf")],
                           ); 
                         }
                         else{
                           return Column(
                             children: [
-                              Text(
-                                "Search for a ride!"
-                              ),
+                              Container(
+                                height: 100,
+                                width: 180,
+                                child:  Center(child:Text(
+                                  "Try searching for a ride!",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Color.fromRGBO(84, 84, 84, 100),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700
+                                  ),
+                                )),
+                              )
+                              
                             ]
                           ); 
                         }
-                        // } else if (snapshot.hasError) {
-                        //   return Container();
-                        // } else {
-                        //   return Container();
-                        // }
                       },
                     )
                   )

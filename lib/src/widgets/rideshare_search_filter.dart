@@ -221,9 +221,16 @@ class CollapsingFilter extends StatelessWidget {
           showAlertDialog(context);
         }
         else{
-          print("calling in child");
-          print(parentListStateRef == null);
-          this.parentListStateRef.updateFuture(callingFromChild: true);
+          this.parentListStateRef.updateFuture(
+            callingFromChild: true,
+            searchOptions: {
+              'from': this.fromValue,
+              'to': this.toValue,
+              'date': this.dateState,
+              'time': this.timeState,
+              'sameGender': this.genderValue
+            }
+          );
         }
       },
       elevation: 0,
@@ -254,7 +261,7 @@ class CollapsingFilter extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-     print("l;kjlkj");
+    //  print("l;kjlkj");
     return SliverPersistentHeader(
       pinned: true,
       delegate: _SliverAppBarDelegate(
