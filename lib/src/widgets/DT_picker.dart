@@ -35,10 +35,10 @@ class DateTimeFilter extends StatelessWidget{
                         ),
                         showTitleActions: true,
                         minTime: DateTime.now(),
-                        maxTime: DateTime(2022, 12, 31),
+                        maxTime: DateTime(2020, 12, 31),
                         onConfirm: (date) {
                           print('confirm $date');
-                          dateState = '${date.year} - ${date.month} - ${date.day}';
+                          dateState = '$date'.split(' ')[0];
                           updateDateTime('date', dateState);
                     }, currentTime: DateTime.now(), locale: LocaleType.en);
                   },
@@ -97,7 +97,7 @@ class DateTimeFilter extends StatelessWidget{
                           showTitleActions: true, 
                           onConfirm: (time) {
                             print('confirm $time');
-                            timeState = '${time.hour} : ${time.minute} : ${time.second}';
+                            timeState = '${time.hour}:${time.minute}';
                             updateDateTime('time', timeState);
                           }, 
                           currentTime: DateTime.now(), locale: LocaleType.en);

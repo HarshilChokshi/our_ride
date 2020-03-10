@@ -47,7 +47,7 @@ class GoogleMapsHandler{
     }
   }
 
-  static List<Map> loadLatLong(dynamic results){
-    return [results['result']['geometry']['location']["lat"], results['result']['geometry']['location']["long"]];
+  static List<double> loadLatLong(dynamic results){
+    return [double.parse(results['result']['geometry']['location']["lat"]), double.parse(results['result']['geometry']['location']["long"])];
   }
 }

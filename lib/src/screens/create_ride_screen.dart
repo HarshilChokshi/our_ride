@@ -1,16 +1,17 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:our_ride/src/DAOs/UserProfileData.dart';
 import 'package:our_ride/src/models/car.dart';
+import 'package:our_ride/src/models/location_model.dart';
 import 'package:our_ride/src/models/rideshare_model.dart';
 import 'package:our_ride/src/screens/ride_share_created_screen.dart';
+import 'package:our_ride/src/widgets/DT_picker.dart';
 import 'package:our_ride/src/widgets/TF_autocomplete.dart';
 import 'package:our_ride/src/widgets/rideshare_search_filter.dart';
 import 'package:our_ride/src/DAOs/GoogleMaps.dart';
 import '../contants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:http/http.dart' as http;
+import 'package:flutter/services.dart';
 
 class CreateRideScreen extends StatefulWidget {
   String driverId;
@@ -23,6 +24,7 @@ class CreateRideScreen extends StatefulWidget {
 
   CreateRideScreen(String driverId) {
     this.driverId = driverId;
+    SystemChannels.textInput.invokeMethod('TextInput.hide');
   }
 }
 
@@ -35,17 +37,21 @@ class CreateRideState extends State<CreateRideScreen> {
   final databaseReference = Firestore.instance;
   TextEditingController pickUpLocationController = TextEditingController();
   TextEditingController dropOffLocationController = TextEditingController();
+  String selectedDate;
+  String selectedTime;
 
   CreateRideState(String driverId) {
     this.driverId = driverId;
+    Car rideShareVehicle = new Car();
+    Location locationPickUp = new Location();
+    Location locationDropOff = new Location();
+    rideshare = new Rideshare(driverId, rideShareVehicle, locationPickUp, locationDropOff);
   }
 
   @override
   Widget build(BuildContext context) {
-    Car rideShareVehicle = new Car();
-    rideshare = new Rideshare(driverId, rideShareVehicle);
     return new Scaffold(
-      backgroundColor: lightGreyColor,
+      backgroundColor: appThemeColor,
       resizeToAvoidBottomInset: false,
       appBar: new AppBar(
         backgroundColor: appThemeColor,
@@ -67,21 +73,16 @@ class CreateRideState extends State<CreateRideScreen> {
         ],
       ),
       body: new SingleChildScrollView(
-        child: new Column(
-          children: <Widget>[
-            new Container(margin: EdgeInsets.only(bottom: 20)),
-            createAddLocationImage(),
-            new Container(
-            margin: EdgeInsets.only(bottom: 10)),
-            createLocationForm(),
-            new Container(margin: EdgeInsets.only(bottom: 20)),
-            createYourCarText(),
-            new Container(margin: EdgeInsets.only(bottom: 20)),
-            createCarSection(),
-          ],
-        )
-      ),
-    );
+          child: new Column(
+            children: <Widget>[
+              createLocationForm(),
+              new Container(margin: EdgeInsets.only(bottom: 20)),
+              new Container(margin: EdgeInsets.only(bottom: 20)),
+              createCarSection(),
+            ],
+          )
+        ),
+      );
   }
 
   void createRideShare() {
@@ -89,10 +90,25 @@ class CreateRideState extends State<CreateRideScreen> {
       return;
     }
 
+    if(selectedDate.isEmpty || selectedTime.isEmpty) {
+      showEmptyFieldAlert();
+      return;
+    }
+
+    if(this.rideshare.locationPickUp.description == null ||
+      this.rideshare.locationDropOff.description == null) {
+        showEmptyFieldAlert();
+        return;
+    }
+   
+    getLatLong(rideshare.locationPickUp.placeId, true);
+    getLatLong(rideshare.locationDropOff.placeId, false);
+
     carFormKey.currentState.save();
     locationFormKey.currentState.save();
     rideshare.numberOfCurrentRiders = 0;
     rideshare.riders = [];
+
 
     addRideShareToDB(rideshare);
 
@@ -101,6 +117,21 @@ class CreateRideState extends State<CreateRideScreen> {
       new CupertinoPageRoute(
         builder: (context) => RideShareCreatedScreen(driverId)
       ));
+  }
+
+  void getLatLong(String placeId, bool isPickUpLocation) async {
+    await GoogleMapsHandler.fetchLatLongForPlaceID(placeId)
+    .then((List latlong){
+      double lat = latlong[0];
+      double long = latlong[1];
+      if(isPickUpLocation) {
+        rideshare.locationPickUp.lat = lat;
+        rideshare.locationPickUp.long = long;
+      } else {
+        rideshare.locationDropOff.lat = lat;
+        rideshare.locationDropOff.long = long;
+      }
+    });
   }
 
   void addRideShareToDB(Rideshare r) async {
@@ -121,11 +152,11 @@ class CreateRideState extends State<CreateRideScreen> {
       driverProfilePic = profile.profilePic;
     });
     await databaseReference.collection('rideshares')
-    .document(r.driverId + '-' + r.rideDate.toString() + '-' + r.rideTime.hour.toString() + ':' + r.rideTime.minute.toString())
+    .document(r.driverId + '-' + selectedDate + '-' + selectedTime)
     .setData({
       'driverId': r.driverId,
-      'rideDate': r.rideDate.toString(),
-      'rideTime': r.rideTime.hour.toString() + ':' + r.rideTime.minute.toString(),
+      'rideDate': selectedDate,
+      'rideTime': selectedTime,
       'capacity': r.capacity,
       'numberOfCurrentRiders': r.numberOfCurrentRiders,
       'price': r.price,
@@ -142,6 +173,27 @@ class CreateRideState extends State<CreateRideScreen> {
     });
   }
 
+  void showEmptyFieldAlert() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Color.fromRGBO(61, 191, 165, 100),
+          title: new Text('Empty Fields'),
+          content: new Text('No fields can be empty', style: new TextStyle(color: Colors.black),),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text('Close', style: new TextStyle(color: Colors.white)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      }
+    );
+  }
+
   Widget createAddLocationImage() {
     return new Icon(
       Icons.add_location,
@@ -153,7 +205,7 @@ class CreateRideState extends State<CreateRideScreen> {
   Widget createLocationForm() {
     return new Container(
       width: double.infinity,
-      color: Colors.white,
+      color: appThemeColor,
       child: new Form(
         key: locationFormKey,
         child: new Row(
@@ -162,8 +214,11 @@ class CreateRideState extends State<CreateRideScreen> {
             new Flexible(
               child: new Column(
                   children: <Widget>[
-                    createDateTextField(),
-                    createTimeTextField(),
+                    new DateTimeFilter(
+                     updateDateTime: updateDateTime,
+                     dateState: selectedDate,
+                     timeState: selectedTime,
+                    ),
                     createCapacityTextField(),
                     createLocationDropDown(true),
                     createLocationDropDown(false),
@@ -176,6 +231,17 @@ class CreateRideState extends State<CreateRideScreen> {
         ),
       ),
     );
+  }
+
+
+  void updateDateTime(String type, String state) {
+    setState(() {
+      if(type == 'date') {
+        this.selectedDate = state;
+      } else {
+        this.selectedTime = state;
+      }
+    });
   }
 
   Widget createYourCarText() {
@@ -197,7 +263,7 @@ class CreateRideState extends State<CreateRideScreen> {
   Widget createCarSection() {
    return new Container(
       width: double.infinity,
-      color: Colors.white,
+      color: appThemeColor,
       child: new Form(
         key: carFormKey,
         child: new Row(
@@ -234,20 +300,8 @@ class CreateRideState extends State<CreateRideScreen> {
         hintStyle: new TextStyle(fontSize: 14, color: Colors.grey),
         errorStyle: new TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
         filled: true,
-        fillColor: new Color.fromARGB(20, 211, 211, 211),
-        focusedBorder: new UnderlineInputBorder(
-          borderSide: new BorderSide(
-            color: lightGreyColor,
-            width: 2.0,
-          )
-        ),
-        enabledBorder: new UnderlineInputBorder(
-            borderSide: new BorderSide(
-              width: 2.0,
-              color: lightGreyColor,
-            )
-          ),
-        ),
+        fillColor: new Color.fromRGBO(61, 191, 165, 100),
+      ),
       cursorColor: Colors.grey,
       validator: (String value) {
         try {
@@ -262,244 +316,170 @@ class CreateRideState extends State<CreateRideScreen> {
     );
   }
 
- Widget createTimeTextField() {
-    return new TextFormField(
-      style: new TextStyle(
-        color: Colors.grey,
-      ),
-      decoration: new InputDecoration(
-        hintText: 'Time Example: 16:30',
-        hintStyle: new TextStyle(fontSize: 14, color: Colors.grey),
-        errorStyle: new TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-        filled: true,
-        fillColor: new Color.fromARGB(20, 211, 211, 211),
-        focusedBorder: new UnderlineInputBorder(
-          borderSide: new BorderSide(
-            color: lightGreyColor,
-            width: 2.0,
-          )
-        ),
-        enabledBorder: new UnderlineInputBorder(
-            borderSide: new BorderSide(
-              width: 2.0,
-              color: lightGreyColor,
-            )
-          ),
-        ),
-      cursorColor: Colors.grey,
-      validator: (String value) {
-        try {
-          int hour;
-          int minute;
-          List<String> split = value.split(':');
-          hour = int.parse(split[0]);
-          minute = int.parse(split[1]);
-        } on Exception catch(e) {
-          return 'Time must be given in hh:mm format';
-        }
-      },
-      onSaved: (String value) {
-        List<String> split = value.split(':');
-        TimeOfDay timeOfRide = new TimeOfDay(hour: int.parse(split[0]), minute: int.parse(split[1]));
-        rideshare.rideTime = timeOfRide;
-      },
-    );
-  }
   Widget createCapacityTextField() {
-    return new TextFormField(
-      style: new TextStyle(
-        color: Colors.grey,
+    return new Container(
+      height: 60,
+      margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
+      decoration: BoxDecoration(
+        color: Color.fromRGBO(61, 191, 165, 100),
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.all(Radius.circular(10)) 
       ),
-      decoration: new InputDecoration(
-        hintText: 'Capacity',
-        hintStyle: new TextStyle(fontSize: 14, color: Colors.grey),
-        errorStyle: new TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-        filled: true,
-        fillColor: new Color.fromARGB(20, 211, 211, 211),
-        focusedBorder: new UnderlineInputBorder(
-          borderSide: new BorderSide(
-            color: lightGreyColor,
-            width: 2.0,
-          )
+      child: TextFormField(
+        style: new TextStyle(
+          color: Colors.white,
         ),
-        enabledBorder: new UnderlineInputBorder(
-            borderSide: new BorderSide(
-              width: 2.0,
-              color: lightGreyColor,
-            )
-          ),
+        decoration: new InputDecoration(
+          hintText: 'Capacity',
+          hintStyle: new TextStyle(fontSize: 14, color: new Color.fromARGB(150, 255, 255, 255)),
+          errorStyle: new TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          filled: true,
+          fillColor: new Color.fromARGB(20, 211, 211, 211),
+          focusedBorder: InputBorder.none,
+          enabledBorder: InputBorder.none,
         ),
-      cursorColor: Colors.grey,
-      keyboardType: TextInputType.number,
-      validator: (String value) {
-        try {
-          int.parse(value);
-        } on Exception catch(e) {
-          return 'The capacity cannot be empty';
-        }
-      },
-      onSaved: (String value) {
-        rideshare.capacity = int.parse(value);
-      },
-    );
+        keyboardType: TextInputType.number,
+        validator: (String value) {
+          try {
+            int.parse(value);
+          } on Exception catch(e) {
+            return 'The capacity cannot be empty';
+          }
+        },
+        onSaved: (String value) {
+          rideshare.capacity = int.parse(value);
+        },
+      ),
+    );  
   }
 
   Widget createLocationDropDown(bool isPickUpLocation) {
-    return new TFWithAutoComplete(
-      dropDownColor: Color.fromARGB(20, 211, 211, 211),
-      hintText: isPickUpLocation ? 'Pick up location' : 'Drop off location',
-      suggestionsCallback: (String prefix) async {
-        return await GoogleMapsHandler.fetchLocationSuggestions(prefix);
-      },
-      itemBuilder: (context, value) {
-        return new Container(
-          color: appThemeColor,
-          child: ListTile(
-            leading: Icon(Icons.location_searching),
-            title: new Text(
-              value,
-              style: new TextStyle(
-                color: Colors.white,
-                fontSize: 14.0,
-              ),
-            ),
-          )
-        );
-      },
-      onSuggestionsSelected: (suggestion) {
-        if(isPickUpLocation) {
-          //rideshare.pickUpLocation = suggestion;
-          pickUpLocationController.text = suggestion;
-        } else {
-          //rideshare.dropOffLocation = suggestion;
-          dropOffLocationController.text = suggestion;
-        }
-      },
-      typeAheadController: isPickUpLocation ? pickUpLocationController : dropOffLocationController,
-    );
-  }
-
-  Widget createLocationTextField(bool isPickUpLocation) {
-    String text = isPickUpLocation ? 'From' : 'To';
-    return new TextFormField(
-      style: new TextStyle(
-        color: Colors.grey,
+    return new Container(
+      height: 60,
+      margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
+      decoration: BoxDecoration(
+        color: Color.fromRGBO(61, 191, 165, 100),
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.all(Radius.circular(10)) 
       ),
-      decoration: new InputDecoration(
-        hintText: text,
-        hintStyle: new TextStyle(fontSize: 14, color: Colors.grey),
-        errorStyle: new TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-        filled: true,
-        fillColor: new Color.fromARGB(20, 211, 211, 211),
-        focusedBorder: new UnderlineInputBorder(
-          borderSide: new BorderSide(
-            color: lightGreyColor,
-            width: 2.0,
-          )
-        ),
-        enabledBorder: new UnderlineInputBorder(
-            borderSide: new BorderSide(
-              width: 2.0,
-              color: lightGreyColor,
+      child: TFWithAutoComplete(
+        dropDownColor: Color.fromARGB(20, 211, 211, 211),
+        hintText: isPickUpLocation ? 'Pick up location' : 'Drop off location',
+        suggestionsCallback: (String prefix) async {
+          return await GoogleMapsHandler.fetchLocationSuggestions(prefix);
+        },
+        itemBuilder: (context, suggestion) {
+          return new Container(
+            color: appThemeColor,
+            child: ListTile(
+              leading: Icon(Icons.location_searching),
+              title: new Text(
+                suggestion['description'],
+                style: new TextStyle(
+                  color: Colors.white,
+                  fontSize: 14.0,
+                ),
+              ),
             )
-          ),
-        ),
-      cursorColor: Colors.grey,
-      validator: (String value) {
-        if(value.length == 0) {
-          return 'Must specify a location';
-        }
-      },
-      onSaved: (String value) {
-        if(isPickUpLocation) {
-          //rideshare.pickUpLocation = value;
-        } else {
-          //rideshare.dropOffLocation = value;
-        }
-      },
+          );
+        },
+        onSuggestionsSelected: (suggestion) {
+          if(isPickUpLocation) {
+            this.rideshare.locationPickUp.description = suggestion['description'];
+            print('pick location is: ' + rideshare.locationPickUp.description);
+            this.rideshare.locationPickUp.placeId = suggestion['id'];
+            this.pickUpLocationController.text = suggestion['description'];             
+          } else {
+            this.rideshare.locationDropOff.description = suggestion['description'];
+            print('dropoff location is: ' + rideshare.locationDropOff.description);
+            this.rideshare.locationDropOff.placeId = suggestion['id'];
+            this.dropOffLocationController.text = suggestion['description'];              
+          }
+        },
+        typeAheadController: isPickUpLocation ? pickUpLocationController : dropOffLocationController,
+      )
     );
   }
 
   Widget createPriceTextField() {
-    return new TextFormField(
-      style: new TextStyle(
-        color: Colors.grey,
+    return new Container(
+      height: 60,
+      margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
+      decoration: BoxDecoration(
+        color: Color.fromRGBO(61, 191, 165, 100),
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.all(Radius.circular(10)) 
       ),
-      decoration: new InputDecoration(
-        hintText: 'Price',
-        hintStyle: new TextStyle(fontSize: 14, color: Colors.grey),
-        errorStyle: new TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-        filled: true,
-        fillColor: new Color.fromARGB(20, 211, 211, 211),
-        focusedBorder: new UnderlineInputBorder(
-          borderSide: new BorderSide(
-            color: lightGreyColor,
-            width: 2.0,
-          )
+      child: TextFormField(
+        style: new TextStyle(
+          color: Colors.white,
         ),
-        enabledBorder: new UnderlineInputBorder(
-            borderSide: new BorderSide(
-              width: 2.0,
-              color: lightGreyColor,
-            )
-          ),
+        decoration: new InputDecoration(
+          hintText: 'Price',
+          hintStyle: new TextStyle(fontSize: 14, color: Color.fromARGB(150, 255, 255, 255)),
+          errorStyle: new TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          filled: true,
+          fillColor: new Color.fromARGB(20, 211, 211, 211),
+          focusedBorder: InputBorder.none,
+          enabledBorder: InputBorder.none,
         ),
-      cursorColor: Colors.grey,
-      keyboardType: TextInputType.numberWithOptions(decimal: true),
-      validator: (String value) {
-        try {
-          double.parse(value);
-        } on Exception catch(e) {
-          return 'Format for price is dd.cc';
-        }
-      },
-      onSaved: (String value) {
-        rideshare.price = double.parse(value);
-      },
+        keyboardType: TextInputType.numberWithOptions(decimal: true),
+        validator: (String value) {
+          try {
+            double.parse(value);
+          } on Exception catch(e) {
+            return 'Format for price is dd.cc';
+          }
+        },
+        onSaved: (String value) {
+          rideshare.price = double.parse(value);
+        },
+      )
     );
   }
 
   Widget createCarInfoTextField(String carInfo) {
-   return new TextFormField(
-      style: new TextStyle(
-        color: Colors.grey,
+    return new Container(
+      height: 60,
+      margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
+      decoration: BoxDecoration(
+        color: Color.fromRGBO(61, 191, 165, 100),
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.all(Radius.circular(10)) 
       ),
-      decoration: new InputDecoration(
-        hintText: carInfo,
-        hintStyle: new TextStyle(fontSize: 14, color: Colors.grey),
-        errorStyle: new TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-        filled: true,
-        fillColor: new Color.fromARGB(20, 211, 211, 211),
-        focusedBorder: new UnderlineInputBorder(
-          borderSide: new BorderSide(
-            color: lightGreyColor,
-            width: 2.0,
-          )
-        ),
-        enabledBorder: new UnderlineInputBorder(
-            borderSide: new BorderSide(
-              width: 2.0,
-              color: lightGreyColor,
-            )
+      child: new Center(
+        child: TextFormField(
+          style: new TextStyle(
+            color: Colors.white,
           ),
+          decoration: new InputDecoration(
+            hintText: carInfo,
+            hintStyle: new TextStyle(fontSize: 14, color: new Color.fromARGB(150, 255, 255, 255)),
+            errorStyle: new TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            filled: true,
+            fillColor: new Color.fromARGB(20, 211, 211, 211),
+            focusedBorder: InputBorder.none,
+            enabledBorder: InputBorder.none,
+          ),
+          cursorColor: Colors.grey,
+          validator: (String value) {
+            if(value.isEmpty) {
+              return 'Value cannot be empty';
+            }
+          },
+          onSaved: (String value) {
+            if(carInfo == 'Make') {
+              rideshare.car.make = value;
+            } else if(carInfo == 'Model') {
+              rideshare.car.model = value;
+            } else if(carInfo == 'Year') {
+              rideshare.car.year = value;
+            } else if(carInfo == 'License Plate') {
+              rideshare.car.licensePlate = value;
+            }
+          },
         ),
-      cursorColor: Colors.grey,
-      validator: (String value) {
-        if(value.isEmpty) {
-          return 'Value cannot be empty';
-        }
-      },
-      onSaved: (String value) {
-        if(carInfo == 'Make') {
-          rideshare.car.make = value;
-        } else if(carInfo == 'Model') {
-          rideshare.car.model = value;
-        } else if(carInfo == 'Year') {
-          rideshare.car.year = value;
-        } else if(carInfo == 'License Plate') {
-          rideshare.car.licensePlate = value;
-        }
-      },
+      ),
     );
   }
 }

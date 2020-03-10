@@ -21,9 +21,11 @@ class Rideshare {
   Location locationDropOff;
 
 
-  Rideshare(String driverId, Car car) {
+  Rideshare(String driverId, Car car, Location locationPickUp, Location locationDropOff) {
     this.driverId = driverId;
     this.car = car;
+    this.locationPickUp = locationPickUp;
+    this.locationDropOff = locationDropOff;
   }
 
   Rideshare.fromDetails(
