@@ -48,6 +48,6 @@ class GoogleMapsHandler{
   }
 
   static List<double> loadLatLong(dynamic results){
-    return [double.parse(results['result']['geometry']['location']["lat"]), double.parse(results['result']['geometry']['location']["long"])];
+    return [double.parse(results['result']['geometry']['location']["lat"]), double.parse(results['result']['geometry']['location']["lng"])];
   }
 }
