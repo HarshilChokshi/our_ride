@@ -5,15 +5,29 @@ import 'package:flutter/material.dart';
 import 'package:our_ride/src/contants.dart';
 import 'package:our_ride/src/widgets/TF_autocomplete.dart';
 import 'package:our_ride/src/widgets/DT_picker.dart';
-
+import 'package:our_ride/src/screens/rideshare_list_screen.dart';
+import 'package:our_ride/src/models/rideshare_model.dart';
 
 class RideshareSearchFilter extends StatefulWidget{
-  RideshareSearchFilter({Key key}) : super(key: key);
+  
+  RideshareListState parentListStateRef;
+
+  RideshareSearchFilter({
+    Key key,
+    @required
+    this.parentListStateRef
+  }) : super(key: key);
   @override
-  _RideshareSearchFilterState createState() => _RideshareSearchFilterState();
+
+  _RideshareSearchFilterState createState() => _RideshareSearchFilterState(
+    parentListStateRef
+  );
 }
 
 class _RideshareSearchFilterState extends State<RideshareSearchFilter>{
+  _RideshareSearchFilterState(this.parentListStateRef);
+
+  RideshareListState parentListStateRef;
   Map<String, dynamic> _filterOptions = {
     'from': null,
     'to': null,
@@ -54,7 +68,9 @@ class _RideshareSearchFilterState extends State<RideshareSearchFilter>{
       fromValue: this._filterOptions['from'],
       toValue: this._filterOptions['to'],
       dateState: this._filterOptions['date'],
+      parentListStateRef: this.parentListStateRef,
       timeState: this._filterOptions['time'],
+      
       onStateDictChange: _onStateDictChange,
       onGenderToggle: _onToggle
     );
@@ -104,12 +120,14 @@ class CollapsingFilter extends StatelessWidget {
     this.onGenderToggle,
     this.onStateDictChange,
     this.dateState,
+    this.parentListStateRef,
     this.timeState
   }) : super(key: key);
   GlobalKey<FormState> testFormKey = GlobalKey<FormState>();
   TextEditingController from = TextEditingController();
   TextEditingController to = TextEditingController();
 
+  RideshareListState parentListStateRef;
   bool genderValue;
   String fromValue, toValue, timeState, dateState;
   final Function onGenderToggle, onStateDictChange;
@@ -172,7 +190,7 @@ class CollapsingFilter extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  "Search Error",
+                  "Search Input Error",
                   style: TextStyle(
                     color: Colors.white
                   ),
@@ -180,7 +198,7 @@ class CollapsingFilter extends StatelessWidget {
               ],
               ),
             content: Text(
-              "Make sure all fields are fillied out!",
+              "Please fillout all search fields.",
               style: TextStyle(
                 color: Colors.white
               ),
@@ -203,7 +221,9 @@ class CollapsingFilter extends StatelessWidget {
           showAlertDialog(context);
         }
         else{
-          //fetch listview resuults
+          print("calling in child");
+          print(parentListStateRef == null);
+          this.parentListStateRef.initiateSearch();
         }
       },
       elevation: 0,
@@ -234,6 +254,7 @@ class CollapsingFilter extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
+     print("l;kjlkj");
     return SliverPersistentHeader(
       pinned: true,
       delegate: _SliverAppBarDelegate(
@@ -266,9 +287,6 @@ class CollapsingFilter extends StatelessWidget {
                     onSuggestionsSelected: (suggestion) {
                       onStateDictChange('from', suggestion['description']);
                       from.text = suggestion['description'];
-                      // Navigator.of(context).push(MaterialPageRoute(
-                      //   builder: (context) => ProductPage(product: suggestion)
-                      // ));
                     }
                   ),
                   TFWithAutoComplete(
@@ -280,20 +298,15 @@ class CollapsingFilter extends StatelessWidget {
                     },
                     itemBuilder: (context, suggestion) {
                       return Container(
-                            // decoration: BoxDecoration(color: appThemeColor),
                             child:  ListTile(
                                 leading: Icon(Icons.location_searching),
                                 title: Text(suggestion['description']),
-                                // subtitle: Text('\$${suggestion['price']}'),
                       ),
                           );
                     },
                     onSuggestionsSelected: (suggestion) {
                       onStateDictChange('to', suggestion['description']);
                       to.text = suggestion['description'];
-                      // Navigator.of(context).push(MaterialPageRoute(
-                      //   builder: (context) => ProductPage(product: suggestion)
-                      // ));
                     }
                   ),
                   DateTimeFilter(
