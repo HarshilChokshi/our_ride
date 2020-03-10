@@ -24,7 +24,7 @@ class GoogleMapsHandler{
     for(var prediction in results['predictions']){
       suggestions.add({
         'description':prediction['description'],
-        'id':prediction['id'],
+        'id':prediction['place_id'],
       });
       if(--suggestionInt == 0) break;
     }
@@ -37,7 +37,7 @@ class GoogleMapsHandler{
     String vettedPlaceID = placeID.trim();
 
     const String base = "https://maps.googleapis.com/maps/api/place/details/json?";
-    String params = "place_id=$vettedPlaceID&key=$kGoogleAPIKey";
+    String params = "place_id=$vettedPlaceID&fields=geometry&key=$kGoogleAPIKey";
     final resp = await http.get(base+params);
     
     if (resp.statusCode == 200) {
