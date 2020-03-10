@@ -62,7 +62,6 @@ class RiderRideshareRequestState extends State<RiderRideshareRequestScreen> {
     );
   }
 
-
   Future<List<RideRequest>> fetchRideRequestData() async {
      List<RideRequest> rideRequestList = [];
      await databaseReference

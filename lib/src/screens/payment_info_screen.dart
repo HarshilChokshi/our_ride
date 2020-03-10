@@ -7,7 +7,6 @@ import 'package:flutter/cupertino.dart';
 
 class PaymentInfoScreen extends StatefulWidget {
   UserProfile userProfile;
-
   PaymentInfoScreen(this.userProfile);
   
   @override
@@ -16,7 +15,6 @@ class PaymentInfoScreen extends StatefulWidget {
     return new PaymentInfoState(userProfile);
   }
 }
-
 
 class PaymentInfoState extends State<PaymentInfoScreen> {
 
