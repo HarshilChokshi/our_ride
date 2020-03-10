@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:our_ride/src/contants.dart';
 import 'package:our_ride/src/models/rideshare_model.dart';
-import 'package:our_ride/src/models/car.dart';
 
 import 'package:flutter/cupertino.dart';
 
 class RideshareSearchList extends StatefulWidget{
+  // final Function addRide; 
+  Rideshare rideShareData;
+
   RideshareSearchList({
+    @required
     this.rideShareData
   });
-
-  // final Function addRide; 
-  final Rideshare rideShareData;
 
   _RidershareSearchListState createState() => _RidershareSearchListState();
 }
@@ -20,41 +20,6 @@ class RideshareSearchList extends StatefulWidget{
 class _RidershareSearchListState extends State<RideshareSearchList>{
   _RidershareSearchListState();
   final SlidableController slidableController = SlidableController();
-
-
-  '''
-   String driverId,
-    DateTime rideDate,
-    TimeOfDay rideTime,
-    int capacity,
-    int numberOfCurrentRiders,
-    double price,
-    Car car,
-    List<String> riders,
-    bool isDriverMale,
-    String driverUniversity,
-    String driverProgram,
-    String driverFirstName,
-    String driverLastName,
-    String driverProfilePic,
-    Location locationPickUp,
-    Location locationDropOff,
-  '''
-  var dummyData = Rideshare.fromDetails(
-    "diver_id",
-    'University, Toronto Waterloo',
-    'Square One, Mississauga',
-    DateTime.now(),
-    TimeOfDay(hour: 14, minute: 69),
-    4,
-    2,
-    23.0,
-    Car.fromCarDetails( 'model x', 'make x','2011','324kblk1234iu'),
-    ['rider 1', 'rider 2', 'rider 3'],
-    false,
-    'University of Waterloo',
-    'Systems Design Engineering'
-  );
 
   //textformatters
   String nameFormatter(String name){
