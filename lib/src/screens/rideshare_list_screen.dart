@@ -4,9 +4,10 @@ import 'package:our_ride/src/contants.dart';
 import 'package:our_ride/src/widgets/app_bottom_navigation_bar.dart';
 import 'package:our_ride/src/widgets/rideshare_search_filter.dart';
 import 'package:our_ride/src/widgets/main_rideshare_list.dart';
+import 'package:our_ride/src/DAOs/SearchFilter.dart';
+import 'package:our_ride/src/models/rideshare_model.dart';
 import 'package:our_ride/src/models/car.dart';
 import 'package:our_ride/src/models/location_model.dart';
-import 'package:our_ride/src/models/rideshare_model.dart';
 
 class RideshareListScreen extends StatefulWidget {
   String rider_id;
@@ -67,13 +68,58 @@ class RideshareListState extends State<RideshareListScreen> {
       body: CustomScrollView(
           slivers: <Widget>[
             RideshareSearchFilter(),
+            //Results are rendered based on search
             SliverList(
-              delegate: SliverChildListDelegate(
-                [ 
-                  RideshareSearchList(rideShareData: dummyData,),
-                ],
+              delegate: SliverChildListDelegate([
+                Container(
+                  child: FutureBuilder(
+                    future: RideShareSearch.fetchRideshareFilterResults(),
+                    builder: (BuildContext context, AsyncSnapshot<List<Rideshare>> snapshot) {
+                        if(snapshot.connectionState == ConnectionState.waiting){
+                          return Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              Container(
+                                margin: EdgeInsets.only(top: 70),
+                                width: 50,
+                                height: 50,
+                                child: CircularProgressIndicator()
+                              )
+                            ],
+                          );
+                        }
+                        else if (snapshot.hasData){
+                          List<Widget> res = [];
+                          for(Rideshare rideshare in snapshot.data){
+                            res.add( RideshareSearchResult(rideShareData: rideshare));
+                          }
+                          return Column(
+                            children: res,
+                            // children: <Widget>[Text("sdf")],
+                          ); 
+                        }
+                        else{
+                          return Column(
+                            children: [
+                              Text(
+                                "Somethere went wrong"
+                              ),
+                            ]
+                          ); 
+                        }
+                        // } else if (snapshot.hasError) {
+                        //   return Container();
+                        // } else {
+                        //   return Container();
+                        // }
+                      },
+                    )
+                  )
+                ]
+              )
               ),
-            ),
           ],
         ),
       bottomNavigationBar: AppBottomNavigationBar(rider_id, 0, true),
