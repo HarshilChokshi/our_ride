@@ -7,6 +7,7 @@ import 'package:our_ride/src/models/rideshare_model.dart';
 import 'package:our_ride/src/screens/ride_share_created_screen.dart';
 import 'package:our_ride/src/widgets/TF_autocomplete.dart';
 import 'package:our_ride/src/widgets/rideshare_search_filter.dart';
+import 'package:our_ride/src/DAOs/GoogleMaps.dart';
 import '../contants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
@@ -348,7 +349,7 @@ class CreateRideState extends State<CreateRideScreen> {
       dropDownColor: Color.fromARGB(20, 211, 211, 211),
       hintText: isPickUpLocation ? 'Pick up location' : 'Drop off location',
       suggestionsCallback: (String prefix) async {
-        return await fetchLocationSuggestions(prefix);
+        return await GoogleMapsHandler.fetchLocationSuggestions(prefix);
       },
       itemBuilder: (context, value) {
         return new Container(

@@ -1,7 +1,6 @@
 import 'dart:math' as math;
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
+import 'package:our_ride/src/DAOs/GoogleMaps.dart';
 import 'package:flutter/material.dart';
 import 'package:our_ride/src/contants.dart';
 import 'package:our_ride/src/widgets/TF_autocomplete.dart';
@@ -249,7 +248,7 @@ class CollapsingFilter extends StatelessWidget {
                     hintText: (fromValue != null ? fromValue : 'From'),
                     prefix:Icons.edit_location,
                     suggestionsCallback: (prefixSearch) async { //this should be async
-                      return await fetchLocationSuggestions(prefixSearch);
+                      return await GoogleMapsHandler.fetchLocationSuggestions(prefixSearch);
                     },
                     itemBuilder: (context, suggestion) {
                       return Container(
@@ -274,7 +273,7 @@ class CollapsingFilter extends StatelessWidget {
                     hintText:(toValue != null ? toValue : 'To'),
                     prefix:Icons.edit_location,
                     suggestionsCallback: (prefixSearch) async { //this should be async
-                      return await fetchLocationSuggestions(prefixSearch);
+                      return await GoogleMapsHandler.fetchLocationSuggestions(prefixSearch);
                     },
                     itemBuilder: (context, suggestion) {
                       return Container(
@@ -309,33 +308,4 @@ class CollapsingFilter extends StatelessWidget {
       ) ,
     );
   }
-}
-
-//async call to google maps api
-Future<List> fetchLocationSuggestions(String prefixText) async{
-  const kGoogleAPIKey = "AIzaSyCoasYE-PQfb6PBIVR8d4M9vxx53pNiNos";
-  String vettedPrefix = prefixText.trim().replaceAll(" ", "+");
-
-  const String base = "https://maps.googleapis.com/maps/api/place/autocomplete/json?";
-  String params = "input=$vettedPrefix&key=$kGoogleAPIKey&language=en";
-  final resp = await http.get(base+params);
-  
-  if (resp.statusCode == 200) {
-    return loadSuggestions(json.decode(resp.body));
-  } else {
-    return [];
-  }
-}
-
-List<Map> loadSuggestions(dynamic results){
-  List<Map> suggestions = new List<Map>();
-  int suggestionInt = 10;
-  for(var prediction in results['predictions']){
-    suggestions.add({
-      'description':prediction['description'],
-      'id':prediction['id'],
-    });
-    if(--suggestionInt == 0) break;
-  }
-  return suggestions;
 }
