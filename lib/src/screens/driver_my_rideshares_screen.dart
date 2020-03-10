@@ -130,6 +130,7 @@ class MyRideSharesDriversState extends State<MyRideSharesDriversScreen> {
             String driverUniversity = f.data['driverUniversity'];
             String driverProgram = f.data['driverProgram'];
             String driverProfilePic = f.data['driverProfilePic'];
+            int luggage = f.data['luggage'];
 
             Rideshare driverRideShare = Rideshare.fromDetails(
               f.data['driverId'],
@@ -148,6 +149,7 @@ class MyRideSharesDriversState extends State<MyRideSharesDriversScreen> {
               driverProfilePic,
               locationPickUp,
               locationDropOff,
+              luggage,
             );
 
            driverRideShares.add(driverRideShare);

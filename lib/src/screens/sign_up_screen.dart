@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:our_ride/src/models/user_profile.dart';
+import 'package:our_ride/src/screens/car_details_screen.dart';
 import 'package:our_ride/src/screens/payment_info_screen.dart';
 import 'package:our_ride/src/screens/user_info_screen.dart';
 import '../contants.dart';
@@ -25,9 +26,12 @@ class SignUpState extends State<SignUpScreen> {
   bool facebookAccountLinked = false;
   UserProfile userProfile;
 
+  SignUpState() {
+    userProfile = new UserProfile();
+  }
+
   @override
   Widget build(BuildContext context) {
-   userProfile = new UserProfile();
    return new Container(
      decoration: new BoxDecoration(
        image: new DecorationImage(
@@ -274,11 +278,19 @@ class SignUpState extends State<SignUpScreen> {
           formKey.currentState.save();
           userProfile.isMale = dropDownValue == 'Male' ? true : false;
 
-          Navigator.push(
-              context, 
-              CupertinoPageRoute(
-                builder: (context) => PaymentInfoScreen(userProfile)
-          )); 
+          if(userProfile.driverLicenseNumber.isEmpty) {
+            Navigator.push(
+                context, 
+                CupertinoPageRoute(
+                  builder: (context) => PaymentInfoScreen(userProfile)
+            )); 
+          } else {
+             Navigator.push(
+                context, 
+                CupertinoPageRoute(
+                  builder: (context) => CarDetailsScreen(userProfile)
+            ));            
+          }
         },
         color: appThemeColor,
       )
