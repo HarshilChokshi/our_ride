@@ -24,22 +24,29 @@ class RideshareListScreen extends StatefulWidget {
 
 class RideshareListState extends State<RideshareListScreen> {
   String rider_id;
+  Future<List<Rideshare>> searchResultsFuture;
+  GlobalKey<FormState> testFormKey = GlobalKey<FormState>();
   
   RideshareListState(String rider_id) {
     this.rider_id = rider_id;
   }
 
-  void initiateSearch(){
-    print("calling in parent");
-    this.searchResults = RideShareSearch.fetchRideshareFilterResults();
+  @override
+  void initState() {
+    super.initState();
+    this.searchResultsFuture = null;
   }
 
-  Future<List<Rideshare>> searchResults;
-  GlobalKey<FormState> testFormKey = GlobalKey<FormState>();
+  void updateFuture({bool callingFromChild = false}){
+    // fetching results for future
+    setState((){
+      this.searchResultsFuture = RideShareSearch.fetchRideshareFilterResults();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    print("asf");
+    // print("Building Main Screen");
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -61,7 +68,7 @@ class RideshareListState extends State<RideshareListScreen> {
               delegate: SliverChildListDelegate([
                 Container(
                   child: FutureBuilder(
-                    future: searchResults,
+                    future: searchResultsFuture,
                     builder: (BuildContext context, AsyncSnapshot<List<Rideshare>> snapshot) {
                         if(snapshot.connectionState == ConnectionState.waiting){
                           return Column(

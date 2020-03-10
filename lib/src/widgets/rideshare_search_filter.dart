@@ -223,7 +223,7 @@ class CollapsingFilter extends StatelessWidget {
         else{
           print("calling in child");
           print(parentListStateRef == null);
-          this.parentListStateRef.initiateSearch();
+          this.parentListStateRef.updateFuture(callingFromChild: true);
         }
       },
       elevation: 0,
