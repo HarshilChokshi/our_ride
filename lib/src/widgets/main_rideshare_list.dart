@@ -22,23 +22,41 @@ class _RidershareSearchListState extends State<RideshareSearchList>{
   final SlidableController slidableController = SlidableController();
 
   //textformatters
-  String nameFormatter(String name){
-    //need driver first and lastname
-    return "${widget.rideShareData.driverFirstname}. ${widget.rideShareData.driverLastname[0]}";
+  String nameFormatter(){
+    return "${widget.rideShareData.driverFirstName}. ${widget.rideShareData.driverLastName[0]}";
   }
 
-  // AssetImage getImage(String firstname, String lastname){
-  //   String path = driverRideRequestsList[index].profilePic == 'Exists' ? 'assets/images/' +
-  //     driverRideRequestsList[index].riderFirstName + 
-  //     '_' +
-  //     driverRideRequestsList[index].riderLastName +
-  //     '.png'
-  //     :
-  //     'assets/images/default-profile.png';
-  //   return AssetImage(path);
-  // }
+  String timeFormatter(){
+      return "${widget.rideShareData.rideTime.format(context)}";
+  }
 
+  String fromLocationFormatter(){
+      return "${widget.rideShareData.locationPickUp.description}";
+  }
 
+  String toLocationFormatter(){
+      return "${widget.rideShareData.locationDropOff.description}";
+  }
+
+  String seatsLeft(){
+    int seatsLeft = widget.rideShareData.capacity - widget.rideShareData.numberOfCurrentRiders;
+    return  seatsLeft == 1 ? "$seatsLeft seat left" : "$seatsLeft seats left";
+  }
+
+  String priceFormatter(){
+    return "\$ ${double.parse((widget.rideShareData.price).toStringAsFixed(2))}";
+  }
+
+  AssetImage getImage(){
+    String path = widget.rideShareData.driverProfilePic == 'Exists' ? 'assets/images/' +
+      widget.rideShareData.driverFirstName + 
+      '_' +
+      widget.rideShareData.driverLastName +
+      '.png'
+      :
+      'assets/images/default-profile.png';
+    return AssetImage(path);
+  }
 
   //composable widgets
   Widget drawCircle(double size, Color color){
@@ -56,23 +74,23 @@ class _RidershareSearchListState extends State<RideshareSearchList>{
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        drawHollow(8,Color.fromRGBO(84, 84, 84, 100)),
+        drawHollow(8,Color.fromRGBO(61, 191, 165, 100)),
         SizedBox(height: 3,),
-        drawCircle(4, Color.fromRGBO(84, 84, 84, 100)),
+        drawCircle(4, Color.fromRGBO(61, 191, 165, 100)),
         SizedBox(height: 3,),
-        drawCircle(4, Color.fromRGBO(84, 84, 84, 100)),
+        drawCircle(4, Color.fromRGBO(61, 191, 165, 100)),
         SizedBox(height: 3,),
-        drawCircle(4, Color.fromRGBO(84, 84, 84, 100)),
+        drawCircle(4, Color.fromRGBO(61, 191, 165, 100)),
         SizedBox(height: 3,),
-        drawCircle(4, Color.fromRGBO(84, 84, 84, 100)),
+        drawCircle(4, Color.fromRGBO(61, 191, 165, 100)),
         SizedBox(height: 3,),
-        drawHollow(8, Color.fromRGBO(84, 84, 84, 100))
+        drawHollow(8, Color.fromRGBO(61, 191, 165, 100))
 
       ]
     );
   }
-
-    Widget drawHollow(double size, Color color){
+  
+  Widget drawHollow(double size, Color color){
     return Container(
       width: size,
       height: size,
@@ -92,12 +110,14 @@ class _RidershareSearchListState extends State<RideshareSearchList>{
         children: <Widget>[
           CircleAvatar(
             radius: 40,
-            backgroundColor: Colors.black,
+            backgroundImage: getImage(),
           ),
           Padding(
             padding: EdgeInsets.only(top: 3),
             child: Text(
-              'Sarah',
+              nameFormatter(),
+              overflow: TextOverflow.clip,
+              maxLines: 1,
               style: TextStyle(
                 color: Color.fromRGBO(84, 84, 84, 100),
                 fontSize: 14,
@@ -108,7 +128,7 @@ class _RidershareSearchListState extends State<RideshareSearchList>{
           Padding(
             padding: EdgeInsets.only(top: 5),
             child: Text(
-              '12:30 pm',
+              timeFormatter(),
               style: TextStyle(
                 color: Color.fromRGBO(84, 84, 84, 100),
                 fontSize: 16,
@@ -161,7 +181,7 @@ class _RidershareSearchListState extends State<RideshareSearchList>{
                             Padding(
                               padding: EdgeInsets.fromLTRB(8, 0, 0, 3),
                               child: Text(
-                                'University Plaza, Waterloo, ON',
+                                fromLocationFormatter(),
                                 overflow: TextOverflow.clip,
                                 maxLines: 1,
                                 style: TextStyle(
@@ -175,7 +195,7 @@ class _RidershareSearchListState extends State<RideshareSearchList>{
                             Padding(
                               padding: EdgeInsets.fromLTRB(8, 3, 0, 0),
                               child: Text(
-                                'Square One, Mississauga, asdf, asdf',
+                                toLocationFormatter(),
                                 overflow: TextOverflow.clip,
                                 maxLines: 1,
                                 style: TextStyle(
@@ -211,7 +231,7 @@ class _RidershareSearchListState extends State<RideshareSearchList>{
                       padding: EdgeInsets.fromLTRB(8, 3, 0, 0),
                       child: 
                         Text(
-                          '4 seats left',
+                          seatsLeft(),
                           overflow: TextOverflow.clip,
                           maxLines: 1,
                           style: TextStyle(
@@ -230,7 +250,7 @@ class _RidershareSearchListState extends State<RideshareSearchList>{
                         padding: EdgeInsets.fromLTRB(8, 3, 10, 0),
                         child: 
                           Text(
-                            r'$ 15',
+                            priceFormatter(),
                             overflow: TextOverflow.clip,
                             maxLines: 1,
                             style: TextStyle(
@@ -259,13 +279,27 @@ class _RidershareSearchListState extends State<RideshareSearchList>{
   @override
   Widget build(BuildContext context){
     return Container(
-      height: 135,
+      height: 140,
+      margin: EdgeInsets.all(3),
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey,
+            blurRadius: 2.0, // has the effect of softening the shadow
+            spreadRadius: 2.0, // has the effect of extending the shadow
+            offset: Offset(
+              0,// 10.0, // horizontal, move right 10
+              2.0, // vertical, move down 10
+            ),
+          )
+        ],
+      ),
       child: Slidable(
         controller: slidableController,
         actionPane: SlidableDrawerActionPane(),
         child: Container(
           height: double.infinity,
-          color: Colors.transparent,
+          color: Colors.white,
           child: Row(
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.center,

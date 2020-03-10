@@ -70,7 +70,7 @@ class RideshareListState extends State<RideshareListScreen> {
             SliverList(
               delegate: SliverChildListDelegate(
                 [ 
-                  RideshareSearchList({rideShareData: this.dummyData}),
+                  RideshareSearchList(rideShareData: dummyData,),
                 ],
               ),
             ),
