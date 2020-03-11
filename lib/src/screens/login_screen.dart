@@ -16,7 +16,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class LoginState extends State<LoginScreen> {
-
   final formKey = new GlobalKey<FormState>();
   bool keepUserSignedIn = false;
   final FirebaseAuth _auth = FirebaseAuth.instance;

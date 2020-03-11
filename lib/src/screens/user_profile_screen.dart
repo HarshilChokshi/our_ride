@@ -4,6 +4,7 @@ import 'package:our_ride/src/contants.dart';
 import 'package:our_ride/src/models/user_profile.dart';
 import 'package:our_ride/src/screens/driver_reviews_screen.dart';
 import 'package:our_ride/src/screens/edit_profile_screen.dart';
+import 'package:our_ride/src/screens/faq_screen.dart';
 import 'package:our_ride/src/screens/login_screen.dart';
 import 'package:our_ride/src/widgets/app_bottom_navigation_bar.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -12,13 +13,13 @@ import '../DAOs/UserProfileData.dart';
 
 class UserProfileScreen extends StatefulWidget {
   
-  String user_id;
+  String userID;
   bool isRider;
   UserProfile userProfile;
   bool isUsersProfile;
   
-  UserProfileScreen(String user_id, bool isRider, UserProfile userProfile, bool isUsersProfile) {
-    this.user_id = user_id;
+  UserProfileScreen(String userID, bool isRider, UserProfile userProfile, bool isUsersProfile) {
+    this.userID = userID;
     this.isRider = isRider;
     this.userProfile = userProfile;
     this.isUsersProfile = isUsersProfile;
@@ -26,13 +27,13 @@ class UserProfileScreen extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return new UserProfileState(user_id, isRider, userProfile, isUsersProfile);
+    return new UserProfileState(userID, isRider, userProfile, isUsersProfile);
   }
 }
 
 class UserProfileState extends State<UserProfileScreen> {
   
-  String user_id;
+  String userID;
   bool isRider;
   UserProfile userProfile;
   bool isUsersProfile;
@@ -40,8 +41,8 @@ class UserProfileState extends State<UserProfileScreen> {
    final databaseReference = FirebaseDatabase.instance.reference();
 
   
-  UserProfileState(String user_id, isRider, UserProfile userProfile, bool isUsersProfile) {
-    this.user_id = user_id;
+  UserProfileState(String userID, isRider, UserProfile userProfile, bool isUsersProfile) {
+    this.userID = userID;
     this.isRider = isRider;
     this.userProfile = userProfile;
     this.isUsersProfile = isUsersProfile;
@@ -53,7 +54,7 @@ class UserProfileState extends State<UserProfileScreen> {
       return buildUserProfileScreen(context);
     }
     return FutureBuilder<UserProfile>(
-      future: UserProfileData.fetchUserProfileData(user_id),
+      future: UserProfileData.fetchUserProfileData(userID),
       builder: (BuildContext context, AsyncSnapshot<UserProfile> snapshot) {
         if(snapshot.connectionState == ConnectionState.waiting) {
           return new Scaffold(
@@ -82,7 +83,7 @@ class UserProfileState extends State<UserProfileScreen> {
         style: new TextStyle(color: Colors.white, fontSize: 24),
         ),
       );
-    Widget bottomBar = isUsersProfile ? new AppBottomNavigationBar(user_id, 2, isRider) : null;
+    Widget bottomBar = isUsersProfile ? new AppBottomNavigationBar(userID, 2, isRider) : null;
     return new Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomPadding: false,
@@ -109,10 +110,10 @@ class UserProfileState extends State<UserProfileScreen> {
   }
 
   Widget topComponent() {
-    return new Container(
+    return Container(
       padding: new EdgeInsets.only(left: 10.0, right: 10.0),
       color: appThemeColor,
-      height: 250.0,
+      height: 300.0,
       child: new Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
@@ -121,6 +122,14 @@ class UserProfileState extends State<UserProfileScreen> {
             createUserProfile(),
             new Container(margin: EdgeInsets.only(right: 30)),
             createUserRideData(),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            addNewCarButton(),
+            Padding(padding: EdgeInsets.all(8.0)),
+            createFAQButton(),
           ],
         ),
         createSignOutButton(),
@@ -202,6 +211,48 @@ class UserProfileState extends State<UserProfileScreen> {
     );
   }
 
+    Widget createFAQButton() {
+    return FlatButton(
+      child: Text(
+        'FAQ',
+        style: TextStyle(color: Colors.white),
+      ),
+      onPressed: () {  
+        Navigator.push(
+          context, 
+          CupertinoPageRoute(
+            builder: (context) => FAQScreen()
+        ));
+      },
+      color: appThemeColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(18.0),
+        side: BorderSide(color: Colors.white)
+      ),
+    );
+  }
+
+  Widget addNewCarButton() {
+    return FlatButton(
+      child: Text(
+        'My Cars',
+        style: TextStyle(color: Colors.white),
+      ),
+      onPressed: () {  
+        Navigator.pushReplacement(
+          context, 
+          CupertinoPageRoute(
+            builder: (context) => FAQScreen(),
+        ));
+      },
+      color: appThemeColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(18.0),
+        side: BorderSide(color: Colors.white)
+      ),
+    );
+  }
+
   Widget createUserProfile() {
     return new Column( 
       children: <Widget>[
@@ -223,9 +274,6 @@ class UserProfileState extends State<UserProfileScreen> {
       '.png'
       :
       'assets/images/default-profile.png';
-    
-
-
     return new Container(
       width: 100.0,
       height: 100.0,
@@ -355,7 +403,7 @@ class UserProfileState extends State<UserProfileScreen> {
         Navigator.pushReplacement(
           context, 
           new CupertinoPageRoute(
-            builder: (context) => EditProfileScreen(userProfile, user_id, isRider)
+            builder: (context) => EditProfileScreen(userProfile, userID, isRider)
         ));
       },
       color: appThemeColor,
