@@ -33,27 +33,27 @@ class RideShareSearch{
       }
       return sameGender;
     }
-
-     await dbRef
-      .collection('rideshares')
-      .getDocuments()
-      .then((QuerySnapshot snapShot) {
-        snapShot.documents.forEach((doc){
-          //initial validations: empty seats, same day, departure within 2 km
-          if (
-            doc["driverId"] != riderId && // rider can't hop on their own ride
-            doc["capacity"] - doc["numberOfCurrentRiders"] > 0 && //need empty seats
-            DateTime.parse(doc["rideDate"]).day == DateTime.parse(searchOptions["date"]).day && //same day
-            //pickup and dropoff within 2km of requested lat, long
-            isWithinRadius(doc["locationPickUp"]["lat"],doc["locationPickUp"]["long"],searchOptions["from"]["coordinates"][0],searchOptions["from"]["coordinates"][1]) &&
-            isWithinRadius(doc["locationDropOff"]["lat"],doc["locationDropOff"]["long"],searchOptions["from"]["coordinates"][0],searchOptions["from"]["coordinates"][1])
-          ){ 
-            partialRideshareIDs.add(doc.documentID);
-            partialRiderIDs.addAll(doc["riders"]);
-            partialDriverIDs.add(doc["driverId"]);
-          }
-        });
+    
+    await dbRef
+    .collection('rideshares')
+    .getDocuments()
+    .then((QuerySnapshot snapShot) {
+      snapShot.documents.forEach((doc){
+        //initial validations: empty seats, same day, departure within 2 km
+        if (
+          doc["driverId"] != riderId && // rider can't hop on their own ride
+          doc["capacity"] - doc["numberOfCurrentRiders"] > 0 && //need empty seats
+          DateTime.parse(doc["rideDate"]).day == DateTime.parse(searchOptions["date"]).day && //same day
+          //pickup and dropoff within 2km of requested lat, long
+          isWithinRadius(doc["locationPickUp"]["lat"],doc["locationPickUp"]["long"],searchOptions["from"]["coordinates"][0],searchOptions["from"]["coordinates"][1]) &&
+          isWithinRadius(doc["locationDropOff"]["lat"],doc["locationDropOff"]["long"],searchOptions["from"]["coordinates"][0],searchOptions["from"]["coordinates"][1])
+        ){ 
+          partialRideshareIDs.add(doc.documentID);
+          partialRiderIDs.addAll(doc["riders"]);
+          partialDriverIDs.add(doc["driverId"]);
+        }
       });
+    });
 
     //load the profile data for riders, drivers, current rider
     riderProfiles = await UserProfileData.fetchProfileDataForUsersMap(partialRiderIDs.toList());

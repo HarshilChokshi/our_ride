@@ -52,6 +52,7 @@ class RideshareListState extends State<RideshareListScreen> {
       );
 
       setState(() {
+        // this.searchResultsFuture = RideShareSearch.filterUsers(rider_id, searchOptions);
         this.searchResultsFuture = RideShareSearch.fetchRideshareFilterResults();
       });
   }
