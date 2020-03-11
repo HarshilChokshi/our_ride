@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:our_ride/src/contants.dart';
 import 'package:our_ride/src/screens/login_screen.dart';
 
 class App extends StatelessWidget {
@@ -10,6 +11,9 @@ class App extends StatelessWidget {
       routes: {
         '/': (context) => LoginScreen(),
       },
+        theme: ThemeData(
+          accentColor: Color.fromRGBO(61, 191, 165, 100)
+        )
     );
   }
 }
