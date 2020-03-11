@@ -4,6 +4,7 @@ import 'package:our_ride/src/DAOs/RideRequestsCreator.dart';
 import 'package:our_ride/src/contants.dart';
 import 'package:our_ride/src/models/rideshare_model.dart';
 import 'package:our_ride/src/models/rideshare_model.dart';
+import 'package:our_ride/src/screens/rider_rideshare_requests_screen.dart';
 import 'package:our_ride/src/screens/rideshare_list_screen.dart';
 import 'package:our_ride/src/screens/user_profile_screen.dart';
 import 'package:intl/intl.dart';
@@ -15,11 +16,13 @@ class RideshareSearchResult extends StatefulWidget{
   // final Function addRide; 
   Rideshare rideShareData;
   RideshareListState parentListStateRef;
+  bool requestMade;
 
   RideshareSearchResult({
     @required
     this.rideShareData,
     this.parentListStateRef,
+    this.requestMade,
   });
 
   _RideshareSearchResultState createState() => _RideshareSearchResultState();
@@ -363,6 +366,7 @@ class _RideshareSearchResultState extends State<RideshareSearchResult>{
             ),
             onTap: () {
               requestToJoinRide();
+              showRideShareAddedMessage();
             },
           ),
         ],
@@ -370,7 +374,33 @@ class _RideshareSearchResultState extends State<RideshareSearchResult>{
     ));
   }
 
-    void requestToJoinRide() async {
-      RideRequestsCreator.create(widget.rideShareData, widget.parentListStateRef.rider_id);
-    }
+  void requestToJoinRide() async {
+    RideRequestsCreator.create(widget.rideShareData, widget.parentListStateRef.rider_id);
+  }
+
+  void showRideShareAddedMessage() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Color.fromRGBO(61, 191, 165, 100),
+          title: new Text('Requested to Join Rideshare'),
+          content: new Text('Succesfully requested to join rideshare'),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text('Okay', style: new TextStyle(color: Colors.white)),
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.pushReplacement(
+                  context, 
+                  new CupertinoPageRoute(
+                    builder: (context) =>  RiderRideshareRequestScreen(widget.parentListStateRef.rider_id)
+                ));
+              },
+            ),
+          ],
+        );
+      }
+    );
+  }
 }

@@ -3,9 +3,11 @@ import 'package:our_ride/src/DAOs/RideRequestsCreator.dart';
 import 'package:our_ride/src/DAOs/UserProfileData.dart';
 import 'package:our_ride/src/contants.dart';
 import 'package:our_ride/src/models/rideshare_model.dart';
+import 'package:our_ride/src/screens/rider_rideshare_requests_screen.dart';
 import 'package:our_ride/src/widgets/rideshare_users_list.dart';
 import '../models/car.dart';
 import '../models/user_profile.dart';
+import 'package:flutter/cupertino.dart';
 
 
 class ViewRideshareDetailsScreen extends StatefulWidget {
@@ -220,7 +222,7 @@ class ViewRideShareDetailsState extends State<ViewRideshareDetailsScreen> {
         color: appThemeColor,
         onPressed: () {
           requestToJoinRide();
-          Navigator.pop(context);
+          showRideShareAddedMessage();
         },
         child: new Text(
           'Request to join ride',
@@ -230,6 +232,34 @@ class ViewRideShareDetailsState extends State<ViewRideshareDetailsScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  void showRideShareAddedMessage() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Color.fromRGBO(61, 191, 165, 100),
+          title: new Text('Requested to Join Rideshare'),
+          content: new Text('Succesfully requested to join rideshare', style: new TextStyle(fontWeight: FontWeight.bold),),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text('Okay', style: new TextStyle(color: Colors.white)),
+              onPressed: () {
+                Navigator.of(context).pop();
+                int count = 0;
+                Navigator.of(context).popUntil((_) => count++ >= 2);
+                Navigator.pushReplacement(
+                  context, 
+                  new CupertinoPageRoute(
+                    builder: (context) =>  RiderRideshareRequestScreen(viewerId)
+                ));
+              },
+            ),
+          ],
+        );
+      }
     );
   }
 
