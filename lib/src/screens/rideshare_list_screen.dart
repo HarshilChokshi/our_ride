@@ -25,6 +25,7 @@ class RideshareListState extends State<RideshareListScreen> {
   String rider_id;
   Future<List<Rideshare>> searchResultsFuture;
   GlobalKey<FormState> testFormKey = GlobalKey<FormState>();
+  bool madeRequest;
   
   RideshareListState(String rider_id) {
     this.rider_id = rider_id;
@@ -34,6 +35,7 @@ class RideshareListState extends State<RideshareListScreen> {
   void initState() {
     super.initState();
     this.searchResultsFuture = null;
+    this.madeRequest = false;
   }
 
   void updateFuture(Map searchOptions) async {
@@ -103,7 +105,7 @@ class RideshareListState extends State<RideshareListScreen> {
                         else if (snapshot.hasData){
                           List<Widget> res = [];
                           for(Rideshare rideshare in snapshot.data){
-                            res.add( RideshareSearchResult(rideShareData: rideshare, parentListStateRef: this,));
+                            res.add( RideshareSearchResult(rideShareData: rideshare, parentListStateRef: this, requestMade: madeRequest,));
                           }
                           return Column(
                             children: res,
