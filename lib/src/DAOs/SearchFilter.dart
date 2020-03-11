@@ -62,25 +62,6 @@ class RideShareSearch{
     driverProfiles = await UserProfileData.fetchProfileDataForUsersMap(partialDriverIDs.toList());
     currentRiderProfile = await UserProfileData.fetchUserProfileData(riderId);
     
-    
-    // //check to see if user is within a ride, based on driver id
-    // await dbRef
-    // .collection('rideshare-requests')
-    // .getDocuments()
-    // .then((QuerySnapshot snapShot){
-    //   snapShot.documents.forEach((f){
-    //     var doc = f.data;
-
-    //     for(var ride in doc["requests"]){
-    //       isCurrentRiderInsideRide[ride["rideshareRef"]] = ride[""]
-    //     }
-
-    //     isCurrentRiderInsideRide[f.documentID] = doc["riders"].toList().contains(riderId);
-    //   });
-    // });
-    
-
-
     //final validation and weighting
     await dbRef
     .collection('rideshares')
@@ -165,7 +146,31 @@ class RideShareSearch{
       });
     });
     weightedRides.sort((a, b) => a.item1.compareTo(b.item1));
-    return weightedRides.map((item)=>item.item2).toList();
+
+    //remove any rides that the rider has already requested
+    List<Rideshare> postWeigthedResults = weightedRides.map((item)=>item.item2).toList();
+    print(postWeigthedResults.length.toString());
+    List<Rideshare> finalResults = [];
+    for(Rideshare weightedRideshare in postWeigthedResults){
+      bool remove = false;
+      await dbRef
+      .collection('rideshare-requests').document(weightedRideshare.driverId).get()
+      .then((d){
+        var doc = d.data;
+        print(d.documentID);
+        //got through all of thid driver's ride
+        String uniqueRideShareId = weightedRideshare.driverId + '-' + weightedRideshare.rideDate.toString().split(' ')[0] + '-' + weightedRideshare.rideTime.hour.toString() + ':' + weightedRideshare.rideTime.minute.toString();
+        for(var rideRequestForThisDriver in doc["requests"]){
+          if (rideRequestForThisDriver["rideshareRef"] == uniqueRideShareId && riderId == rideRequestForThisDriver["riderId"]){
+            remove = true;
+          }
+        }
+
+      });
+      if(!remove) finalResults.add(weightedRideshare);
+    }
+
+    return finalResults;
   }
 
 
