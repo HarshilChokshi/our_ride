@@ -41,7 +41,8 @@ class RideshareListState extends State<RideshareListScreen> {
     'Sakthi',
     'profile_string',
     Location.fromDetails("1276 Silver Spear Road, Mississauga, ON", "place_id", 0, 0),
-    Location.fromDetails("E5 Building, Waterloo, ON", "place_id", 0, 0)
+    Location.fromDetails("E5 Building, Waterloo, ON", "place_id", 0, 0),
+    3,
   );
 
   RideshareListState(String rider_id) {

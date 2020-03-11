@@ -19,6 +19,7 @@ class Rideshare {
   String driverProfilePic;
   Location locationPickUp;
   Location locationDropOff;
+  int luggage;
 
 
   Rideshare(String driverId, Car car, Location locationPickUp, Location locationDropOff) {
@@ -45,6 +46,7 @@ class Rideshare {
     String driverProfilePic,
     Location locationPickUp,
     Location locationDropOff,
+    int luggage,
   ) {
     this.driverId = driverId;
     this.rideDate = rideDate;
@@ -62,5 +64,6 @@ class Rideshare {
     this.driverProfilePic = driverProfilePic;
     this.locationPickUp = locationPickUp;
     this.locationDropOff = locationDropOff;
+    this.luggage = luggage;
   }
 }

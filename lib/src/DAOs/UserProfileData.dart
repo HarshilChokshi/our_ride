@@ -1,3 +1,4 @@
+import 'package:our_ride/src/models/car.dart';
 import 'package:our_ride/src/models/payment_method.dart';
 import '../models/user_profile.dart';
 import '../models/review.dart';
@@ -59,6 +60,19 @@ class UserProfileData{
       data['paymentMethod']['cvv']
     );
 
+    List<Car> userVehicles = [];
+    int numberOfUserVehicles = data['userVehicles'] != null ? (data['userVehicles'] as List).length: 0;
+    for(int i = 0; i < numberOfUserVehicles; i++) {
+      userVehicles.add(
+        new Car.fromCarDetails(
+          data['userVehicles'][i]['model'],
+          data['userVehicles'][i]['make'],
+          data['userVehicles'][i]['year'],
+          data['userVehicles'][i]['licensePlate'],
+        )
+      );
+    }
+
     return Future.value(new UserProfile.fromDetails(
       email,
       password,
@@ -77,6 +91,7 @@ class UserProfileData{
       facebookUserId,
       reviewList,
       paymentMethod,
+      userVehicles,
     ));      
   }
 

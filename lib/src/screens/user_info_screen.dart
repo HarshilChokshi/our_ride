@@ -251,6 +251,7 @@ class UserInfoState extends State<UserInfoScreen> {
         "university": userProfile.university,
         "reviews": userProfile.reviews,
         "paymentMethod": userProfile.paymentMethod.toJson(),
+        "userVehicles": userProfile.userVehicles.length > 0 ? [userProfile.userVehicles[0].toJson()] : [],
       }
     );
   }

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:our_ride/src/DAOs/UserProfileData.dart';
@@ -32,13 +33,24 @@ class CreateRideState extends State<CreateRideScreen> {
 
   String driverId;
   final locationFormKey = new GlobalKey<FormState>();
-  final carFormKey = new GlobalKey<FormState>();
   Rideshare rideshare;
   final databaseReference = Firestore.instance;
   TextEditingController pickUpLocationController = TextEditingController();
   TextEditingController dropOffLocationController = TextEditingController();
   String selectedDate;
   String selectedTime;
+  String luggageDropDownValue = 'Luggage Type';
+  String userVehicle;
+
+  bool isDriverMale;
+  String driverUniversity;
+  String driverProgram;
+  String driverFirstName;
+  String driverLastName;
+  String driverProfilePic;
+  List<Car> userVehicles;
+  List<String> userVehiclesString;
+  String selectedVehicle;
 
   CreateRideState(String driverId) {
     this.driverId = driverId;
@@ -50,43 +62,63 @@ class CreateRideState extends State<CreateRideScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      backgroundColor: appThemeColor,
-      resizeToAvoidBottomInset: false,
-      appBar: new AppBar(
-        backgroundColor: appThemeColor,
-        title: new Text(
-          'Ride Creation',
-          style: new TextStyle(
-            fontSize: 24.0,
-            color: Colors.white,
-          ),
-        ),
-        actions: <Widget>[
-          new FlatButton(
-            onPressed: createRideShare,
-            child: new Icon(
-              Icons.check,
-              color: Colors.white,
+    return FutureBuilder<bool> (
+      future: fetchUserData(),
+      builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+        if(snapshot.connectionState == ConnectionState.waiting) {
+          return new Scaffold(
+            backgroundColor: Colors.white,
+            body: new Center(
+              child: Container(
+                child: new Text('Loading user data...', style: (
+                  new TextStyle(color: Colors.grey, fontSize: 20.0)
+                ),),
+              ),
+            ) 
+          );
+        } else {
+          userVehiclesString = [];
+          for(int i = 0; i < userVehicles.length; i++) {
+            userVehiclesString.add(displayVehicleDetails(userVehicles[i]));
+          }
+          selectedVehicle = userVehiclesString[0];
+          return new Scaffold(
+            backgroundColor: appThemeColor,
+            resizeToAvoidBottomInset: false,
+            appBar: new AppBar(
+              backgroundColor: appThemeColor,
+              title: new Text(
+                'Ride Creation',
+                style: new TextStyle(
+                  fontSize: 24.0,
+                  color: Colors.white,
+                ),
+              ),
+              actions: <Widget>[
+                new FlatButton(
+                  onPressed: createRideShare,
+                  child: new Icon(
+                    Icons.check,
+                    color: Colors.white,
+                  ),
+                )
+              ],
             ),
-          )
-        ],
-      ),
-      body: new SingleChildScrollView(
-          child: new Column(
-            children: <Widget>[
-              createLocationForm(),
-              new Container(margin: EdgeInsets.only(bottom: 20)),
-              new Container(margin: EdgeInsets.only(bottom: 20)),
-              createCarSection(),
-            ],
-          )
-        ),
-      );
+            body: new SingleChildScrollView(
+                child: new Column(
+                  children: <Widget>[
+                    createLocationForm(),
+                  ],
+                )
+              ),
+          );
+        }
+      },
+    );
   }
 
-  void createRideShare() {
-    if(!carFormKey.currentState.validate() || !locationFormKey.currentState.validate()) {
+  void createRideShare() async {
+    if(!locationFormKey.currentState.validate()) {
       return;
     }
 
@@ -100,15 +132,40 @@ class CreateRideState extends State<CreateRideScreen> {
         showEmptyFieldAlert();
         return;
     }
-   
-    getLatLong(rideshare.locationPickUp.placeId, true);
-    getLatLong(rideshare.locationDropOff.placeId, false);
 
-    carFormKey.currentState.save();
+    if(luggageDropDownValue == 'Luggage Type') {
+      showEmptyLuggageTypeAlert();
+      return;
+    }
+
+    rideshare.luggage = int.parse(luggageDropDownValue);
+    List<String> carDetails = selectedVehicle.split('-');
+    rideshare.car = Car.fromCarDetails(
+      carDetails[1],
+      carDetails[2],
+      carDetails[0],
+      carDetails[3].substring(1, carDetails[3].length - 1),
+    );
+   
+    await GoogleMapsHandler.fetchLatLongForPlaceID(
+      placeID: rideshare.locationPickUp.placeId,
+      callback: (double lat, double lng) {
+        rideshare.locationPickUp.lat = lat;
+        rideshare.locationPickUp.long = lng;
+      }
+    );
+
+    await GoogleMapsHandler.fetchLatLongForPlaceID(
+      placeID: rideshare.locationDropOff.placeId,
+      callback: (double lat, double lng) {
+        rideshare.locationDropOff.lat = lat;
+        rideshare.locationDropOff.long = lng;
+      }
+    );
+
     locationFormKey.currentState.save();
     rideshare.numberOfCurrentRiders = 0;
     rideshare.riders = [];
-
 
     addRideShareToDB(rideshare);
 
@@ -119,38 +176,21 @@ class CreateRideState extends State<CreateRideScreen> {
       ));
   }
 
-  void getLatLong(String placeId, bool isPickUpLocation) async {
-    await GoogleMapsHandler.fetchLatLongForPlaceID(placeId)
-    .then((List latlong){
-      double lat = latlong[0];
-      double long = latlong[1];
-      if(isPickUpLocation) {
-        rideshare.locationPickUp.lat = lat;
-        rideshare.locationPickUp.long = long;
-      } else {
-        rideshare.locationDropOff.lat = lat;
-        rideshare.locationDropOff.long = long;
-      }
+  Future<bool> fetchUserData() async {
+    await UserProfileData.fetchUserProfileData(driverId)
+      .then((profile) {
+        isDriverMale = profile.isMale;
+        driverUniversity = profile.university;
+        driverProgram = profile.program;
+        driverFirstName = profile.firstName;
+        driverLastName = profile.lastName;
+        driverProfilePic = profile.profilePic;
+        userVehicles = profile.userVehicles;
     });
+    return Future.value(true);
   }
 
   void addRideShareToDB(Rideshare r) async {
-    bool isDriverMale;
-    String driverUniversity;
-    String driverProgram;
-    String driverFirstName;
-    String driverLastName;
-    String driverProfilePic;
-
-    await UserProfileData.fetchUserProfileData(driverId)
-    .then((profile) {
-      isDriverMale = profile.isMale;
-      driverUniversity = profile.university;
-      driverProgram = profile.program;
-      driverFirstName = profile.firstName;
-      driverLastName = profile.lastName;
-      driverProfilePic = profile.profilePic;
-    });
     await databaseReference.collection('rideshares')
     .document(r.driverId + '-' + selectedDate + '-' + selectedTime)
     .setData({
@@ -194,6 +234,27 @@ class CreateRideState extends State<CreateRideScreen> {
     );
   }
 
+  void showEmptyLuggageTypeAlert() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Color.fromRGBO(61, 191, 165, 100),
+          title: new Text('No Luggage Type Specified'),
+          content: new Text('You must specify a luggage type.', style: new TextStyle(color: Colors.black),),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text('Close', style: new TextStyle(color: Colors.white)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      }
+    );
+  }
+
   Widget createAddLocationImage() {
     return new Icon(
       Icons.add_location,
@@ -223,12 +284,109 @@ class CreateRideState extends State<CreateRideScreen> {
                     createLocationDropDown(true),
                     createLocationDropDown(false),
                     createPriceTextField(),
+                    createLuggageDropDown(),
+                    createVehicleDropDown(),
                   ],
                 ),
             ),
             new Container(margin: EdgeInsets.only(left: 15)),
           ],
         ),
+      ),
+    );
+  }
+
+
+  Widget createVehicleDropDown() {
+    return new Container(
+      padding: new EdgeInsets.only(left: 10, top: 5),
+      height: 60,
+      margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
+      decoration: BoxDecoration(
+        color: Color.fromRGBO(61, 191, 165, 100),
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.all(Radius.circular(10)) 
+      ),
+      child: new Theme(
+        data: Theme.of(context).copyWith(
+            canvasColor: appThemeColor,
+        ),
+        child: new DropdownButton<String>(
+          value: selectedVehicle,
+          icon: new Icon(Icons.arrow_drop_down),
+          iconEnabledColor: Colors.white,
+          iconSize: 40,
+          isExpanded: true,
+          style: new TextStyle(color: Colors.white),
+          onChanged: (String newValue) {
+            //setState(() {
+              selectedVehicle = newValue;
+            //});
+          },
+          items: userVehiclesString
+            .map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(
+                  value.toString(),
+                  style: new TextStyle(
+                    backgroundColor: new Color.fromARGB(20, 211, 211, 211),
+                    )
+                ),
+                
+              );
+            })
+            .toList(),
+        )
+      ),
+    );
+  }
+
+  String displayVehicleDetails(Car vehicle) {
+    return vehicle.year + '-' + vehicle.model + '-' + vehicle.make + '-(' + vehicle.licensePlate + ')';
+  }
+
+  Widget createLuggageDropDown() {
+    return new Container(
+      padding: new EdgeInsets.only(left: 10, top: 5),
+      height: 60,
+      margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
+      decoration: BoxDecoration(
+        color: Color.fromRGBO(61, 191, 165, 100),
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.all(Radius.circular(10)) 
+      ),
+      child: new Theme(
+        data: Theme.of(context).copyWith(
+            canvasColor: appThemeColor,
+        ),
+        child: new DropdownButton<String>(
+          value: luggageDropDownValue,
+          icon: new Icon(Icons.arrow_drop_down),
+          iconEnabledColor: Colors.white,
+          iconSize: 40,
+          isExpanded: true,
+          style: new TextStyle(color: Colors.white),
+          onChanged: (String newValue) {
+            //setState(() {
+              luggageDropDownValue = newValue;
+            //});
+          },
+          items: <String>['Luggage Type', '1', '2', '3']
+            .map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(
+                  value.toString(),
+                  style: new TextStyle(
+                    backgroundColor: new Color.fromARGB(20, 211, 211, 211),
+                    )
+                ),
+                
+              );
+            })
+            .toList(),
+        )
       ),
     );
   }
@@ -258,36 +416,6 @@ class CreateRideState extends State<CreateRideScreen> {
         ),
       ),
     );
-  }
-
-  Widget createCarSection() {
-   return new Container(
-      width: double.infinity,
-      color: appThemeColor,
-      child: new Form(
-        key: carFormKey,
-        child: new Row(
-          children: <Widget>[
-            new Container(margin: EdgeInsets.only(left: 15)),
-            new Flexible(
-              child: new Column(
-                  children: <Widget>[
-                    new Icon(
-                      Icons.directions_car,
-                      size: 40,
-                    ),
-                    createCarInfoTextField('Make'),
-                    createCarInfoTextField('Model'),
-                    createCarInfoTextField('Year'),
-                    createCarInfoTextField('License Plate'),
-                  ],
-                ),
-            ),
-            new Container(margin: EdgeInsets.only(left: 15)),
-          ],
-        ),
-      ),
-    );  
   }
 
   Widget createDateTextField() {
@@ -386,12 +514,10 @@ class CreateRideState extends State<CreateRideScreen> {
         onSuggestionsSelected: (suggestion) {
           if(isPickUpLocation) {
             this.rideshare.locationPickUp.description = suggestion['description'];
-            print('pick location is: ' + rideshare.locationPickUp.description);
             this.rideshare.locationPickUp.placeId = suggestion['id'];
             this.pickUpLocationController.text = suggestion['description'];             
           } else {
             this.rideshare.locationDropOff.description = suggestion['description'];
-            print('dropoff location is: ' + rideshare.locationDropOff.description);
             this.rideshare.locationDropOff.placeId = suggestion['id'];
             this.dropOffLocationController.text = suggestion['description'];              
           }
