@@ -49,9 +49,9 @@ class _RideshareSearchFilterState extends State<RideshareSearchFilter>{
     })
   };
 
-  void _onStateDictChange(String field, dynamic location) => {
+  void _onStateDictChange(String field, dynamic value) => {
     setState(() {
-      this._filterOptions[field] = location;
+      this._filterOptions[field] = value;
     })
   };
 
