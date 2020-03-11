@@ -154,21 +154,39 @@ class RideShareSearch{
     for(Rideshare weightedRideshare in postWeigthedResults){
       bool remove = false;
       await dbRef
-      .collection('rideshare-requests').document(weightedRideshare.driverId).get()
-      .then((d){
-        var doc = d.data;
-        print(d.documentID);
-        //got through all of thid driver's ride
-        String uniqueRideShareId = weightedRideshare.driverId + '-' + weightedRideshare.rideDate.toString().split(' ')[0] + '-' + weightedRideshare.rideTime.hour.toString() + ':' + weightedRideshare.rideTime.minute.toString();
-        for(var rideRequestForThisDriver in doc["requests"]){
-          if (rideRequestForThisDriver["rideshareRef"] == uniqueRideShareId && riderId == rideRequestForThisDriver["riderId"]){
-            remove = true;
+      .collection('rideshare-requests')
+      .getDocuments()
+      .then((QuerySnapshot snapShot) {
+        snapShot.documents.forEach((d){
+          var doc = d.data;
+          if(d.documentID == weightedRideshare.driverId){
+            String uniqueRideShareId = weightedRideshare.driverId + '-' + weightedRideshare.rideDate.toString().split(' ')[0] + '-' + weightedRideshare.rideTime.hour.toString() + ':' + weightedRideshare.rideTime.minute.toString();
+            for(var rideRequestForThisDriver in doc["requests"]){
+              if (rideRequestForThisDriver["rideshareRef"] == uniqueRideShareId && riderId == rideRequestForThisDriver["riderId"]){
+                remove = true;
+                break;
+              }
+            }
           }
-        }
-
+        });
+        if(!remove) finalResults.add(weightedRideshare);
       });
-      if(!remove) finalResults.add(weightedRideshare);
     }
+      // .document(weightedRideshare.driverId).get()
+    //   .then((d){
+    //     var doc = d.data;
+    //     print(d.documentID);
+    //     //got through all of thid driver's ride
+    //     String uniqueRideShareId = weightedRideshare.driverId + '-' + weightedRideshare.rideDate.toString().split(' ')[0] + '-' + weightedRideshare.rideTime.hour.toString() + ':' + weightedRideshare.rideTime.minute.toString();
+    //     for(var rideRequestForThisDriver in doc["requests"]){
+    //       if (rideRequestForThisDriver["rideshareRef"] == uniqueRideShareId && riderId == rideRequestForThisDriver["riderId"]){
+    //         remove = true;
+    //       }
+    //     }
+
+    //   });
+    //   if(!remove) finalResults.add(weightedRideshare);
+    // }
 
     return finalResults;
   }
