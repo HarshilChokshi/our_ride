@@ -163,13 +163,18 @@ class CollapsingFilter extends StatelessWidget {
   return Container(
     height: 40,
     width: double.infinity,
+    color: appThemeColor,
     margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
     child:  RaisedButton(
       child: new Text(
         'Seach Rideshares',
         style: new TextStyle(color: Colors.white),
       ),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+      shape: RoundedRectangleBorder(
+        borderRadius: new BorderRadius.circular(18.0),
+        side: BorderSide(color: Colors.white)
+      ),
+      // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
       onPressed: () {
         showAlertDialog(BuildContext context) {
           // set up the AlertDialog
@@ -198,7 +203,7 @@ class CollapsingFilter extends StatelessWidget {
                 color: Colors.white
               ),
             ),
-            backgroundColor: Color.fromRGBO(61, 191, 165, 100),
+            // backgroundColor: Colors.red
           );
 
           // show the dialog
@@ -226,7 +231,7 @@ class CollapsingFilter extends StatelessWidget {
         }
       },
       elevation: 0,
-      color: Color.fromRGBO(61, 191, 165, 100),
+      color: Colors.transparent
       )
   );
   }
