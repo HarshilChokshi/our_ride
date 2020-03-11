@@ -8,6 +8,7 @@ import 'package:our_ride/src/screens/driver_my_rideshares_screen.dart';
 import 'package:our_ride/src/screens/rider_my_rideshares_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:our_ride/src/screens/view_rideshare_details_screen.dart';
+import 'package:intl/intl.dart';
 
 class RideSharesList extends StatelessWidget {
   
@@ -313,10 +314,10 @@ class RideSharesList extends StatelessWidget {
       ),
     );
   }
-
+  final formatCurrency = new NumberFormat.simpleCurrency();
   Widget createPriceText(double price) {
     return new Text(
-      '\$' + price.toStringAsFixed(2),
+      formatCurrency.format(price).toString(),
       style: new TextStyle(
         color: Colors.grey,
         fontSize: 30.0,

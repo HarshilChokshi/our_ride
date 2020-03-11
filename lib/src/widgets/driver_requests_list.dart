@@ -6,6 +6,7 @@ import 'package:our_ride/src/screens/driver_ride_requests_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:our_ride/src/screens/user_profile_screen.dart';
+import 'package:intl/intl.dart';
 
 class DriverRequestsList extends StatelessWidget {
   List<RideRequest> driverRideRequestsList;
@@ -327,10 +328,11 @@ class DriverRequestsList extends StatelessWidget {
       driverRideRequestsList.removeAt(index);
     });
   }
-
+  
+  final formatCurrency = new NumberFormat.simpleCurrency();
   Widget createPrice(int index) {
     return new Text(
-      '\$' + driverRideRequestsList[index].ridesharePrice.toStringAsFixed(2),
+      formatCurrency.format(driverRideRequestsList[index].ridesharePrice).toString(),
       style: new TextStyle(
         color: Colors.grey,
         fontSize: 30.0,

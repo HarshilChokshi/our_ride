@@ -71,7 +71,9 @@ class RideShareSearch{
         if (
           partialRideshareIDs.contains(f.documentID) &&
           //verify same gender for passengers and driver
-          (!searchOptions["gender"] || (ridersAreSameGender(riderProfiles, doc["riders"], riderId) && doc["driverId"].isMale == currentRiderProfile.isMale))
+          (!searchOptions["gender"] || (ridersAreSameGender(riderProfiles, doc["riders"], riderId) && doc["driverId"].isMale == currentRiderProfile.isMale)) &&
+          //verify current rider is not in this ride
+          !doc['riders'].toList().contains(riderId)
         ){
           //weighting for valid rides
           // +3 for each passenger (including rider + driver) in same program/department/university

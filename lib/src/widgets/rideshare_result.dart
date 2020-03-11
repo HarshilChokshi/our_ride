@@ -6,6 +6,7 @@ import 'package:our_ride/src/models/rideshare_model.dart';
 import 'package:our_ride/src/models/rideshare_model.dart';
 import 'package:our_ride/src/screens/rideshare_list_screen.dart';
 import 'package:our_ride/src/screens/user_profile_screen.dart';
+import 'package:intl/intl.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:our_ride/src/screens/view_rideshare_details_screen.dart';
@@ -26,7 +27,7 @@ class RideshareSearchResult extends StatefulWidget{
 
 class _RideshareSearchResultState extends State<RideshareSearchResult>{
   _RideshareSearchResultState();
-
+  final formatCurrency = new NumberFormat.simpleCurrency();
   //textformatters
   String nameFormatter(){
     return "${widget.rideShareData.driverFirstName}. ${widget.rideShareData.driverLastName[0]}";
@@ -50,7 +51,8 @@ class _RideshareSearchResultState extends State<RideshareSearchResult>{
   }
 
   String priceFormatter(){
-    return "\$ ${double.parse((widget.rideShareData.price).toStringAsFixed(2))}";
+    return formatCurrency.format(widget.rideShareData.price).toString();
+    // return "\$ ${double.parse((widget.rideShareData.price).toStringAsFixed(2))}";
   }
 
   AssetImage getImage(){
