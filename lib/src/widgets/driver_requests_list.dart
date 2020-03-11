@@ -4,6 +4,8 @@ import 'package:our_ride/src/contants.dart';
 import 'package:our_ride/src/models/ride_request_model.dart';
 import 'package:our_ride/src/screens/driver_ride_requests_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:our_ride/src/screens/user_profile_screen.dart';
 
 class DriverRequestsList extends StatelessWidget {
   List<RideRequest> driverRideRequestsList;
@@ -171,13 +173,22 @@ class DriverRequestsList extends StatelessWidget {
   Widget createRiderInfo(int index) {
     return Container(
       padding: EdgeInsets.only(left: 5),
-      child: new Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          createRiderProfilePicture(index),
-          new Container(padding: EdgeInsets.only(left: 10),),
-          createRiderNameText(index),
-        ],
+      child: new GestureDetector(
+        onTap: () {
+          Navigator.push(
+            driverRideRequestsState.context, 
+            new CupertinoPageRoute(
+              builder: (context) => UserProfileScreen(driverRideRequestsList[index].riderId, true, null, false)
+          ));
+        },
+        child: new Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            createRiderProfilePicture(index),
+            new Container(padding: EdgeInsets.only(left: 10),),
+            createRiderNameText(index),
+          ],
+        )
       ),
     );
   }
@@ -222,27 +233,11 @@ class DriverRequestsList extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          createViewFacebookProfileButton(index),
           createAcceptButton(index),
           createDenyButton(index),
+          createPrice(index),
         ],
       ),
-    );
-  }
-
-  Widget createViewFacebookProfileButton(int index) {
-    return new RaisedButton(
-      color: Colors.blue,
-      child: new Text(
-        'View FB Profile',
-        style: new TextStyle(
-          color: Colors.white,
-          fontSize: 12,
-        ),
-      ),
-      onPressed: () {
-        UserProfileData.openFacebookProfile(driverRideRequestsList[index].facebookId);
-      },
     );
   }
 
@@ -253,7 +248,7 @@ class DriverRequestsList extends StatelessWidget {
         'Accept',
         style: new TextStyle(
           color: Colors.white,
-          fontSize: 14,
+          fontSize: 10,
         ),
       ),
       onPressed: () {
@@ -269,7 +264,7 @@ class DriverRequestsList extends StatelessWidget {
         'Deny',
         style: new TextStyle(
           color: Colors.white,
-          fontSize: 14,
+          fontSize: 10,
         ),
       ),
       onPressed: () {
@@ -331,5 +326,15 @@ class DriverRequestsList extends StatelessWidget {
     driverRideRequestsState.setState(() {
       driverRideRequestsList.removeAt(index);
     });
+  }
+
+  Widget createPrice(int index) {
+    return new Text(
+      '\$' + driverRideRequestsList[index].ridesharePrice.toString(),
+      style: new TextStyle(
+        color: Colors.grey,
+        fontSize: 30.0,
+      ),
+    );
   }
 }

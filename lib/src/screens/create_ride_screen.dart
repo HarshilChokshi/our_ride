@@ -39,8 +39,11 @@ class CreateRideState extends State<CreateRideScreen> {
   TextEditingController dropOffLocationController = TextEditingController();
   String selectedDate;
   String selectedTime;
+  int capacity = 1;
+  double price = 00.00;
   String luggageDropDownValue = 'Luggage Type';
   String userVehicle;
+  bool isFirstTime = true;
 
   bool isDriverMale;
   String driverUniversity;
@@ -65,12 +68,12 @@ class CreateRideState extends State<CreateRideScreen> {
     return FutureBuilder<bool> (
       future: fetchUserData(),
       builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-        if(snapshot.connectionState == ConnectionState.waiting) {
+        if(isFirstTime && snapshot.connectionState == ConnectionState.waiting) {
           return new Scaffold(
             backgroundColor: Colors.white,
             body: new Center(
               child: Container(
-                child: new Text('Loading user data...', style: (
+                child: new Text('Loading...', style: (
                   new TextStyle(color: Colors.grey, fontSize: 20.0)
                 ),),
               ),
@@ -197,9 +200,9 @@ class CreateRideState extends State<CreateRideScreen> {
       'driverId': r.driverId,
       'rideDate': selectedDate,
       'rideTime': selectedTime,
-      'capacity': r.capacity,
+      'capacity': capacity,
       'numberOfCurrentRiders': r.numberOfCurrentRiders,
-      'price': r.price,
+      'price': price,
       'car': r.car.toJson(),
       'riders': r.riders,
       'isDriverMale': isDriverMale,
@@ -210,6 +213,7 @@ class CreateRideState extends State<CreateRideScreen> {
       'driverProfilePic': driverProfilePic,
       'locationPickUp': r.locationPickUp.toJson(),
       'locationDropOff': r.locationDropOff.toJson(),
+      'luggage': int.parse(luggageDropDownValue),
     });
   }
 
@@ -319,9 +323,10 @@ class CreateRideState extends State<CreateRideScreen> {
           isExpanded: true,
           style: new TextStyle(color: Colors.white),
           onChanged: (String newValue) {
-            //setState(() {
+            setState(() {
+              isFirstTime = false;
               selectedVehicle = newValue;
-            //});
+            });
           },
           items: userVehiclesString
             .map<DropdownMenuItem<String>>((String value) {
@@ -368,9 +373,10 @@ class CreateRideState extends State<CreateRideScreen> {
           isExpanded: true,
           style: new TextStyle(color: Colors.white),
           onChanged: (String newValue) {
-            //setState(() {
+            setState(() {
+              isFirstTime = false;
               luggageDropDownValue = newValue;
-            //});
+            });
           },
           items: <String>['Luggage Type', '1', '2', '3']
             .map<DropdownMenuItem<String>>((String value) {
@@ -394,6 +400,7 @@ class CreateRideState extends State<CreateRideScreen> {
 
   void updateDateTime(String type, String state) {
     setState(() {
+      isFirstTime = false;
       if(type == 'date') {
         this.selectedDate = state;
       } else {
@@ -457,6 +464,7 @@ class CreateRideState extends State<CreateRideScreen> {
         style: new TextStyle(
           color: Colors.white,
         ),
+        initialValue: capacity.toString(),
         decoration: new InputDecoration(
           hintText: 'Capacity',
           hintStyle: new TextStyle(fontSize: 14, color: new Color.fromARGB(150, 255, 255, 255)),
@@ -475,7 +483,7 @@ class CreateRideState extends State<CreateRideScreen> {
           }
         },
         onSaved: (String value) {
-          rideshare.capacity = int.parse(value);
+          capacity = int.parse(value);
         },
       ),
     );  
@@ -540,6 +548,7 @@ class CreateRideState extends State<CreateRideScreen> {
         style: new TextStyle(
           color: Colors.white,
         ),
+        initialValue: price.toString(),
         decoration: new InputDecoration(
           hintText: 'Price',
           hintStyle: new TextStyle(fontSize: 14, color: Color.fromARGB(150, 255, 255, 255)),
@@ -558,7 +567,7 @@ class CreateRideState extends State<CreateRideScreen> {
           }
         },
         onSaved: (String value) {
-          rideshare.price = double.parse(value);
+          price = double.parse(value);
         },
       )
     );

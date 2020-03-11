@@ -115,10 +115,10 @@ class MyRideSharesDriversState extends State<MyRideSharesDriversScreen> {
             );
 
             Location locationDropOff = Location.fromDetails(
-              f.data['locationPickUp']['description'],
-              f.data['locationPickUp']['placeId'],
-              f.data['locationPickUp']['lat'],
-              f.data['locationPickUp']['long']
+              f.data['locationDropOff']['description'],
+              f.data['locationDropOff']['placeId'],
+              f.data['locationDropOff']['lat'],
+              f.data['locationDropOff']['long']
             );
             List<String> rideShareTime = f.data['rideTime'].split(':');
             List<String> riders = [];

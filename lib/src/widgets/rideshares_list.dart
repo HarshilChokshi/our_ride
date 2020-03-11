@@ -56,12 +56,13 @@ class RideSharesList extends StatelessWidget {
   }
 
   void deleteRideShareRecord(int index)  async {
-   Rideshare r = rideShareDataList[index];
-   databaseReference
-      .collection('rideshares')
-      .document(r.driverId + '-' + r.rideDate.toString() + '-' + r.rideTime.hour.toString() + ':' + r.rideTime.minute.toString())
-      .delete();
-   
+    Rideshare r = rideShareDataList[index];
+    
+    databaseReference
+        .collection('rideshares')
+        .document(r.driverId + '-' + r.rideDate.toString().split(' ')[0] + '-' + r.rideTime.hour.toString() + ':' + r.rideTime.minute.toString())
+        .delete();
+    
     this.driverStateParent.setState(() {
       rideShareDataList.removeAt(index);
     });
@@ -290,6 +291,7 @@ class RideSharesList extends StatelessWidget {
               rideShareDataList[index].driverId,
               rideShareDataList[index].riders,
               rideShareDataList[index].car,
+              rideShareDataList[index].luggage,
               )
         ));
       }

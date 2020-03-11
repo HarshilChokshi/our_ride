@@ -38,7 +38,7 @@ class RideShareUsersList extends StatelessWidget {
         children: <Widget>[
           new Container(margin: EdgeInsets.only(right: 3)),
           createUserProfileImage(index),
-          new Container(margin: EdgeInsets.only(right: 30)),
+          new Container(margin: EdgeInsets.only(right: 10)),
           createNameText(index),
           new Spacer(),
           createViewProfileButton(index),
@@ -72,8 +72,6 @@ class RideShareUsersList extends StatelessWidget {
       ),
     ); 
   }
-
-
 
   Widget createNameText(int index) {
     String name = users[index].firstName + ' '  + users[index].lastName[0] + '.';

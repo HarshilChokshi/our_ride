@@ -12,6 +12,7 @@ class RideRequest {
   String dropOffLocation;
   DateTime rideshareDate;
   TimeOfDay rideTime;
+  double ridesharePrice;
   String rideshareRef;
 
   RideRequest(
@@ -25,6 +26,7 @@ class RideRequest {
     this.dropOffLocation,
     this.rideshareDate,
     this.rideTime,
+    this.ridesharePrice,
     this.rideshareRef,
   );
 }
