@@ -21,6 +21,7 @@ class RideShareSearch{
     Set<String> partialDriverIDs = new Set();
     Map<String, UserProfile> riderProfiles = {};
     Map<String, UserProfile> driverProfiles = {};
+    Map<String, bool> isCurrentRiderInsideRide = {};
     
     UserProfile currentRiderProfile;
 
@@ -60,6 +61,26 @@ class RideShareSearch{
     riderProfiles = await UserProfileData.fetchProfileDataForUsersMap(partialRiderIDs.toList());
     driverProfiles = await UserProfileData.fetchProfileDataForUsersMap(partialDriverIDs.toList());
     currentRiderProfile = await UserProfileData.fetchUserProfileData(riderId);
+    
+    
+    // //check to see if user is within a ride, based on driver id
+    // await dbRef
+    // .collection('rideshare-requests')
+    // .getDocuments()
+    // .then((QuerySnapshot snapShot){
+    //   snapShot.documents.forEach((f){
+    //     var doc = f.data;
+
+    //     for(var ride in doc["requests"]){
+    //       isCurrentRiderInsideRide[ride["rideshareRef"]] = ride[""]
+    //     }
+
+    //     isCurrentRiderInsideRide[f.documentID] = doc["riders"].toList().contains(riderId);
+    //   });
+    // });
+    
+
+
     //final validation and weighting
     await dbRef
     .collection('rideshares')
@@ -146,6 +167,7 @@ class RideShareSearch{
     weightedRides.sort((a, b) => a.item1.compareTo(b.item1));
     return weightedRides.map((item)=>item.item2).toList();
   }
+
 
   //search filter helper functions
   static isWithinRadius(double lat1, double lng1, double lat2, double lng2, {int radiusInMetres = 2000}){
