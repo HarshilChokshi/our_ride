@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:our_ride/src/DAOs/GoogleMaps.dart';
 import 'package:our_ride/src/contants.dart';
 import 'package:our_ride/src/widgets/app_bottom_navigation_bar.dart';
 import 'package:our_ride/src/widgets/rideshare_search_filter.dart';
@@ -37,6 +38,7 @@ class RideshareListState extends State<RideshareListScreen> {
 
   void updateFuture({bool callingFromChild = false, Map searchOptions}){
     setState((){
+      // GoogleMapsHandler.fetchLatLongForPlaceID(searchOptions["fr"])
       this.searchResultsFuture = RideShareSearch.fetchRideshareFilterResults();
     });
   }
