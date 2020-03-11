@@ -1,6 +1,8 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+typedef CallbackFunction = void Function(double lat, double lng);
+
 class GoogleMapsHandler{
   //PLACES API
   static Future<List> fetchLocationSuggestions(String prefixText) async{
@@ -32,7 +34,7 @@ class GoogleMapsHandler{
   }
 
   //PLACES API
-  static Future<List> fetchLatLongForPlaceID(String placeID) async{
+  static Future<void> fetchLatLongForPlaceID({String placeID, CallbackFunction callback}) async{
     const kGoogleAPIKey = "AIzaSyCoasYE-PQfb6PBIVR8d4M9vxx53pNiNos";
     String vettedPlaceID = placeID.trim();
 
@@ -41,13 +43,14 @@ class GoogleMapsHandler{
     final resp = await http.get(base+params);
     
     if (resp.statusCode == 200) {
-      return loadLatLong(json.decode(resp.body));
+      var results = json.decode(resp.body);
+      callback(results['result']['geometry']['location']['lat'], results['result']['geometry']['location']['lng']);
     } else {
-      return ["", ""];
+      callback(0.0, 0.0);
     }
   }
 
   static List<double> loadLatLong(dynamic results){
-    return [double.parse(results['result']['geometry']['location']["lat"]), double.parse(results['result']['geometry']['location']["lng"])];
+    return [double.parse(results['result']['geometry']['location']['lat']), double.parse(results['result']['geometry']['location']['lng'])];
   }
 }

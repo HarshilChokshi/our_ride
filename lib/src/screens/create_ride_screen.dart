@@ -33,7 +33,6 @@ class CreateRideState extends State<CreateRideScreen> {
 
   String driverId;
   final locationFormKey = new GlobalKey<FormState>();
-  final carFormKey = new GlobalKey<FormState>();
   Rideshare rideshare;
   final databaseReference = Firestore.instance;
   TextEditingController pickUpLocationController = TextEditingController();
@@ -118,8 +117,8 @@ class CreateRideState extends State<CreateRideScreen> {
     );
   }
 
-  void createRideShare() {
-    if(!carFormKey.currentState.validate() || !locationFormKey.currentState.validate()) {
+  void createRideShare() async {
+    if(!locationFormKey.currentState.validate()) {
       return;
     }
 
@@ -148,10 +147,22 @@ class CreateRideState extends State<CreateRideScreen> {
       carDetails[3].substring(1, carDetails[3].length - 1),
     );
    
-    getLatLong(rideshare.locationPickUp.placeId, true);
-    getLatLong(rideshare.locationDropOff.placeId, false);
+    await GoogleMapsHandler.fetchLatLongForPlaceID(
+      placeID: rideshare.locationPickUp.placeId,
+      callback: (double lat, double lng) {
+        rideshare.locationPickUp.lat = lat;
+        rideshare.locationPickUp.long = lng;
+      }
+    );
 
-    carFormKey.currentState.save();
+    await GoogleMapsHandler.fetchLatLongForPlaceID(
+      placeID: rideshare.locationDropOff.placeId,
+      callback: (double lat, double lng) {
+        rideshare.locationDropOff.lat = lat;
+        rideshare.locationDropOff.long = lng;
+      }
+    );
+
     locationFormKey.currentState.save();
     rideshare.numberOfCurrentRiders = 0;
     rideshare.riders = [];
@@ -163,21 +174,6 @@ class CreateRideState extends State<CreateRideScreen> {
       new CupertinoPageRoute(
         builder: (context) => RideShareCreatedScreen(driverId)
       ));
-  }
-
-  void getLatLong(String placeId, bool isPickUpLocation) async {
-    await GoogleMapsHandler.fetchLatLongForPlaceID(placeId)
-    .then((List latlong){
-      double lat = latlong[0];
-      double long = latlong[1];
-      if(isPickUpLocation) {
-        rideshare.locationPickUp.lat = lat;
-        rideshare.locationPickUp.long = long;
-      } else {
-        rideshare.locationDropOff.lat = lat;
-        rideshare.locationDropOff.long = long;
-      }
-    });
   }
 
   Future<bool> fetchUserData() async {
@@ -323,9 +319,9 @@ class CreateRideState extends State<CreateRideScreen> {
           isExpanded: true,
           style: new TextStyle(color: Colors.white),
           onChanged: (String newValue) {
-            setState(() {
+            //setState(() {
               selectedVehicle = newValue;
-            });
+            //});
           },
           items: userVehiclesString
             .map<DropdownMenuItem<String>>((String value) {
@@ -372,9 +368,9 @@ class CreateRideState extends State<CreateRideScreen> {
           isExpanded: true,
           style: new TextStyle(color: Colors.white),
           onChanged: (String newValue) {
-            setState(() {
+            //setState(() {
               luggageDropDownValue = newValue;
-            });
+            //});
           },
           items: <String>['Luggage Type', '1', '2', '3']
             .map<DropdownMenuItem<String>>((String value) {
