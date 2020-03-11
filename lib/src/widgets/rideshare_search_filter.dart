@@ -36,16 +36,10 @@ class _RideshareSearchFilterState extends State<RideshareSearchFilter>{
     'sameGender': false
   };
 
-  bool _isFilterEmpty = true;
-  bool _isFilterExpanded = false;
-      //define default filter options state
-
   @override
   void initState(){
     super.initState();
     this._filterOptions['sameGender'] = false;
-    this._isFilterEmpty = true;
-    this._isFilterExpanded = false;
   }
 
   //state change functions
@@ -55,7 +49,7 @@ class _RideshareSearchFilterState extends State<RideshareSearchFilter>{
     })
   };
 
-  void _onStateDictChange(String field, String location) => {
+  void _onStateDictChange(String field, dynamic location) => {
     setState(() {
       this._filterOptions[field] = location;
     })
@@ -129,7 +123,8 @@ class CollapsingFilter extends StatelessWidget {
 
   RideshareListState parentListStateRef;
   bool genderValue;
-  String fromValue, toValue, timeState, dateState;
+  Map<String, dynamic> fromValue, toValue;
+  String  timeState, dateState;
   final Function onGenderToggle, onStateDictChange;
 
   //composable widgets
@@ -217,20 +212,17 @@ class CollapsingFilter extends StatelessWidget {
 
         bool isNullOrEmpty(Object o) => o == null || "" == o;
 
-        if (isNullOrEmpty(fromValue) || isNullOrEmpty(toValue) || isNullOrEmpty(timeState) || isNullOrEmpty(dateState) ){
+        if (fromValue == null || toValue == null || isNullOrEmpty(timeState) || isNullOrEmpty(dateState) ){
           showAlertDialog(context);
         }
         else{
-          this.parentListStateRef.updateFuture(
-            callingFromChild: true,
-            searchOptions: {
-              'from': this.fromValue,
-              'to': this.toValue,
-              'date': this.dateState,
-              'time': this.timeState,
-              'sameGender': this.genderValue
-            }
-          );
+          this.parentListStateRef.updateFuture({
+            "from": fromValue,
+            "to": toValue,
+            "time": timeState,
+            "date": dateState,
+            "gender": genderValue
+          });
         }
       },
       elevation: 0,
@@ -261,7 +253,6 @@ class CollapsingFilter extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    //  print("l;kjlkj");
     return SliverPersistentHeader(
       pinned: true,
       delegate: _SliverAppBarDelegate(
@@ -276,7 +267,7 @@ class CollapsingFilter extends StatelessWidget {
                 children: <Widget>[
                   TFWithAutoComplete(
                     typeAheadController: from,
-                    hintText: (fromValue != null ? fromValue : 'From'),
+                    hintText: (fromValue != null ? fromValue["description"] : 'From'),
                     prefix:Icons.edit_location,
                     suggestionsCallback: (prefixSearch) async { //this should be async
                       return await GoogleMapsHandler.fetchLocationSuggestions(prefixSearch);
@@ -292,13 +283,13 @@ class CollapsingFilter extends StatelessWidget {
                           );  
                     },
                     onSuggestionsSelected: (suggestion) {
-                      onStateDictChange('from', suggestion['description']);
+                      onStateDictChange('from', {'description': suggestion['description'], 'placeId': suggestion['id']});
                       from.text = suggestion['description'];
                     }
                   ),
                   TFWithAutoComplete(
                     typeAheadController: to,
-                    hintText:(toValue != null ? toValue : 'To'),
+                    hintText:(toValue != null ? toValue["description"] : 'To'),
                     prefix:Icons.edit_location,
                     suggestionsCallback: (prefixSearch) async { //this should be async
                       return await GoogleMapsHandler.fetchLocationSuggestions(prefixSearch);
@@ -312,7 +303,7 @@ class CollapsingFilter extends StatelessWidget {
                           );
                     },
                     onSuggestionsSelected: (suggestion) {
-                      onStateDictChange('to', suggestion['description']);
+                      onStateDictChange('to', {"description": suggestion['description'], "placeId": suggestion['id']});
                       to.text = suggestion['description'];
                     }
                   ),
