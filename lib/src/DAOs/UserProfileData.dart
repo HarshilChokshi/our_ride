@@ -21,6 +21,18 @@ class UserProfileData{
     return Future.value(userProfiles);
   }
 
+  static Future<Map<String, UserProfile>> fetchProfileDataForUsersMap(List<String> userIds) async {
+    Map<String, UserProfile> userProfiles;
+    for(String user_id in userIds) {
+      Future<UserProfile> profile = await fetchUserProfileData(user_id)
+      .then((UserProfile userProfile) {
+        userProfiles[user_id] = userProfile;
+      });
+    }
+
+    return Future.value(userProfiles);
+  }
+
   
   static Future<UserProfile> fetchUserProfileData(String user_id) async {
     var data;
