@@ -103,19 +103,40 @@ class RideshareListState extends State<RideshareListScreen> {
                           );
                         }
                         else if (snapshot.hasData){
-                          List<Widget> res = [];
-                          for(Rideshare rideshare in snapshot.data){
-                            res.add( RideshareSearchResult(rideShareData: rideshare, parentListStateRef: this, requestMade: madeRequest,));
+                          if (snapshot.data.length == 0){
+                            return Column(
+                              children: [
+                                Container(
+                                  height: 200,
+                                  width: 180,
+                                  child:  Center(child:Text(
+                                    "We can't match you with any rides at the moment.",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Color.fromRGBO(84, 84, 84, 100),
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700
+                                    ),
+                                  )),
+                                )
+                              ]
+                            );
                           }
-                          return Column(
-                            children: res,
-                          ); 
+                          else{
+                            List<Widget> res = [];
+                            for(Rideshare rideshare in snapshot.data){
+                              res.add( RideshareSearchResult(rideShareData: rideshare, parentListStateRef: this, requestMade: madeRequest,));
+                            }
+                            return Column(
+                              children: res,
+                            ); 
+                          }
                         }
                         else if (snapshot.hasError){
                           return Column(
                             children: [
                                Container(
-                                height: 100,
+                                height: 200,
                                 width: 180,
                                 child:  Center(child:Text(
                                   "We ran into an error...",
@@ -134,7 +155,7 @@ class RideshareListState extends State<RideshareListScreen> {
                           return Column(
                             children: [
                               Container(
-                                height: 100,
+                                height: 200,
                                 width: 180,
                                 child:  Center(child:Text(
                                   "Try searching for a ride!",
