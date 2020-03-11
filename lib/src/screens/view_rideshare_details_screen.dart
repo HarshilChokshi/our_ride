@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:our_ride/src/DAOs/RideRequestsCreator.dart';
 import 'package:our_ride/src/DAOs/UserProfileData.dart';
 import 'package:our_ride/src/contants.dart';
+import 'package:our_ride/src/models/rideshare_model.dart';
 import 'package:our_ride/src/widgets/rideshare_users_list.dart';
 import '../models/car.dart';
 import '../models/user_profile.dart';
@@ -11,13 +13,24 @@ class ViewRideshareDetailsScreen extends StatefulWidget {
   List<String> riderIds;
   Car rideshareVehicle;
   int luggageType;
+  bool isRiderAlreadyAdded;
+  Rideshare targetRideshare;
+  String viewerId;
 
-  ViewRideshareDetailsScreen(this.driverId, this.riderIds, this.rideshareVehicle, this.luggageType);
+  ViewRideshareDetailsScreen(
+    this.driverId,
+    this.riderIds,
+    this.rideshareVehicle,
+    this.luggageType,
+    this.isRiderAlreadyAdded,
+    this.targetRideshare,
+    this.viewerId,
+  );
   
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
-    return new ViewRideShareDetailsState(driverId, riderIds, rideshareVehicle, luggageType);
+    return new ViewRideShareDetailsState(driverId, riderIds, rideshareVehicle, luggageType, isRiderAlreadyAdded, targetRideshare, viewerId);
   }
 }
 
@@ -26,6 +39,9 @@ class ViewRideShareDetailsState extends State<ViewRideshareDetailsScreen> {
   List<String> riderIds;
   Car rideshareVehicle; 
   int luggageType;
+  bool isRiderAlreadyAdded;
+  Rideshare targetRideshare;
+  String viewerId;
   List<String> allUsers = [];
 
   List<String> luggageTypeMessages = [
@@ -34,7 +50,15 @@ class ViewRideShareDetailsState extends State<ViewRideshareDetailsScreen> {
     '(Each passenger can bring a suitcase)',
   ];
 
-  ViewRideShareDetailsState(this.driverId, this.riderIds, this.rideshareVehicle, this.luggageType);
+  ViewRideShareDetailsState(
+    this.driverId,
+    this.riderIds,
+    this.rideshareVehicle,
+    this.luggageType,
+    this.isRiderAlreadyAdded,
+    this.targetRideshare,
+    this.viewerId,
+  );
 
   @override
   void initState() {
@@ -63,6 +87,7 @@ class ViewRideShareDetailsState extends State<ViewRideshareDetailsScreen> {
           );
         } else {
             List<UserProfile> rideShareUsers = snapshot.data;
+            bool notNull(Object o) => o != null;
             return new Scaffold(
               backgroundColor: Colors.white,
               body: new SingleChildScrollView(
@@ -81,7 +106,8 @@ class ViewRideShareDetailsState extends State<ViewRideshareDetailsScreen> {
                       new SizedBox(height: 200.0, child: new RideShareUsersList(rideShareUsers, this)),
                       new Container(margin: EdgeInsets.only(bottom: 40)),
                       createGroupChatButton(),
-                    ],
+                      createRequestToJoinRideButton(),
+                    ].where(notNull).toList(),
                   ),
                 )
               ),
@@ -165,6 +191,9 @@ class ViewRideShareDetailsState extends State<ViewRideshareDetailsScreen> {
 
 
   Widget createGroupChatButton() {
+    if(!isRiderAlreadyAdded) {
+      return null;
+    }
     return Align(
       alignment: Alignment.bottomCenter,
       child: new FlatButton(
@@ -179,5 +208,32 @@ class ViewRideShareDetailsState extends State<ViewRideshareDetailsScreen> {
         ),
       ),
     );
+  }
+
+  Widget createRequestToJoinRideButton() {
+    if(isRiderAlreadyAdded) {
+      return null;
+    }
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: new FlatButton(
+        color: appThemeColor,
+        onPressed: () {
+          requestToJoinRide();
+          Navigator.pop(context);
+        },
+        child: new Text(
+          'Request to join ride',
+          style: new TextStyle(
+            color: Colors.white,
+            fontSize: 14.0
+          ),
+        ),
+      ),
+    );
+  }
+
+  void requestToJoinRide() async {
+    RideRequestsCreator.create(targetRideshare, viewerId);
   }
 }

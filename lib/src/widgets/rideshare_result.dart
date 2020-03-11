@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:our_ride/src/DAOs/RideRequestsCreator.dart';
 import 'package:our_ride/src/contants.dart';
 import 'package:our_ride/src/models/rideshare_model.dart';
 import 'package:our_ride/src/models/rideshare_model.dart';
+import 'package:our_ride/src/screens/rideshare_list_screen.dart';
 import 'package:our_ride/src/screens/user_profile_screen.dart';
 
 import 'package:flutter/cupertino.dart';
+import 'package:our_ride/src/screens/view_rideshare_details_screen.dart';
 
 class RideshareSearchResult extends StatefulWidget{
   // final Function addRide; 
   Rideshare rideShareData;
+  RideshareListState parentListStateRef;
 
   RideshareSearchResult({
     @required
-    this.rideShareData
+    this.rideShareData,
+    this.parentListStateRef,
   });
 
   _RideshareSearchResultState createState() => _RideshareSearchResultState();
@@ -310,7 +315,7 @@ class _RideshareSearchResultState extends State<RideshareSearchResult>{
                 child:  GestureDetector(
                   onTap: () { //link to user profile
                   // print("left");
-                  Navigator.pushReplacement(
+                  Navigator.push(
                     context, 
                     CupertinoPageRoute(
                       builder: (context) => UserProfileScreen(widget.rideShareData.driverId, false, null, false)
@@ -324,12 +329,19 @@ class _RideshareSearchResultState extends State<RideshareSearchResult>{
                 flex: 8,
                 child:  GestureDetector(
                   onTap: () { //link to user profile
-                    // print("right");
-                      // Navigator.pushReplacement(
-                      //   context, 
-                      //   CupertinoPageRoute(
-                      //     builder: (context) => UserProfileScreen(userId, isRider, userProfile, true)
-                      // ));
+                      Navigator.push(
+                        context, 
+                        CupertinoPageRoute(
+                          builder: (context) => ViewRideshareDetailsScreen(
+                            widget.rideShareData.driverId,
+                            widget.rideShareData.riders,
+                            widget.rideShareData.car,
+                            widget.rideShareData.luggage,
+                            false,
+                            widget.rideShareData,
+                            widget.parentListStateRef.rider_id,
+                          )
+                      ));
                   },
                   child: rightPortion(),
                   ),
@@ -340,18 +352,22 @@ class _RideshareSearchResultState extends State<RideshareSearchResult>{
         actions: <Widget>[
           IconSlideAction(
             foregroundColor: Colors.white,
-            caption: 'Add Ride',
+            caption: 'Request Ride',
             color: appThemeColor,
             iconWidget: Icon(
               Icons.add,
               color: Colors.white,
             ),
             onTap: () {
-              print("add ride clicked");
+              requestToJoinRide();
             },
           ),
         ],
       )
     ));
   }
+
+    void requestToJoinRide() async {
+      RideRequestsCreator.create(widget.rideShareData, widget.parentListStateRef.rider_id);
+    }
 }

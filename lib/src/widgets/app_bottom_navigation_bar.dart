@@ -45,7 +45,7 @@ class AppBottomNavigationBar extends StatelessWidget {
               color: page == 1 ? Colors.blue : Colors.black,
             ),
             new IconButton(
-              icon: Icon(Icons.face),
+              icon: Icon(Icons.person),
               onPressed: () {
                 Navigator.pushReplacement(
                   context, 

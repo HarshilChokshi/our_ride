@@ -103,7 +103,7 @@ class RideshareListState extends State<RideshareListScreen> {
                         else if (snapshot.hasData){
                           List<Widget> res = [];
                           for(Rideshare rideshare in snapshot.data){
-                            res.add( RideshareSearchResult(rideShareData: rideshare));
+                            res.add( RideshareSearchResult(rideShareData: rideshare, parentListStateRef: this,));
                           }
                           return Column(
                             children: res,
