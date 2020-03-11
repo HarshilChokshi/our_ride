@@ -88,40 +88,39 @@ class MyRideSharesRidersState extends State<MyRideSharesRidersScreen> {
                 f.data['car']['year'],
                 f.data['car']['licensePlate'],
               );
+
+              String driverFirstName =  f.data['driverFirstName'];
+              String driverLastName =  f.data['driverLastName'];
+
+              Location locationPickUp = Location.fromDetails(
+                f.data['locationPickUp']['description'],
+                f.data['locationPickUp']['placeId'],
+                f.data['locationPickUp']['lat'],
+                f.data['locationPickUp']['long']
+              );
+
+              Location locationDropOff = Location.fromDetails(
+                f.data['locationDropOff']['description'],
+                f.data['locationDropOff']['placeId'],
+                f.data['locationDropOff']['lat'],
+                f.data['locationDropOff']['long']
+              );
               List<String> rideShareTime = f.data['rideTime'].split(':');
               List<String> riders = [];
 
               for(var rider in f.data['riders']) {
                 riders.add(rider.toString());
               }
-
               bool isDriverMale = f.data['isDriverMale'];
               String driverUniversity = f.data['driverUniversity'];
               String driverProgram = f.data['driverProgram'];
-              String driverFirstName =  f.data['driverFirstName'];
-              String driverLastName =  f.data['driverLastName'];
               String driverProfilePic = f.data['driverProfilePic'];
               int luggage = f.data['luggage'];
 
-
-            Location locationPickUp = Location.fromDetails(
-              f.data['locationPickUp']['description'],
-              f.data['locationPickUp']['placeId'],
-              f.data['locationPickUp']['lat'],
-              f.data['locationPickUp']['long']
-            );
-
-            Location locationDropOff = Location.fromDetails(
-              f.data['locationPickUp']['description'],
-              f.data['locationPickUp']['placeId'],
-              f.data['locationPickUp']['lat'],
-              f.data['locationPickUp']['long']
-            );
-
               Rideshare riderRideShare = Rideshare.fromDetails(
                 f.data['driverId'],
-                f.data['pickUpLocation'],
-                f.data['dropOffLocation'],
+                DateTime.parse(f.data['rideDate']),
+                new TimeOfDay(hour: int.parse(rideShareTime[0]), minute: int.parse(rideShareTime[1])),
                 f.data['capacity'],
                 f.data['numberOfCurrentRiders'],
                 f.data['price'],
@@ -137,7 +136,6 @@ class MyRideSharesRidersState extends State<MyRideSharesRidersScreen> {
                 locationDropOff,
                 luggage,
               );
-              
               riderRideshares.add(riderRideShare);
               break;
             }

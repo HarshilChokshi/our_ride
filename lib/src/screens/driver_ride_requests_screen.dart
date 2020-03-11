@@ -93,6 +93,8 @@ class DriverRideRequestsState extends State<DriverRideRequestsScreen> {
           minute: int.parse(rideShareTime[1])
         );
         String rideshareRef = doc['requests'][i]['rideshareRef'];
+        double ridesharePrice = doc['requests'][i]['ridesharePrice'];
+
         rideRequestList.add(
           new RideRequest(
             driverId,
@@ -105,6 +107,7 @@ class DriverRideRequestsState extends State<DriverRideRequestsScreen> {
             dropOffLocation,
             rideshareDate,
             rideTime,
+            ridesharePrice,
             rideshareRef,
           )
         );

@@ -10,13 +10,14 @@ class ViewRideshareDetailsScreen extends StatefulWidget {
   String driverId;
   List<String> riderIds;
   Car rideshareVehicle;
+  int luggageType;
 
-  ViewRideshareDetailsScreen(this.driverId, this.riderIds, this.rideshareVehicle);
+  ViewRideshareDetailsScreen(this.driverId, this.riderIds, this.rideshareVehicle, this.luggageType);
   
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
-    return new ViewRideShareDetailsState(driverId, riderIds, rideshareVehicle);
+    return new ViewRideShareDetailsState(driverId, riderIds, rideshareVehicle, luggageType);
   }
 }
 
@@ -24,9 +25,16 @@ class ViewRideShareDetailsState extends State<ViewRideshareDetailsScreen> {
   String driverId;
   List<String> riderIds;
   Car rideshareVehicle; 
+  int luggageType;
   List<String> allUsers = [];
 
-  ViewRideShareDetailsState(this.driverId, this.riderIds, this.rideshareVehicle);
+  List<String> luggageTypeMessages = [
+    '(Each passenger can bring a backpack)',
+    '(Each passenger can bring a duffel bag)',
+    '(Each passenger can bring a suitcase)',
+  ];
+
+  ViewRideShareDetailsState(this.driverId, this.riderIds, this.rideshareVehicle, this.luggageType);
 
   @override
   void initState() {
@@ -59,17 +67,18 @@ class ViewRideShareDetailsState extends State<ViewRideshareDetailsScreen> {
               backgroundColor: Colors.white,
               body: new SingleChildScrollView(
                 child: new Container(
+                  padding: new EdgeInsets.only(left: 10, right: 10),
                   child: new Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       new Container(margin: EdgeInsets.only(bottom: 20)),
                       createTitleText('Vehicle Details'),
                       new Container(margin: EdgeInsets.only(bottom: 20)),
-                      createCarDetails(rideshareVehicle.make, rideshareVehicle.model),
+                      createCarDetails(),
                       new Container(margin: EdgeInsets.only(bottom: 40)),
                       createTitleText('Riders and Drivers'),
                       new Container(margin: EdgeInsets.only(bottom: 20)),
-                      new SizedBox(height: 300.0, child: new RideShareUsersList(rideShareUsers, this)),
+                      new SizedBox(height: 200.0, child: new RideShareUsersList(rideShareUsers, this)),
                       new Container(margin: EdgeInsets.only(bottom: 40)),
                       createGroupChatButton(),
                     ],
@@ -104,7 +113,7 @@ class ViewRideShareDetailsState extends State<ViewRideshareDetailsScreen> {
   }
 
 
-  Widget createCarDetails(String make, String model) {
+  Widget createCarDetails() {
     return new Container(
       color: Colors.white,
       width: double.infinity,
@@ -113,7 +122,8 @@ class ViewRideShareDetailsState extends State<ViewRideshareDetailsScreen> {
           createCarDetailsRow('Make', rideshareVehicle.make, true),
           createCarDetailsRow('Model', rideshareVehicle.model, true),
           createCarDetailsRow('Year', rideshareVehicle.year, true),
-          createCarDetailsRow('License Plate', rideshareVehicle.licensePlate, false),
+          createCarDetailsRow('License Plate', rideshareVehicle.licensePlate, true),
+          createCarDetailsRow('Luggage Type', luggageType.toString() + ' ' + luggageTypeMessages[luggageType - 1], false),
         ],
       ),
     );

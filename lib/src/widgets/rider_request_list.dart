@@ -174,6 +174,7 @@ class RiderRequestsList extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           createCancelButton(index),
+          createPrice(index),
         ],
       ),
     );
@@ -225,5 +226,15 @@ class RiderRequestsList extends StatelessWidget {
     riderRideRequestsState.setState(() {
       riderRideRequestsList.removeAt(index);
     });
+  }
+
+    Widget createPrice(int index) {
+    return new Text(
+      '\$' + riderRideRequestsList[index].ridesharePrice.toString(),
+      style: new TextStyle(
+        color: Colors.grey,
+        fontSize: 30.0,
+      ),
+    );
   }
 }
