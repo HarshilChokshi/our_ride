@@ -17,11 +17,13 @@ class RideRequestsCreator {
     rideRequestMap['riderFirstName'] = riderProfile.firstName;
     rideRequestMap['riderLastName'] = riderProfile.lastName;
     rideRequestMap['facebookId'] = riderProfile.facebookUserId;
+    rideRequestMap['profilePic'] = riderProfile.profilePic;
     rideRequestMap['pickUpLocation'] = rideshare.locationPickUp.description;
     rideRequestMap['dropOffLocation'] = rideshare.locationDropOff.description;
-    rideRequestMap['rideshareDate'] = rideshare.rideDate;
+    rideRequestMap['rideshareDate'] = rideshare.rideDate.toString();
+     rideRequestMap['rideTime'] = rideshare.rideTime.hour.toString() + ':' + rideshare.rideTime.minute.toString();
     rideRequestMap['ridesharePrice'] = rideshare.price;
-    rideRequestMap['rideshareRef'] = rideshare.driverId + '-' + rideshare.rideDate.toString().split(' ')[0] + '-' + rideshare.rideTime.toString();
+    rideRequestMap['rideshareRef'] = rideshare.driverId + '-' + rideshare.rideDate.toString().split(' ')[0] + '-' + rideshare.rideTime.hour.toString() + ':' + rideshare.rideTime.minute.toString();
 
 
     final snapShot = await databaseReference
