@@ -11,7 +11,7 @@ class RideRequestsCreator {
   static create(Rideshare rideshare, String riderId) async {
     UserProfile riderProfile =  await UserProfileData.fetchUserProfileData(riderId);
     
-    Map<String, dynamic> rideRequestMap;
+    Map<String, dynamic> rideRequestMap = {};
     rideRequestMap['driverId'] = rideshare.driverId;
     rideRequestMap['riderId'] = riderId;
     rideRequestMap['riderFirstName'] = riderProfile.firstName;

@@ -84,7 +84,6 @@ class RideshareListState extends State<RideshareListScreen> {
                     future: searchResultsFuture,
                     builder: (BuildContext context, AsyncSnapshot<List<Rideshare>> snapshot) {
                         if(snapshot.connectionState == ConnectionState.waiting){
-                          print("inside loading");
                           return Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -110,6 +109,12 @@ class RideshareListState extends State<RideshareListScreen> {
                             children: res,
                           ); 
                         }
+                        // else if (snapshot.hasError){
+                          
+                        //   return Column(
+                        //     children: [Text("error")],
+                        //   ); 
+                        // }
                         else{
                           return Column(
                             children: [

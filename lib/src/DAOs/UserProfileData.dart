@@ -12,24 +12,19 @@ class UserProfileData{
   static Future<List<UserProfile>> fetchProfileDataForUsers(List<String> userIds) async {
     List<UserProfile> userProfiles = [];
     for(String user_id in userIds) {
-      Future<UserProfile> profile = await fetchUserProfileData(user_id)
-      .then((UserProfile userProfile) {
-        userProfiles.add(userProfile);
-      });
+      UserProfile userProfile = await fetchUserProfileData(user_id);
+      userProfiles.add(userProfile);
     }
 
     return Future.value(userProfiles);
   }
 
   static Future<Map<String, UserProfile>> fetchProfileDataForUsersMap(List<String> userIds) async {
-    Map<String, UserProfile> userProfiles;
+    Map<String, UserProfile> userProfiles =  {};
     for(String user_id in userIds) {
-      Future<UserProfile> profile = await fetchUserProfileData(user_id)
-      .then((UserProfile userProfile) {
-        userProfiles[user_id] = userProfile;
-      });
+      UserProfile userProfile = await fetchUserProfileData(user_id);
+      userProfiles[user_id] = userProfile;
     }
-
     return Future.value(userProfiles);
   }
 
