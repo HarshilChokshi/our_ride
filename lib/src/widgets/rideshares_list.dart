@@ -292,6 +292,9 @@ class RideSharesList extends StatelessWidget {
               rideShareDataList[index].riders,
               rideShareDataList[index].car,
               rideShareDataList[index].luggage,
+              true,
+              null,
+              null,
               )
         ));
       }
@@ -299,7 +302,7 @@ class RideSharesList extends StatelessWidget {
   }
 
   Widget createPassengersIcon() {
-    return new Icon(Icons.airline_seat_recline_normal, size: 25.0);
+    return new Icon(Icons.person, size: 25.0);
   }
 
   Widget createSeatsLeftText(int seats) {
@@ -313,7 +316,7 @@ class RideSharesList extends StatelessWidget {
 
   Widget createPriceText(double price) {
     return new Text(
-      '\$' + price.toString(),
+      '\$' + price.toStringAsFixed(2),
       style: new TextStyle(
         color: Colors.grey,
         fontSize: 30.0,

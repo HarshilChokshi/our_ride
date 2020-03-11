@@ -39,8 +39,8 @@ class CreateRideState extends State<CreateRideScreen> {
   TextEditingController dropOffLocationController = TextEditingController();
   String selectedDate;
   String selectedTime;
-  int capacity = 1;
-  double price = 00.00;
+  int capacity;
+  double price;
   String luggageDropDownValue = 'Luggage Type';
   String userVehicle;
   bool isFirstTime = true;
@@ -141,7 +141,6 @@ class CreateRideState extends State<CreateRideScreen> {
       return;
     }
 
-    rideshare.luggage = int.parse(luggageDropDownValue);
     List<String> carDetails = selectedVehicle.split('-');
     rideshare.car = Car.fromCarDetails(
       carDetails[1],
@@ -213,7 +212,7 @@ class CreateRideState extends State<CreateRideScreen> {
       'driverProfilePic': driverProfilePic,
       'locationPickUp': r.locationPickUp.toJson(),
       'locationDropOff': r.locationDropOff.toJson(),
-      'luggage': int.parse(luggageDropDownValue),
+      'luggage': int.parse(luggageDropDownValue.split(' ')[0]),
     });
   }
 
@@ -378,7 +377,10 @@ class CreateRideState extends State<CreateRideScreen> {
               luggageDropDownValue = newValue;
             });
           },
-          items: <String>['Luggage Type', '1', '2', '3']
+          items: <String>['Luggage Type', '1 (Each passenger can bring a backpack)',
+          '2 (Each passenger can bring a duffel bag)',
+          '3 (Each passenger can bring a suitcase)'
+          ]
             .map<DropdownMenuItem<String>>((String value) {
               return DropdownMenuItem<String>(
                 value: value,
@@ -464,7 +466,6 @@ class CreateRideState extends State<CreateRideScreen> {
         style: new TextStyle(
           color: Colors.white,
         ),
-        initialValue: capacity.toString(),
         decoration: new InputDecoration(
           hintText: 'Capacity',
           hintStyle: new TextStyle(fontSize: 14, color: new Color.fromARGB(150, 255, 255, 255)),
@@ -548,7 +549,6 @@ class CreateRideState extends State<CreateRideScreen> {
         style: new TextStyle(
           color: Colors.white,
         ),
-        initialValue: price.toString(),
         decoration: new InputDecoration(
           hintText: 'Price',
           hintStyle: new TextStyle(fontSize: 14, color: Color.fromARGB(150, 255, 255, 255)),

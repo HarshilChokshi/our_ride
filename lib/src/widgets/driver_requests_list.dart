@@ -330,7 +330,7 @@ class DriverRequestsList extends StatelessWidget {
 
   Widget createPrice(int index) {
     return new Text(
-      '\$' + driverRideRequestsList[index].ridesharePrice.toString(),
+      '\$' + driverRideRequestsList[index].ridesharePrice.toStringAsFixed(2),
       style: new TextStyle(
         color: Colors.grey,
         fontSize: 30.0,
