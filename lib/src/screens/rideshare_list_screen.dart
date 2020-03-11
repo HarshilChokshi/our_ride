@@ -116,7 +116,7 @@ class RideshareListState extends State<RideshareListScreen> {
                                 height: 100,
                                 width: 180,
                                 child:  Center(child:Text(
-                                  "No rideshares with that criteria :(",
+                                  "We ran into an error...",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: Color.fromRGBO(84, 84, 84, 100),

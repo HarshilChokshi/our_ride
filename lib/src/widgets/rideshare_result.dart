@@ -328,7 +328,8 @@ class _RideshareSearchResultState extends State<RideshareSearchResult>{
               Expanded(
                 flex: 8,
                 child:  GestureDetector(
-                  onTap: () { //link to user profile
+                  onTap: () { //link to ride details
+                  print("pushed");
                       Navigator.push(
                         context, 
                         CupertinoPageRoute(

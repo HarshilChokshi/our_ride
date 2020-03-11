@@ -55,11 +55,11 @@ class RideShareSearch{
         }
       });
     });
+
     //load the profile data for riders, drivers, current rider
     riderProfiles = await UserProfileData.fetchProfileDataForUsersMap(partialRiderIDs.toList());
     driverProfiles = await UserProfileData.fetchProfileDataForUsersMap(partialDriverIDs.toList());
     currentRiderProfile = await UserProfileData.fetchUserProfileData(riderId);
-    
     //final validation and weighting
     await dbRef
     .collection('rideshares')
@@ -73,6 +73,7 @@ class RideShareSearch{
           //verify same gender for passengers and driver
           (!searchOptions["gender"] || (ridersAreSameGender(riderProfiles, doc["riders"], riderId) && doc["driverId"].isMale == currentRiderProfile.isMale))
         ){
+          print("into 4");
           //weighting for valid rides
           // +3 for each passenger (including rider + driver) in same program/department/university
           // +2 quiet/talkative
@@ -137,12 +138,16 @@ class RideShareSearch{
               locationDropOff,
               luggage,
             );
+          print(riderRideShare.driverFirstName + " " + weighting.toString());
           weightedRides.add(Tuple2(weighting,riderRideShare));
         }
       });
     });
-
-    weightedRides.sort();
+    print(weightedRides);
+    print("asdf");
+    // weightedRides.sort();
+    print(weightedRides);
+    print(weightedRides.map((item)=>item.item2).toList().length.toString());
     return weightedRides.map((item)=>item.item2).toList();
   }
 
