@@ -109,12 +109,25 @@ class RideshareListState extends State<RideshareListScreen> {
                             children: res,
                           ); 
                         }
-                        // else if (snapshot.hasError){
-                          
-                        //   return Column(
-                        //     children: [Text("error")],
-                        //   ); 
-                        // }
+                        else if (snapshot.hasError){
+                          return Column(
+                            children: [
+                               Container(
+                                height: 100,
+                                width: 180,
+                                child:  Center(child:Text(
+                                  "No rideshares with that criteria :(",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Color.fromRGBO(84, 84, 84, 100),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700
+                                  ),
+                                )),
+                              )
+                            ],
+                          ); 
+                        }
                         else{
                           return Column(
                             children: [
@@ -131,7 +144,6 @@ class RideshareListState extends State<RideshareListScreen> {
                                   ),
                                 )),
                               )
-                              
                             ]
                           ); 
                         }

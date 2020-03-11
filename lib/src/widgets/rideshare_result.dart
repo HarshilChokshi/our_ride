@@ -45,7 +45,7 @@ class _RideshareSearchResultState extends State<RideshareSearchResult>{
   }
 
   String seatsLeft(){
-    int seatsLeft = widget.rideShareData.capacity - widget.rideShareData.numberOfCurrentRiders;
+    int seatsLeft = widget.rideShareData.capacity - widget.rideShareData.riders.length;
     return  seatsLeft == 1 ? "$seatsLeft seat left" : "$seatsLeft seats left";
   }
 

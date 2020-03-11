@@ -147,7 +147,7 @@ class RideShareSearch{
   }
 
   //search filter helper functions
-  static isWithinRadius(double lat1, double lng1, double lat2, double lng2, {int radiusInMetres = 10000}){
+  static isWithinRadius(double lat1, double lng1, double lat2, double lng2, {int radiusInMetres = 2000}){
     final Distance distance = new Distance();
     return distance(LatLng(lat1,lng1), LatLng(lat2,lng2)) <= radiusInMetres;
   }
