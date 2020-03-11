@@ -22,9 +22,8 @@ class AppBottomNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool notNull(Object o) => o != null;
-    // TODO: implement build
     return new BottomAppBar(
-      color: lightGreyColor,
+      color: appThemeColor,
       child: new Container(
         width: double.infinity,
         child: new Row(
@@ -42,7 +41,7 @@ class AppBottomNavigationBar extends StatelessWidget {
                 ));
               },
               iconSize: 30.0,
-              color: page == 1 ? Colors.blue : Colors.black,
+              color: page == 1 ? Colors.white : Color.fromRGBO(61, 191, 165, 100),
             ),
             new IconButton(
               icon: Icon(Icons.person),
@@ -54,7 +53,7 @@ class AppBottomNavigationBar extends StatelessWidget {
                 ));
               },
               iconSize: 30.0,
-              color: page == 2 ? Colors.blue : Colors.black,
+              color: page == 2 ? Colors.white : Color.fromRGBO(61, 191, 165, 100),
             ), 
             new IconButton(
               icon: Icon(Icons.input),
@@ -66,7 +65,7 @@ class AppBottomNavigationBar extends StatelessWidget {
                 ));
               },
               iconSize: 30.0,
-              color: page == 3 ? Colors.blue : Colors.black,
+              color: page == 3 ? Colors.white : Color.fromRGBO(61, 191, 165, 100),
             ), 
           ].where(notNull).toList(),
         ),
@@ -86,7 +85,7 @@ class AppBottomNavigationBar extends StatelessWidget {
                 ));
               },
         iconSize: 30.0,
-        color: page == 0 ? Colors.blue : Colors.black,
+        color: page == 0 ? Colors.white : Color.fromRGBO(61, 191, 165, 100),
       );
     }
     return null;
