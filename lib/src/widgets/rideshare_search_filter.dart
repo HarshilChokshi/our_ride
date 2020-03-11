@@ -216,17 +216,13 @@ class CollapsingFilter extends StatelessWidget {
           showAlertDialog(context);
         }
         else{
-          // print(this.fromValue["description"]);
-          // this.parentListStateRef.updateFuture(
-          //   callingFromChild: true,
-          //   searchOptions: {
-          //     'from': this.fromValue,
-          //     'to': this.toValue,
-          //     'date': this.dateState,
-          //     'time': this.timeState,
-          //     'sameGender': this.genderValue
-          //   }
-          // );
+          this.parentListStateRef.updateFuture({
+            "from": fromValue,
+            "to": toValue,
+            "time": timeState,
+            "date": dateState,
+            "gender": genderValue
+          });
         }
       },
       elevation: 0,
@@ -288,7 +284,7 @@ class CollapsingFilter extends StatelessWidget {
                     },
                     onSuggestionsSelected: (suggestion) {
                       onStateDictChange('from', {'description': suggestion['description'], 'placeId': suggestion['id']});
-                      from.value = suggestion['description'];
+                      from.text = suggestion['description'];
                     }
                   ),
                   TFWithAutoComplete(
@@ -308,7 +304,7 @@ class CollapsingFilter extends StatelessWidget {
                     },
                     onSuggestionsSelected: (suggestion) {
                       onStateDictChange('to', {"description": suggestion['description'], "placeId": suggestion['id']});
-                      to.value = suggestion['description'];
+                      to.text = suggestion['description'];
                     }
                   ),
                   DateTimeFilter(

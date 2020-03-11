@@ -36,11 +36,24 @@ class RideshareListState extends State<RideshareListScreen> {
     this.searchResultsFuture = null;
   }
 
-  void updateFuture({bool callingFromChild = false, Map searchOptions}){
-    setState((){
-      // GoogleMapsHandler.fetchLatLongForPlaceID(searchOptions["fr"])
-      this.searchResultsFuture = RideShareSearch.fetchRideshareFilterResults();
-    });
+  void updateFuture(Map searchOptions) async {
+      await GoogleMapsHandler.fetchLatLongForPlaceID(
+        placeID: searchOptions["from"]["placeId"],
+        callback: (double lat, double lng) {
+          searchOptions["from"]["coordinates"] = [lat, lng];
+        }
+      );
+
+      await GoogleMapsHandler.fetchLatLongForPlaceID(
+        placeID: searchOptions["to"]["placeId"],
+        callback: (double lat, double lng) {
+          searchOptions["to"]["coordinates"] = [lat, lng];
+        }
+      );
+
+      setState(() {
+        this.searchResultsFuture = RideShareSearch.fetchRideshareFilterResults();
+      });
   }
 
   @override
@@ -70,6 +83,7 @@ class RideshareListState extends State<RideshareListScreen> {
                     future: searchResultsFuture,
                     builder: (BuildContext context, AsyncSnapshot<List<Rideshare>> snapshot) {
                         if(snapshot.connectionState == ConnectionState.waiting){
+                          print("inside loading");
                           return Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -126,5 +140,5 @@ class RideshareListState extends State<RideshareListScreen> {
       bottomNavigationBar: AppBottomNavigationBar(rider_id, 0, true),
     );
   }
-}
 
+}
