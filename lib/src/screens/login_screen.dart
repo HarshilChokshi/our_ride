@@ -34,27 +34,27 @@ class LoginState extends State<LoginScreen> {
             backgroundColor: Colors.transparent,
             resizeToAvoidBottomPadding: false,
             body: new Container(
-      margin: new EdgeInsets.only(left: 50, right: 50, top: 30),
-      child: new Form(
-        key: formKey,
-        child: new Column(
-          children: <Widget>[
-            new OurRideTitle(),
-            new Container(margin: EdgeInsets.only(bottom: 175)),
-            createEmailTextField(),
-            new Container(margin: EdgeInsets.only(bottom: 10)),
-            createPasswordTextField(),
-            new Container(margin: EdgeInsets.only(bottom: 10)),
-            createSubmitButton(),
-            new Container(margin: EdgeInsets.only(bottom: 20)),
-            createKeepMeSignedInButton(),
-            createSignUpButton(),
-          ],
-        ),
-       ),
+              margin: new EdgeInsets.only(left: 50, right: 50, top: 30),
+              child: new Form(
+                key: formKey,
+                child: new Column(
+                  children: <Widget>[
+                    new OurRideTitle(),
+                    new Container(margin: EdgeInsets.only(bottom: 175)),
+                    createEmailTextField(),
+                    new Container(margin: EdgeInsets.only(bottom: 10)),
+                    createPasswordTextField(),
+                    new Container(margin: EdgeInsets.only(bottom: 10)),
+                    createSubmitButton(),
+                    new Container(margin: EdgeInsets.only(bottom: 20)),
+                    createKeepMeSignedInButton(),
+                    createSignUpButton(),
+                  ],
+                ),
+              ),
             )
-      ),
-    );
+        ),
+      );
   }
 
   Widget createEmailTextField() {
