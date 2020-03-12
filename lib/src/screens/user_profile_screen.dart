@@ -125,11 +125,14 @@ class UserProfileState extends State<UserProfileScreen> {
           ],
         ),
         Row(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            new Container(padding: EdgeInsets.only(left: 130)),
             addNewCarButton(),
             Padding(padding: EdgeInsets.all(8.0)),
-            createFAQButton(),
+            new Expanded(
+              child: createFAQButton(),
+            ),
+            new Container(padding: EdgeInsets.only(left: 20)),
           ],
         ),
         createSignOutButton(),
@@ -320,6 +323,7 @@ class UserProfileState extends State<UserProfileScreen> {
         createRidesTakenText(userProfile.ridesTaken),
         new Container(margin: EdgeInsets.only(bottom: 10)),
         new Row(
+          mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
             createEditProfileButton(),
             new Container(margin: EdgeInsets.only(left: 5)),
