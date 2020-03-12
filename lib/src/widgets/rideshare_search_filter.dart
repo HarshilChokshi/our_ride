@@ -176,7 +176,7 @@ class CollapsingFilter extends StatelessWidget {
       ),
       // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
       onPressed: () {
-        showAlertDialog(BuildContext context) {
+        showAlertDialog(BuildContext context, String title, String content) {
           // set up the AlertDialog
           AlertDialog alert = AlertDialog(
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
@@ -190,7 +190,8 @@ class CollapsingFilter extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  "Search Input Error",
+                  title,
+                  // "Search Input Error",
                   style: TextStyle(
                     color: Colors.white
                   ),
@@ -198,12 +199,13 @@ class CollapsingFilter extends StatelessWidget {
               ],
               ),
             content: Text(
-              "Please fillout all search fields.",
+              content,
+              // "Please fillout all search fields.",
               style: TextStyle(
                 color: Colors.white
               ),
             ),
-            // backgroundColor: Colors.red
+            backgroundColor: appThemeColor
           );
 
           // show the dialog
@@ -218,9 +220,16 @@ class CollapsingFilter extends StatelessWidget {
         bool isNullOrEmpty(Object o) => o == null || "" == o;
 
         if (fromValue == null || toValue == null || isNullOrEmpty(timeState) || isNullOrEmpty(dateState) ){
-          showAlertDialog(context);
+          showAlertDialog(context, "Search Input Error", "Please fillout all search fields.");
         }
         else{
+          int toSec(int hour, int min){ return hour*60*60 + min*60;}
+          var tState = timeState.split(":");
+          var timeDiff = 86400 - toSec(DateTime.now().hour, DateTime.now().minute)+ toSec(int.parse(tState[0]), int.parse(tState[1]));
+          var dayDifference = DateTime.now().difference(DateTime.parse(dateState));
+          if(dayDifference <= Duration(days: 1) && timeDiff < 86400) {
+            showAlertDialog(context, "Booking Error", "Please pick a time 24 hours after now.");
+          } else{
           this.parentListStateRef.updateFuture({
             "from": fromValue,
             "to": toValue,
@@ -228,6 +237,7 @@ class CollapsingFilter extends StatelessWidget {
             "date": dateState,
             "gender": genderValue
           });
+        }
         }
       },
       elevation: 0,
