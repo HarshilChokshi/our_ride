@@ -34,7 +34,7 @@ class DateTimeFilter extends StatelessWidget{
                           containerHeight: 210.0,
                         ),
                         showTitleActions: true,
-                        minTime: DateTime.now(),
+                        minTime: DateTime.now().add(Duration(days: 1)),
                         maxTime: DateTime(2020, 12, 31),
                         onConfirm: (date) {
                           print('confirm $date');
@@ -100,7 +100,9 @@ class DateTimeFilter extends StatelessWidget{
                             timeState = '${time.hour}:${time.minute}';
                             updateDateTime('time', timeState);
                           }, 
-                          currentTime: DateTime.now(), locale: LocaleType.en);
+                          currentTime: DateTime.now(), 
+                          locale: LocaleType.en
+                        );
                     },
                     child: Container(
                       alignment: Alignment.center,

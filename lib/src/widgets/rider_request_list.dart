@@ -37,8 +37,15 @@ class RiderRequestsList extends StatelessWidget {
   Widget createDateText(DateTime date) {
     String dateString = date.toString().split(' ')[0];
     return new Container(
+      padding: EdgeInsets.fromLTRB(10, 2, 0, 2),
+      decoration: BoxDecoration(
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.all(Radius.circular(2)),
+        color: appThemeColor
+      ),
       width: double.infinity,
-      color: appThemeColor,
+      height: 20,
+      // color: appThemeColor,
       child: new Text(
         dateString,
         style: new TextStyle(
@@ -96,6 +103,7 @@ class RiderRequestsList extends StatelessWidget {
         new Container(margin: EdgeInsets.only(left: 5)),
         createLocationIcon(),
         new Container(margin: EdgeInsets.only(left: 2)),
+
         createBoldText('Pick Up Location: '),
         createText(riderRideRequestsList[index].pickUpLocation),
       ],
@@ -135,12 +143,15 @@ class RiderRequestsList extends StatelessWidget {
   }
 
   Widget createBoldText(String data) {
-    return new Text(
-      data,
-      style: new TextStyle(
-        fontWeight: FontWeight.bold,
-        color: Colors.black,
-      ),
+    return Padding(
+      padding: EdgeInsets.only(left: 10),
+      child: Text(
+        data,
+        style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
     );
   }
 
