@@ -155,40 +155,55 @@ class SignUpState extends State<SignUpScreen> {
 
 
   Widget createGenderDropDown() {
-    return new Theme(
-      data: Theme.of(context).copyWith(
-          canvasColor: appThemeColor,
-      ),
-      child: new SizedBox(
-          width: double.infinity,
-          child: new DropdownButton<String>(
-            value: dropDownValue,
-            icon: new Icon(Icons.arrow_drop_down),
-            iconEnabledColor: Colors.white,
-            iconSize: 40,
-            isExpanded: true,
-            style: new TextStyle(color: Colors.white),
-            onChanged: (String newValue) {
-              setState(() {
-                dropDownValue = newValue;
-              });
-            },
-            items: <String>['Male', 'Female']
-              .map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(
-                    value,
-                    style: new TextStyle(
-                      backgroundColor: new Color.fromARGB(20, 211, 211, 211),
-                      )
-                  ),
-                  
-                );
-              })
-              .toList(),
+    return new Row(
+      children: <Widget>[
+          Theme(
+          data: Theme.of(context).copyWith(
+              canvasColor: appThemeColor,
           ),
+          child: new Expanded(
+              child: new DropdownButton<String>(
+                value: dropDownValue,
+                icon: new Icon(Icons.arrow_drop_down),
+                iconEnabledColor: Colors.white,
+                iconSize: 40,
+                isExpanded: true,
+                style: new TextStyle(color: Colors.white),
+                onChanged: (String newValue) {
+                  setState(() {
+                    dropDownValue = newValue;
+                  });
+                },
+                items: <String>['Male', 'Female']
+                  .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(
+                        value,
+                        style: new TextStyle(
+                          backgroundColor: new Color.fromARGB(20, 211, 211, 211),
+                          )
+                      ),
+                      
+                    );
+                  })
+                  .toList(),
+              ),
+            ),
         ),
+        new IconButton(
+          icon: new Icon(
+            Icons.info,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            showInformation(
+              'Gender Info',
+              'OURide allows riders to request ridershares with their own gender.'
+            );
+          }
+        ),
+      ]
     );
   }
 
@@ -303,19 +318,34 @@ class SignUpState extends State<SignUpScreen> {
   }
 
   Widget createLinkFacebookAccount() {
-    return new SizedBox(
-     width: double.infinity, 
-     child: new RaisedButton(
-      child: new Text(
-        'Link Facebook',
-        style: new TextStyle(color: Colors.white),
-      ),
-      onPressed: () {  
-        didUserLogIntoFacebook();
-      },
-      color: new Color.fromARGB(255, 56, 103, 178),
-    )
-   );
+    return Row(
+      children: <Widget>[
+      new Expanded(
+        child:  RaisedButton(
+            child: new Text(
+              'Link Facebook',
+              style: new TextStyle(color: Colors.white),
+            ),
+            onPressed: () {  
+              didUserLogIntoFacebook();
+            },
+            color: new Color.fromARGB(255, 56, 103, 178),
+          )
+        ),
+        new IconButton(
+          icon: new Icon(
+            Icons.info,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            showInformation(
+              'Facebook Account Linking',
+              'OURide needs your Facebook account so other riders/drivers can view your profile.'
+            );
+          }
+        )
+      ],
+    );
   }
 
 
@@ -353,6 +383,27 @@ class SignUpState extends State<SignUpScreen> {
           actions: <Widget>[
             new FlatButton(
               child: new Text('Close', style: new TextStyle(color: Colors.white)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      }
+    );
+  }
+
+  void showInformation(String title, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Color.fromRGBO(61, 191, 165, 100),
+          title: new Text(title),
+          content: new Text(message),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text('Okay', style: new TextStyle(color: Colors.white)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
