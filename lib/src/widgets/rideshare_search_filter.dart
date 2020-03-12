@@ -222,14 +222,24 @@ class CollapsingFilter extends StatelessWidget {
         if (fromValue == null || toValue == null || isNullOrEmpty(timeState) || isNullOrEmpty(dateState) ){
           showAlertDialog(context, "Search Input Error", "Please fillout all search fields.");
         }
+        // else{
+        //   int toSec(int hour, int min){ return hour*60*60 + min*60;}
+        //   var tState = timeState.split(":");
+        //   // var day1= DateTime.now().toUtc();
+        //   // // var day2 = DateTime.parse(dateState + timeState).toUtc();
+          // // var timeDiff = 86400 - toSec(DateTime.now().hour, DateTime.now().minute)+ toSec(int.parse(tState[0]), int.parse(tState[1]));
+          // print("showing datetime");
+          // print(DateTime.parse(dateState + " " + timeState + ":00"));
+          // print(DateTime.parse(dateState + " " + timeState + ":00").toString());
+          // // print(DateTime.parse(dateState + " " + timeState + ":00").difference(DateTime.now()).toString());
+
+          // double dayDifference = double.parse(DateTime.parse(dateState + " " + timeState + ":00").difference(DateTime.now()).toString());
+          // if(dayDifference <= Duration(days: 1) && timeDiff < 86400) {
+          // if(dayDifference < 24.0){
+          // if(true){
+          //   showAlertDialog(context, "Time Booking Error", "Please pick a time 24 hours after now.");
+          // } else{
         else{
-          int toSec(int hour, int min){ return hour*60*60 + min*60;}
-          var tState = timeState.split(":");
-          var timeDiff = 86400 - toSec(DateTime.now().hour, DateTime.now().minute)+ toSec(int.parse(tState[0]), int.parse(tState[1]));
-          var dayDifference = DateTime.now().difference(DateTime.parse(dateState));
-          if(dayDifference <= Duration(days: 1) && timeDiff < 86400) {
-            showAlertDialog(context, "Booking Error", "Please pick a time 24 hours after now.");
-          } else{
           this.parentListStateRef.updateFuture({
             "from": fromValue,
             "to": toValue,
@@ -237,7 +247,6 @@ class CollapsingFilter extends StatelessWidget {
             "date": dateState,
             "gender": genderValue
           });
-        }
         }
       },
       elevation: 0,
