@@ -25,7 +25,6 @@ class CreateRideScreen extends StatefulWidget {
 
   CreateRideScreen(String driverId) {
     this.driverId = driverId;
-    SystemChannels.textInput.invokeMethod('TextInput.hide');
   }
 }
 
@@ -284,10 +283,15 @@ class CreateRideState extends State<CreateRideScreen> {
                      timeState: selectedTime,
                     ),
                     createCapacityTextField(),
+                    new Container(padding: new EdgeInsets.only(top: 10)),
                     createLocationDropDown(true),
+                    new Container(padding: new EdgeInsets.only(top: 10)),
                     createLocationDropDown(false),
+                    new Container(padding: new EdgeInsets.only(top: 10)),
                     createPriceTextField(),
+                    new Container(padding: new EdgeInsets.only(top: 10)),
                     createLuggageDropDown(),
+                    new Container(padding: new EdgeInsets.only(top: 10)),
                     createVehicleDropDown(),
                   ],
                 ),

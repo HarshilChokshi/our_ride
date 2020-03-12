@@ -8,6 +8,7 @@ import 'package:our_ride/src/widgets/rideshare_result.dart';
 import 'package:our_ride/src/DAOs/SearchFilter.dart';
 import 'package:our_ride/src/models/rideshare_model.dart';
 
+
 class RideshareListScreen extends StatefulWidget {
   String rider_id;
 
