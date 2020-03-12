@@ -71,30 +71,48 @@ class UserInfoState extends State<UserInfoScreen> {
   }
 
   Widget createTextFromField(String hintText) {
-    return new TextFormField(
-      style: new TextStyle(fontSize: 14, color: Color.fromARGB(255, 255, 255, 255)),
-      decoration: new InputDecoration(
-        hintText: hintText,
-        hintStyle: new TextStyle(fontSize: 14, color: Color.fromARGB(150, 255, 255, 255)),
-        errorStyle: new TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        filled: true,
-        fillColor: new Color.fromARGB(20, 211, 211, 211),
-      ),
-      onSaved: (String value) {
-        if(hintText == 'University') {
-          userProfile.university = value;
-        } else if(hintText == 'Program') {
-          userProfile.program = value;
-        } else if(hintText == 'City') {
-          userProfile.city = value;
-        }
-      },
-      validator: (String value) {
-        if(value.isEmpty) {
-          return 'Value cannot be empty';
-        }
-        return null;
-      },
+    return new Row(
+      children: <Widget>[
+        new Expanded(
+          child: TextFormField(
+            style: new TextStyle(fontSize: 14, color: Color.fromARGB(255, 255, 255, 255)),
+            decoration: new InputDecoration(
+              hintText: hintText,
+              hintStyle: new TextStyle(fontSize: 14, color: Color.fromARGB(150, 255, 255, 255)),
+              errorStyle: new TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              filled: true,
+              fillColor: new Color.fromARGB(20, 211, 211, 211),
+            ),
+            onSaved: (String value) {
+              if(hintText == 'University') {
+                userProfile.university = value;
+              } else if(hintText == 'Program') {
+                userProfile.program = value;
+              } else if(hintText == 'City') {
+                userProfile.city = value;
+              }
+            },
+            validator: (String value) {
+              if(value.isEmpty) {
+                return 'Value cannot be empty';
+              }
+              return null;
+            },
+          ),
+        ),
+        new IconButton(
+          icon: new Icon(
+            Icons.info,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            showInformation(
+              'Program Info',
+              'OURide uses program information to rank rideshare results'
+            );
+          }
+        ),
+      ],
     );
   }
 
@@ -146,50 +164,70 @@ class UserInfoState extends State<UserInfoScreen> {
   }
 
   Widget createDropDown(bool isCity) {
-    return new TFWithAutoComplete(
-      dropDownColor: Color.fromARGB(20, 211, 211, 211),
-      hintText: isCity ? 'City' : 'University',
-      suggestionsCallback: (String prefix) {
-        if(prefix.length == 1) {
-          prefix = prefix[0].toUpperCase();
-        } else {
-           prefix = prefix[0].toUpperCase() + prefix.substring(1, prefix.length);
-        }
+    return new Row(
+      children: <Widget>
+      [
+        new Expanded(
+          child: TFWithAutoComplete(
+            dropDownColor: Color.fromARGB(20, 211, 211, 211),
+            hintText: isCity ? 'City' : 'University',
+            suggestionsCallback: (String prefix) {
+              if(prefix.length == 1) {
+                prefix = prefix[0].toUpperCase();
+              } else {
+                prefix = prefix[0].toUpperCase() + prefix.substring(1, prefix.length);
+              }
 
-        if(isCity) {
-          return ontarioCities.where((f) => f.startsWith(prefix)).toList();
-        } else {
-          return ontarioUniversities.where((f) => f.startsWith(prefix)).toList();
-        }
-      },
-      itemBuilder: (context, value) {
-        Icon leadingIcon = isCity ? 
-          new Icon(Icons.location_city) :
-          new Icon(Icons.school);
-        return new Container(
-          color: appThemeColor,
-          child: ListTile(
-            leading: leadingIcon,
-            title: new Text(
-              value,
-              style: new TextStyle(
-                color: Colors.white,
-                fontSize: 14.0,
-              ),
-            ),
+              if(isCity) {
+                return ontarioCities.where((f) => f.startsWith(prefix)).toList();
+              } else {
+                return ontarioUniversities.where((f) => f.startsWith(prefix)).toList();
+              }
+            },
+            itemBuilder: (context, value) {
+              Icon leadingIcon = isCity ? 
+                new Icon(Icons.location_city) :
+                new Icon(Icons.school);
+              return new Container(
+                color: appThemeColor,
+                child: ListTile(
+                  leading: leadingIcon,
+                  title: new Text(
+                    value,
+                    style: new TextStyle(
+                      color: Colors.white,
+                      fontSize: 14.0,
+                    ),
+                  ),
+                )
+              );
+            },
+            onSuggestionsSelected: (suggestion) {
+              if(isCity) {
+                userProfile.city = suggestion;
+                cityTEditingController.text = suggestion;
+              } else {
+                userProfile.university = suggestion;
+                universityTEditingController.text = suggestion;
+              }
+            },
+            typeAheadController: isCity ? cityTEditingController : universityTEditingController,
           )
-        );
-      },
-      onSuggestionsSelected: (suggestion) {
-        if(isCity) {
-          userProfile.city = suggestion;
-          cityTEditingController.text = suggestion;
-        } else {
-          userProfile.university = suggestion;
-          universityTEditingController.text = suggestion;
-        }
-      },
-      typeAheadController: isCity ? cityTEditingController : universityTEditingController,
+        ),
+        new IconButton(
+          icon: new Icon(
+            Icons.info,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            showInformation(
+              isCity ? 'City Info' : 'University Info',
+              isCity ? 'OURide uses city information to rank rideshares when searching.' : 
+              'OURide uses university information to rank rideshares when searching.'
+            );
+          }
+        ),
+      ],
     );
   }
 
@@ -267,6 +305,27 @@ class UserInfoState extends State<UserInfoScreen> {
           actions: <Widget>[
             new FlatButton(
               child: new Text('Close', style: new TextStyle(color: Colors.white)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      }
+    );
+  }
+
+  void showInformation(String title, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Color.fromRGBO(61, 191, 165, 100),
+          title: new Text(title),
+          content: new Text(message),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text('Okay', style: new TextStyle(color: Colors.white)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
