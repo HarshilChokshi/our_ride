@@ -43,8 +43,7 @@ class SignUpState extends State<SignUpScreen> {
         backgroundColor: Colors.transparent,
       ),
       backgroundColor: Colors.transparent,
-      resizeToAvoidBottomPadding: false,
-
+      resizeToAvoidBottomPadding: true,
       body: new SingleChildScrollView(
         child: new Container(
           margin: new EdgeInsets.only(left: 50, right: 50, top: 20),

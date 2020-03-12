@@ -35,14 +35,15 @@ class EditProfileScreenState extends State<EditProfileScreen> {
     // TODO: implement build
     return new Scaffold(
       backgroundColor: Colors.white,
-      resizeToAvoidBottomPadding: false,
-      body: new Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          topComponent(),
-          new Container(margin: EdgeInsets.only(bottom: 10)),
-          bottomComponent(),
-        ],
+      resizeToAvoidBottomPadding: true,
+      body: new SingleChildScrollView(
+        child: new Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            topComponent(),
+            bottomComponent(),
+          ],
+        )
       )
     );
   }
@@ -257,35 +258,41 @@ class EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Widget bottomComponent() {
-    return new Container(
-      padding: new EdgeInsets.only(left: 10.0, right: 10.0),
-      child: new Form(
-        key: formKey,
-        child: new Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            createDesciption('About me'),
-            new Padding(padding: EdgeInsets.only(bottom: 3)),
-            createTextFields(userProfile.aboutMe, 0),
-            new Padding(padding: EdgeInsets.only(bottom: 30)),
-            createDesciption('Gender'),
-            new Padding(padding: EdgeInsets.only(bottom: 3)),
-            createTextFields(userProfile.isMale ? 'Male' : 'Female', 1),
-            new Padding(padding: EdgeInsets.only(bottom: 30)),
-            createDesciption('Program'),
-            new Padding(padding: EdgeInsets.only(bottom: 3)),
-            createTextFields(userProfile.program, 2),
-            new Padding(padding: EdgeInsets.only(bottom: 30)),
-            createDesciption('University'),
-            new Padding(padding: EdgeInsets.only(bottom: 3)),
-            createTextFields(userProfile.university, 3),
-            new Padding(padding: EdgeInsets.only(bottom: 30)),
-            createDesciption('City'),
-            new Padding(padding: EdgeInsets.only(bottom: 3)),
-            createTextFields(userProfile.city, 4),
-          ],
+    return new GestureDetector(
+      onTap: () {
+        FocusScope.of(context).requestFocus(new FocusNode());
+      },
+      child: Container(
+        color: appThemeColor,
+        padding: new EdgeInsets.only(left: 10.0, right: 10.0),
+        child: new Form(
+          key: formKey,
+          child: new Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              createDesciption('About me'),
+              new Padding(padding: EdgeInsets.only(bottom: 3)),
+              createTextFields(userProfile.aboutMe, 0),
+              new Padding(padding: EdgeInsets.only(bottom: 30)),
+              createDesciption('Gender'),
+              new Padding(padding: EdgeInsets.only(bottom: 3)),
+              createTextFields(userProfile.isMale ? 'Male' : 'Female', 1),
+              new Padding(padding: EdgeInsets.only(bottom: 30)),
+              createDesciption('Program'),
+              new Padding(padding: EdgeInsets.only(bottom: 3)),
+              createTextFields(userProfile.program, 2),
+              new Padding(padding: EdgeInsets.only(bottom: 30)),
+              createDesciption('University'),
+              new Padding(padding: EdgeInsets.only(bottom: 3)),
+              createTextFields(userProfile.university, 3),
+              new Padding(padding: EdgeInsets.only(bottom: 30)),
+              createDesciption('City'),
+              new Padding(padding: EdgeInsets.only(bottom: 3)),
+              createTextFields(userProfile.city, 4),
+            ],
+          ),
         ),
-      ),
+      )
     );
   }
 
@@ -293,6 +300,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
     return new Text(
       text,
       style: new TextStyle(
+         color: Colors.white,
         fontWeight: FontWeight.bold,
         fontSize: 16.0
       ),
@@ -300,39 +308,48 @@ class EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Widget createTextFields(String currentValue, int textFieldNum) {
-    return new TextFormField(
-      initialValue: currentValue,
-      style: new TextStyle(fontSize: 12, color: Colors.grey),
-      decoration: new InputDecoration(
-        errorStyle: new TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-        enabledBorder: new OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.black, width: 0.5),
-        ),
+    return new Container(
+      height: 60,
+      margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
+      padding: EdgeInsets.only(left: 10, top: 5),
+      decoration: BoxDecoration(
+        color: Color.fromRGBO(61, 191, 165, 100),
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.all(Radius.circular(10)) 
       ),
-      validator: (String value) {
-        if(value.isEmpty) {
-          return 'The value cannot be empty.';
-        }
+      child: new TextFormField(
+        initialValue: currentValue,
+        style: new TextStyle(fontSize: 12, color: Colors.white),
+        decoration: new InputDecoration(
+          errorStyle: new TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          focusedBorder: InputBorder.none,
+          enabledBorder: InputBorder.none,
+        ),
+        validator: (String value) {
+          if(value.isEmpty) {
+            return 'The value cannot be empty.';
+          }
 
-        if(textFieldNum == 1 && (value != 'Male' && value != 'Female')) {
-          return 'The value must be one of \'Male\' or \'Female\'';
-        }
+          if(textFieldNum == 1 && (value != 'Male' && value != 'Female')) {
+            return 'The value must be one of \'Male\' or \'Female\'';
+          }
 
-        return null;
-      },
-      onSaved: (String value) {
-        if(textFieldNum == 0) {
-          userProfile.aboutMe = value;
-        } else if(textFieldNum == 1) {
-          userProfile.isMale = value == 'Male' ? true : false;
-        } else if(textFieldNum == 2) {
-          userProfile.program = value;
-        } else if(textFieldNum == 3) {
-          userProfile.university = value;
-        } else if(textFieldNum == 4) {
-          userProfile.city = value;
-        }
-      },
+          return null;
+        },
+        onSaved: (String value) {
+          if(textFieldNum == 0) {
+            userProfile.aboutMe = value;
+          } else if(textFieldNum == 1) {
+            userProfile.isMale = value == 'Male' ? true : false;
+          } else if(textFieldNum == 2) {
+            userProfile.program = value;
+          } else if(textFieldNum == 3) {
+            userProfile.university = value;
+          } else if(textFieldNum == 4) {
+            userProfile.city = value;
+          }
+        },
+      )
     );
   }
 }
