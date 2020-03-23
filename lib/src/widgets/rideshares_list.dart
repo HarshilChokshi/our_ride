@@ -24,7 +24,7 @@ class RideSharesList extends StatelessWidget {
   Widget build(BuildContext context) {
    return new ListView.builder(
      itemBuilder: buildCell,
-     itemCount: rideShareDataList.length,
+     itemCount: rideShareDataList != null ? rideShareDataList.length : 0,
     );
   }
 
