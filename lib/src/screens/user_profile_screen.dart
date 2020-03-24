@@ -110,6 +110,25 @@ class UserProfileState extends State<UserProfileScreen> {
   }
 
   Widget topComponent() {
+    if(!isUsersProfile) {
+    return Container(
+      padding: new EdgeInsets.only(left: 10.0, right: 10.0),
+      color: appThemeColor,
+      height: 200.0,
+      child: new Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        new Row(
+          children: <Widget>[
+            createUserProfile(),
+            new Container(margin: EdgeInsets.only(right: 30)),
+            createUserRideData(),
+          ],
+        ),
+      ],
+     ),
+    );  
+    }
     return Container(
       padding: new EdgeInsets.only(left: 10.0, right: 10.0),
       color: appThemeColor,
