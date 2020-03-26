@@ -24,17 +24,7 @@ class RideShareSearch{
     Map<String, bool> isCurrentRiderInsideRide = {};
     
     UserProfile currentRiderProfile;
-
-    //helpers
-    bool ridersAreSameGender(Map profiles, List<String> potentialRiders, String riderId){
-      bool sameGender = true;
-      for(String potentialRider in potentialRiders){
-        sameGender = (currentRiderProfile.isMale == profiles[potentialRider].isMale);
-        if(!sameGender) break;
-      }
-      return sameGender;
-    }
-    
+  
     await dbRef
     .collection('rideshares')
     .getDocuments()
@@ -61,6 +51,8 @@ class RideShareSearch{
     riderProfiles = await UserProfileData.fetchProfileDataForUsersMap(partialRiderIDs.toList());
     driverProfiles = await UserProfileData.fetchProfileDataForUsersMap(partialDriverIDs.toList());
     currentRiderProfile = await UserProfileData.fetchUserProfileData(riderId);
+    print(searchOptions["gender"]);
+    print("current rider male " + currentRiderProfile.isMale.toString());
     
     //final validation and weighting
     await dbRef
@@ -72,21 +64,25 @@ class RideShareSearch{
         double weighting = 0.0;
         if (
           partialRideshareIDs.contains(f.documentID) &&
-          //verify same gender for passengers and driver
-          (!searchOptions["gender"] || (ridersAreSameGender(riderProfiles, doc["riders"], riderId) && doc["driverId"].isMale == currentRiderProfile.isMale)) &&
+          //verify same gender for passengers and driver 
+          (!searchOptions["gender"] || (ridersAreSameGender(riderProfiles, doc["riders"], currentRiderProfile) && driverProfiles[doc["driverId"]].isMale == currentRiderProfile.isMale)) &&
           //verify current rider is not in this ride
           !doc['riders'].toList().contains(riderId)
         ){
           //weighting for valid rides
-          // +3 for each passenger (including rider + driver) in same program/department/university
-          // +2 quiet/talkative
+          // +4 for each passenger (including rider + driver) in same program/department/university --> for each rider
+          // +3 for each empty seat --> for each empty seat
+          // +2 quiet/talkative --> for search rider
           //actual implementation subtracts so don't need to reverse sort for descending
           for(String riderId in doc["riders"]){
-            if (riderProfiles[riderId].program == currentRiderProfile.program) weighting-=3;
-            if (riderProfiles[riderId].university == currentRiderProfile.university) weighting-=3;
+            if (riderProfiles[riderId].program == currentRiderProfile.program) weighting-=4;
+            if (riderProfiles[riderId].university == currentRiderProfile.university) weighting-=4;
           }
-          if (driverProfiles[doc["driverId"]].program == currentRiderProfile.program) weighting-=3;
-          if (driverProfiles[doc["driverId"]].university == currentRiderProfile.university) weighting-=3;
+          if (driverProfiles[doc["driverId"]].program == currentRiderProfile.program) weighting-=4;
+          if (driverProfiles[doc["driverId"]].university == currentRiderProfile.university) weighting-=4;
+
+          weighting -= (doc['capacity'] - doc['numberOfCurrentRiders'])*3;
+          
           Car car = Car.fromCarDetails(
               f.data['car']['model'],
               f.data['car']['make'],
@@ -197,6 +193,15 @@ class RideShareSearch{
     final Distance distance = new Distance();
     return distance(LatLng(lat1,lng1), LatLng(lat2,lng2)) <= radiusInMetres;
   }
+
+  static bool ridersAreSameGender(Map<String, UserProfile> riderProfiles, dynamic potentialRiders, UserProfile currentRiderProfile){
+      bool sameGender = true;
+      for(String potentialRider in potentialRiders){
+        sameGender = currentRiderProfile.isMale == riderProfiles[potentialRider].isMale;
+        if(!sameGender) break;
+      }
+      return sameGender;
+    }
 
   //needs to be modified with search functions
   static Future<List<Rideshare>> fetchRideshareFilterResults() async{
